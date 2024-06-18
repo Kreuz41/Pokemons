@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemons", "src\Pokemons\Pokemons.csproj", "{4556D92B-A65B-4698-B1FF-E5F51255FFAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pokemons.Build", "Pokemons.Build", "{224E5ABC-C0CB-4EA0-B33D-F6064EEE7DFE}"
+    ProjectSection(SolutionItems) = preProject
+    		Pokemons.Build\.env = Pokemons.Build\.env
+    		Pokemons.Build\.env.sample = Pokemons.Build\.env.sample
+    		Pokemons.Build\docker-compose.yaml = Pokemons.Build\docker-compose.yaml
+    	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4556D92B-A65B-4698-B1FF-E5F51255FFAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4556D92B-A65B-4698-B1FF-E5F51255FFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4556D92B-A65B-4698-B1FF-E5F51255FFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4556D92B-A65B-4698-B1FF-E5F51255FFAD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
