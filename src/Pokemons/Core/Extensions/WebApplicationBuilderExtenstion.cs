@@ -6,6 +6,7 @@ using Pokemons.Core.ApiHandlers;
 using Pokemons.Core.MapperProfiles;
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.Core.Services.BattleService;
+using Pokemons.Core.Services.MarketService;
 using Pokemons.Core.Services.PlayerService;
 using Pokemons.DataLayer.Cache.Repository;
 using Pokemons.DataLayer.Database;
@@ -42,6 +43,7 @@ public static class WebApplicationBuilderExtenstion
         {
             mc.AddProfile(new BattleProfile());
             mc.AddProfile(new MarketProfile());
+            mc.AddProfile(new PlayerProfile());
         });
         var mapper = mapperConfig.CreateMapper();
         builder.Services.AddSingleton(mapper);
@@ -74,6 +76,7 @@ public static class WebApplicationBuilderExtenstion
     {
         builder.Services.AddTransient<IPlayerService, PlayerService>();
         builder.Services.AddTransient<IBattleService, BattleService>();
+        builder.Services.AddTransient<IMarketService, MarketService>();
     }
     
     private static void ConfigureTimeProvider(IHostApplicationBuilder builder)

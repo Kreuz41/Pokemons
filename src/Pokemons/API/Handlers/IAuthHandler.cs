@@ -6,6 +6,6 @@ namespace Pokemons.API.Handlers;
 
 public interface IAuthHandler
 {
-    Task<CallResult<PlayerAuthResponseDto>> StartSession(long userId, StartSessionDto dto);
+    Task<CallResult<PlayerAuthResponseDto>> StartSession(long playerId, StartSessionDto dto);
     Task EndSession(long playerId);
 }

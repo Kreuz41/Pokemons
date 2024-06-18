@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Handlers;
 
@@ -22,6 +23,16 @@ public class BattleController : ControllerBase
         
         var result = await _handler.CommitDamage(dto, id);
         
+        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+    }
+
+    [HttpPost("superCharge")]
+    public async Task<IResult> UseSuperCharge()
+    {
+        var id = (long)HttpContext.Items["UserId"]!;
+
+        var result = await _handler.UseSuperCharge(id);
+
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
 }

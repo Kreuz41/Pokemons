@@ -5,8 +5,8 @@ namespace Pokemons.DataLayer.MasterRepositories.BattleRepository;
 
 public interface IBattleRepository
 {
-    Task<Battle> TakeDamage(long playerId, long damage);
-    Task<Battle?> GetPlayerBattle(long playerId);
+    Task<Battle> GetPlayerBattle(long playerId);
     Task<Battle> CreateBattle(Battle battle);
     Task Save(Battle battle);
+    Task FastSave(Battle battle);
 }

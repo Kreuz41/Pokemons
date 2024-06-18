@@ -7,4 +7,5 @@ namespace Pokemons.API.Handlers;
 public interface IBattleHandler
 {
     Task<CallResult<CommitDamageResponseDto>> CommitDamage(CommitDamageDto dto, long playerId);
+    Task<CallResult<CommitDamageResponseDto>> UseSuperCharge(long playerId);
 }

@@ -10,9 +10,8 @@ public class Player
     public string? PhotoUrl { get; set; }
     public long Balance { get; set; }
     public int DamagePerClick { get; set; } = 1;
-    
+
     public int Energy { get; set; } = 1000;
-    public int CurrentEnergy { get; set; } = 1000;
     public DateTime LastCommitDamageTime { get; set; }
     public decimal EnergyCharge { get; set; } = 1;
 

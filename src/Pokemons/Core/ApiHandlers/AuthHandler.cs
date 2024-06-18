@@ -3,64 +3,52 @@ using Pokemons.API.CallResult;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Dto.Responses;
 using Pokemons.API.Handlers;
-using Pokemons.Core.Enums.Battles;
 using Pokemons.Core.Services.BattleService;
+using Pokemons.Core.Services.MarketService;
 using Pokemons.Core.Services.PlayerService;
-using Pokemons.DataLayer.MasterRepositories.BattleRepository;
-using Pokemons.DataLayer.MasterRepositories.MarketRepository;
-using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 
 namespace Pokemons.Core.ApiHandlers;
 
 public class AuthHandler : IAuthHandler
 {
-    public AuthHandler(IPlayerRepository playerRepository, IBattleRepository battleRepository, 
-        IMarketRepository marketRepository, IMapper mapper)
+    public AuthHandler(IMapper mapper, IPlayerService playerService, 
+        IBattleService battleService, IMarketService marketService)
     {
-        _playerRepository = playerRepository;
-        _battleRepository = battleRepository;
-        _marketRepository = marketRepository;
         _mapper = mapper;
+        _playerService = playerService;
+        _battleService = battleService;
+        _marketService = marketService;
     }
-
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IBattleRepository _battleRepository;
-    private readonly IMarketRepository _marketRepository;
+    
     private readonly IPlayerService _playerService;
     private readonly IBattleService _battleService;
+    private readonly IMarketService _marketService;
     private readonly IMapper _mapper;
 
-    public async Task<CallResult<PlayerAuthResponseDto>> StartSession(long userId, StartSessionDto dto)
+    public async Task<CallResult<PlayerAuthResponseDto>> StartSession(long playerId, StartSessionDto dto)
     {
-        var player = await _playerRepository.GetPlayerById(userId);
-        if (player is not null)
-        {
-            var battle = await _battleRepository.GetPlayerBattle(userId);
-            return CallResult<PlayerAuthResponseDto>.Success(new PlayerAuthResponseDto
-            {
-                Defeated = player.DefeatedEntities,
-                Balance = player.Balance,
-                DamagePerClick = player.DamagePerClick,
-                EntityData = _mapper.Map<CommitDamageResponseDto>(battle)
-            });
-        }
+        if (!await _playerService.IsPlayerExist(playerId))
+            await CreatePlayer(playerId, dto);
 
-        player = await _playerRepository.CreatePlayer(userId, dto);
-        await _marketRepository.CreateMarket(userId);
-        // var initBattle = await _battleRepository.CreateBattle(player.Id, player.DefeatedEntities);
-        
-        return CallResult<PlayerAuthResponseDto>.Success(new PlayerAuthResponseDto
-        {
-            Defeated = player.DefeatedEntities,
-            Balance = player.Balance,
-            DamagePerClick = player.DamagePerClick,
-            EntityData = _mapper.Map<CommitDamageResponseDto>(20)
-        });
+        var player = await _playerService.GetPlayer(playerId);
+        var battle = await _battleService.GetBattleByPlayerId(playerId);
+
+        var result = _mapper.Map<PlayerAuthResponseDto>(player);
+        result.EntityData = _mapper.Map<CommitDamageResponseDto>(battle);
+        return CallResult<PlayerAuthResponseDto>.Success(result);
+    }
+
+    private async Task CreatePlayer(long playerId, StartSessionDto dto)
+    {
+        await _playerService.CreatePlayer(playerId, dto);
+        await _battleService.CreateNewBattle(playerId, 0);
+        await _marketService.CreateMarket(playerId);
     }
 
     public async Task EndSession(long playerId)
     {
-        await _marketRepository.Save(playerId);
-        await _playerRepository.Save(playerId);
+        await _playerService.Save(playerId);
+        await _marketService.Save(playerId);
+        await _playerService.Save(playerId);
     }
 }

@@ -19,24 +19,16 @@ public class BattleService : IBattleService
     public async Task<Battle> TakeDamage(long playerId, int damage)
     {
         var battle = await _battleRepository.GetPlayerBattle(playerId);
-        if (battle is null) return new Battle();
 
         battle.RemainingHealth -= damage;
         if (battle.RemainingHealth > 0)
         {
-            await _battleRepository.Save(battle);
+            await _battleRepository.FastSave(battle);
             return battle;
         }
         
         await EndBattle(battle);
         return battle;
-    }
-
-    private async Task EndBattle(Battle battle)
-    {
-        battle.BattleState = BattleState.Defeated;
-        battle.BattleEndTime = _timeProvider.Now();
-        await _battleRepository.Save(battle);
     }
 
     public async Task<Battle> CreateNewBattle(long playerId, int defeatedEntities)
@@ -56,5 +48,15 @@ public class BattleService : IBattleService
         await _battleRepository.CreateBattle(battle);
         
         return battle;
+    }
+
+    public async Task<Battle?> GetBattleByPlayerId(long playerId) =>
+        await _battleRepository.GetPlayerBattle(playerId);
+    
+    private async Task EndBattle(Battle battle)
+    {
+        battle.BattleState = BattleState.Defeated;
+        battle.BattleEndTime = _timeProvider.Now();
+        await _battleRepository.Save(battle);
     }
 }
