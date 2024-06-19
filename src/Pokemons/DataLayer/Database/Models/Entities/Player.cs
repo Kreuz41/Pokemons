@@ -23,7 +23,9 @@ public class Player
     public int TotalDamage { get; set; }
     public int DefeatedEntities { get; set; }
 
-    public Market Market { get; set; } = null!;
-    public long MarketId { get; set; }
+    [JsonIgnore] public Market Market { get; set; } = null!;
+    [JsonIgnore] public ReferralNode ReferrerInfo { get; set; } = null!;
+    
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = new List<Battle>();
+    [JsonIgnore] public ICollection<ReferralNode> Referrals { get; set; } = new List<ReferralNode>();
 }

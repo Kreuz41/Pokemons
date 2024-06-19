@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     private readonly IAuthHandler _handler;
     
     [HttpPost("startSession")]
-    public async Task<IResult> StartSession(StartSessionDto data)
+    public async Task<IResult> StartSession([FromBody] StartSessionDto data)
     {
         var userId = (long)HttpContext.Items["UserId"]!;
         var result = await _handler.StartSession(userId, data);

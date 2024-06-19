@@ -1,0 +1,10 @@
+﻿using Pokemons.DataLayer.Database.Models.Entities;
+
+namespace Pokemons.DataLayer.Database.Repositories.ReferralRepos;
+
+public interface IReferralNodeDatabaseRepository
+{
+    Task CreateNode(ReferralNode node);
+    Task<IEnumerable<Player>> GetReferrals(long playerId);
+    Task<ReferralNode?> GetReferralNode(long referral);
+}

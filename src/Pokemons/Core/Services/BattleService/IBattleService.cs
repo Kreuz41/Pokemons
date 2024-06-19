@@ -8,4 +8,5 @@ public interface IBattleService
     Task<Battle> TakeDamage(long playerId, int damage);
     Task<Battle> CreateNewBattle(long playerId, int defeatedEntities);
     Task<Battle?> GetBattleByPlayerId(long playerId);
+    Task Save(long playerId);
 }

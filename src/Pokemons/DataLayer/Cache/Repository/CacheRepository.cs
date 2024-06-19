@@ -16,9 +16,10 @@ public class CacheRepository : ICacheRepository
     private readonly IDatabase _database;
     private static ISubscriber? _subscriber;
     
-    public async Task SetMember<T>(string key, T data) =>
+    public async Task SetMember<T>(string key, T data, int? minutes = null) =>
         await _database.StringSetAsync(GetKey<T>(key), 
-            JsonSerializer.Serialize(data));
+            JsonSerializer.Serialize(data), 
+            minutes is null ? null : TimeSpan.FromMinutes((double)minutes));
 
     public async Task<T?> GetMember<T>(string key) where T : class
     {
