@@ -12,6 +12,7 @@ public class Player
     public int DamagePerClick { get; set; } = 1;
 
     public int Energy { get; set; } = 1000;
+    public int CurrentEnergy { get; set; }
     public DateTime LastCommitDamageTime { get; set; }
     public decimal EnergyCharge { get; set; } = 1;
 
@@ -24,6 +25,7 @@ public class Player
     public int DefeatedEntities { get; set; }
 
     [JsonIgnore] public Market Market { get; set; } = null!;
+    [JsonIgnore] public Rating Rating { get; set; } = null!;
     [JsonIgnore] public ReferralNode ReferrerInfo { get; set; } = null!;
     
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = new List<Battle>();

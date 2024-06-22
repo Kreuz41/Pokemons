@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Player> Players { get; set; } = null!;
     public DbSet<Battle> Battles { get; set; } = null!;
     public DbSet<Market> Markets { get; set; } = null!;
+    public DbSet<Rating> Rating { get; set; } = null!;
     public DbSet<ReferralNode> ReferralNodes { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -16,6 +17,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new PlayerConfiguration());
         modelBuilder.ApplyConfiguration(new BattleConfiguration());
         modelBuilder.ApplyConfiguration(new MarketConfiguration());
+        modelBuilder.ApplyConfiguration(new RatingConfiguration());
         modelBuilder.ApplyConfiguration(new ReferralNodeConfiguration());
     }
 }

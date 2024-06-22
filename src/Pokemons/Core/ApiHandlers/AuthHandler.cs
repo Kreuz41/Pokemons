@@ -6,6 +6,7 @@ using Pokemons.API.Handlers;
 using Pokemons.Core.Services.BattleService;
 using Pokemons.Core.Services.MarketService;
 using Pokemons.Core.Services.PlayerService;
+using Pokemons.Core.Services.RatingService;
 using Pokemons.Core.Services.ReferralService;
 
 namespace Pokemons.Core.ApiHandlers;
@@ -14,18 +15,20 @@ public class AuthHandler : IAuthHandler
 {
     public AuthHandler(IMapper mapper, IPlayerService playerService, 
         IBattleService battleService, IMarketService marketService, 
-        IReferralService referralService)
+        IReferralService referralService, IRatingService ratingService)
     {
         _mapper = mapper;
         _playerService = playerService;
         _battleService = battleService;
         _marketService = marketService;
         _referralService = referralService;
+        _ratingService = ratingService;
     }
     
     private readonly IPlayerService _playerService;
     private readonly IBattleService _battleService;
     private readonly IMarketService _marketService;
+    private readonly IRatingService _ratingService;
     private readonly IReferralService _referralService;
     private readonly IMapper _mapper;
 
@@ -54,6 +57,8 @@ public class AuthHandler : IAuthHandler
         await _playerService.CreatePlayer(playerId, dto);
         await _battleService.CreateNewBattle(playerId, 0);
         await _marketService.CreateMarket(playerId);
+        await _ratingService.CreateRating(playerId);
+        
         if (dto.RefId is not null)
             await _referralService.CreateNode(playerId, dto.RefId.Value);
     }

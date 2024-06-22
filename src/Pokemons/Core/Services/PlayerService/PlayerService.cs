@@ -21,10 +21,11 @@ public class PlayerService : IPlayerService
         var player = await _playerRepository.GetPlayerById(playerId);
         if (player is null) return (0, 0);
 
-        var energy = GetEnergy(player);
+        player.CurrentEnergy += GetEnergy(player);
         
         var damage = player.DamagePerClick * taps;
-        damage = damage > energy ? energy : damage;
+        damage = damage > player.CurrentEnergy ? player.CurrentEnergy : damage;
+        player.CurrentEnergy -= damage;
         player.LastCommitDamageTime = _timeProvider.Now();
         
         player.Taps += taps;

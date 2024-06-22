@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pokemons.DataLayer.Database;
@@ -11,9 +12,11 @@ using Pokemons.DataLayer.Database;
 namespace Pokemons.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240620205631_RatingAdded")]
+    partial class RatingAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,9 +120,6 @@ namespace Pokemons.Migrations
 
                     b.Property<long>("Balance")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("CurrentEnergy")
-                        .HasColumnType("integer");
 
                     b.Property<int>("DamagePerClick")
                         .HasColumnType("integer");

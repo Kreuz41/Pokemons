@@ -16,26 +16,28 @@ public class CacheRepository : ICacheRepository
     private readonly IDatabase _database;
     private static ISubscriber? _subscriber;
     
-    public async Task SetMember<T>(string key, T data, int? minutes = null) =>
-        await _database.StringSetAsync(GetKey<T>(key), 
-            JsonSerializer.Serialize(data), 
-            minutes is null ? null : TimeSpan.FromMinutes((double)minutes));
-
-    public async Task<T?> GetMember<T>(string key) where T : class
+    public async Task SetMember<T>(string key, T data, int? minutes = null, Func<string>? keyPattern = null)
     {
-        var member = await _database.StringGetAsync(GetKey<T>(key));
+        await _database.StringSetAsync(GetKey<T>(key) + keyPattern?.Invoke(),
+            JsonSerializer.Serialize(data),
+            minutes is null ? null : TimeSpan.FromMinutes((double)minutes));
+    }
+
+    public async Task<T?> GetMember<T>(string key, Func<string>? keyPattern = null) where T : class
+    {
+        var member = await _database.StringGetAsync(GetKey<T>(key) + keyPattern?.Invoke());
         if (member.IsNullOrEmpty || !member.HasValue) return null;
         
         return JsonSerializer.Deserialize<T>(member!);
     }
 
-    public async Task<T?> DeleteMember<T>(string key) where T : class
+    public async Task<T?> DeleteMember<T>(string key, Func<string>? keyPattern = null) where T : class
     {
-        var member = await _database.StringGetDeleteAsync(GetKey<T>(key));
+        var member = await _database.StringGetDeleteAsync(GetKey<T>(key) + keyPattern?.Invoke());
         if (member.IsNullOrEmpty || !member.HasValue) return null;
         
         return JsonSerializer.Deserialize<T>(member!);
     }
     
-    private static string GetKey<T>(string key) => typeof(T) + ":" + key;
+    private static string GetKey<T>(string key) => $"{typeof(T)}:{key}.";
 }
