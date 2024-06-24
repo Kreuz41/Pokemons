@@ -7,6 +7,8 @@ public class ReferralNode
     public long ReferrerId { get; set; }
     public Player Referrer { get; set; } = null!;
     
+    public int Inline { get; set; }
+    
     public long ReferralId { get; set; }
     public Player Referral { get; set; } = null!;
 }

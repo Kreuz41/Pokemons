@@ -53,6 +53,32 @@ public class RatingRepository : IRatingRepository
         return descriptions;
     }
 
+    public async Task<Rating?> GetByPlayerId(long playerId)
+    {
+        var rating = await _cacheRepository.GetMember<Rating>(playerId.ToString());
+        if (rating is not null) return rating;
+        
+        rating = await _databaseRepository.GetPlayerRating(playerId);
+        if (rating is null) return null;
+        await _cacheRepository.SetMember(playerId.ToString(), rating);
+        return rating;
+    }
+
+    public async Task Update(Rating rating)
+    {
+        await _cacheRepository.SetMember(rating.PlayerId.ToString(), rating);
+        await _databaseRepository.UpdateRatings([rating]);
+    }
+
+    public async Task Save(long playerId)
+    {
+        var rating = await _cacheRepository.DeleteMember<Rating>(playerId.ToString());
+        await _databaseRepository.UpdateRatings([rating]);
+    }
+
+    public async Task FastUpdate(Rating rating) =>
+        await _cacheRepository.SetMember(rating.PlayerId.ToString(), rating);
+
     private static string GetLeagueCacheKey(int leagueType, int offset) =>
         $"League:{leagueType}:{offset}";
 }

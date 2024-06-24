@@ -7,4 +7,6 @@ public interface IRatingService
 {
     Task CreateRating(long playerId);
     Task<IEnumerable<RatingPlayerDescription>> GetLeagueRating(int leagueType, int offset);
+    Task UpdateRating(long playerId, int defeated);
+    Task Save(long playerId);
 }

@@ -11,4 +11,5 @@ public interface IPlayerService
     Task<bool> IsPlayerExist(long playerId);
     Task<(int, int)> UseSuperCharge(long playerId);
     Task Save(long playerId);
+    Task<int> EntityDefeated(long playerId);
 }

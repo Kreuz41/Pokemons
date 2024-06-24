@@ -20,9 +20,22 @@ public class ReferralService : IReferralService
         node = new ReferralNode
         {
             ReferralId = playerId,
-            ReferrerId = referrerId
+            ReferrerId = referrerId,
+            Inline = 1
         };
         await _nodeRepository.CreateNode(node);
+        
+        node = await _nodeRepository.GetReferralNode(referrerId);
+        if (node is null) return;
+        
+        var secondNode = new ReferralNode
+        {
+            ReferralId = playerId,
+            ReferrerId = node.Referrer.Id,
+            Inline = 2
+        };
+        await _nodeRepository.CreateNode(secondNode);
+        // TODO: Проверить
     }
 
     public async Task<IEnumerable<Player>> GetReferrals(long playerId) => 

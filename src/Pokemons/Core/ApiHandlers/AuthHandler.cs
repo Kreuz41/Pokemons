@@ -50,6 +50,7 @@ public class AuthHandler : IAuthHandler
         await _playerService.Save(playerId);
         await _battleService.Save(playerId);
         await _marketService.Save(playerId);
+        await _ratingService.Save(playerId);
     }
     
     private async Task CreatePlayer(long playerId, StartSessionDto dto)

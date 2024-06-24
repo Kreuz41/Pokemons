@@ -53,4 +53,7 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
 
         return ratings;
     }
+
+    public async Task<Rating?> GetPlayerRating(long playerId) =>
+        await _context.Rating.FirstOrDefaultAsync(r => r.PlayerId == playerId);
 }

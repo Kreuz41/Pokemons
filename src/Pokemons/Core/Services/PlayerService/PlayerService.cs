@@ -60,6 +60,15 @@ public class PlayerService : IPlayerService
     public async Task Save(long playerId) =>
         await _playerRepository.Save(playerId);
 
+    public async Task<int> EntityDefeated(long playerId)
+    {
+        var player = await _playerRepository.GetPlayerById(playerId);
+        if (player is null) return 0;
+        player.DefeatedEntities++;
+        await _playerRepository.FastUpdate(player);
+        return player.DefeatedEntities;
+    }
+
     private int GetEnergy(Player player)
     {
         var energy = player.LastCommitDamageTime != default

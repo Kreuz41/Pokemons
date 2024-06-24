@@ -8,4 +8,7 @@ public interface IRatingRepository
 {
     Task CreateUserRating(long playerId, LeagueType leagueType);
     Task<IEnumerable<RatingPlayerDescription>> GetLeagueRating(int leagueType, int offset);
+    Task<Rating?> GetByPlayerId(long playerId);
+    Task Update(Rating rating);
+    Task Save(long playerId);
 }

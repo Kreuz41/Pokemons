@@ -10,4 +10,5 @@ public interface IRatingDatabaseRepository
     Task<long> GetMaxPositionInLeague(LeagueType leagueType);
     Task UpdateRatings(IEnumerable<Rating> ratings);
     Task<IEnumerable<Rating>> GetLeagueRating(int leagueType, int offset);
+    Task<Rating?> GetPlayerRating(long playerId);
 }

@@ -14,13 +14,6 @@ public class RatingController : ControllerBase
 
     private readonly IRatingHandler _handler;
 
-    private async Task<IResult> GetPlayerUserInfo()
-    {
-        var id = (long)HttpContext.Items["UserId"]!;
-        
-        return Results.Ok();
-    }
-
     [HttpGet("leagueRatingInfo")]
     public async Task<IResult> GetLeagueRatingInfo([FromQuery] int leagueType, [FromQuery] int offset)
     {

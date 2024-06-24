@@ -34,6 +34,8 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
     }
 
     public async Task<ReferralNode?> GetReferralNode(long referral) =>
-        await _context.ReferralNodes.FirstOrDefaultAsync(
-            r => r.ReferralId == referral);
+        await _context.ReferralNodes
+            .Include(r => r.Referrer)
+            .FirstOrDefaultAsync(
+            r => r.ReferralId == referral && r.Inline == 1);
 }
