@@ -6,5 +6,5 @@ public interface IReferralNodeDatabaseRepository
 {
     Task CreateNode(ReferralNode node);
     Task<IEnumerable<Player>> GetReferrals(long playerId);
-    Task<ReferralNode?> GetReferralNode(long referral);
+    Task<ReferralNode?> GetFirstReferralNode(long referral);
 }

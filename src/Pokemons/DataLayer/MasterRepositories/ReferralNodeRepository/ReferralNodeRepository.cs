@@ -34,5 +34,5 @@ public class ReferralNodeRepository : IReferralNodeRepository
     }
 
     public async Task<ReferralNode?> GetReferralNode(long playerId) => 
-        await _databaseRepository.GetReferralNode(playerId);
+        await _databaseRepository.GetFirstReferralNode(playerId);
 }

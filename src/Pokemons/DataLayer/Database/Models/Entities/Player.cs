@@ -26,7 +26,7 @@ public class Player
 
     [JsonIgnore] public Market Market { get; set; } = null!;
     [JsonIgnore] public Rating Rating { get; set; } = null!;
-    [JsonIgnore] public ReferralNode ReferrerInfo { get; set; } = null!;
+    [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = new List<ReferralNode>();
     
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = new List<Battle>();
     [JsonIgnore] public ICollection<ReferralNode> Referrals { get; set; } = new List<ReferralNode>();

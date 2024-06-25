@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pokemons.DataLayer.Database;
@@ -11,9 +12,11 @@ using Pokemons.DataLayer.Database;
 namespace Pokemons.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240625175422_InlineToRefSystemAdded")]
+    partial class InlineToRefSystemAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,7 +217,8 @@ namespace Pokemons.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReferralId");
+                    b.HasIndex("ReferralId")
+                        .IsUnique();
 
                     b.HasIndex("ReferrerId");
 
@@ -257,8 +261,8 @@ namespace Pokemons.Migrations
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ReferralNode", b =>
                 {
                     b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Referral")
-                        .WithMany("ReferrerInfo")
-                        .HasForeignKey("ReferralId")
+                        .WithOne("ReferrerInfo")
+                        .HasForeignKey("Pokemons.DataLayer.Database.Models.Entities.ReferralNode", "ReferralId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -285,7 +289,8 @@ namespace Pokemons.Migrations
 
                     b.Navigation("Referrals");
 
-                    b.Navigation("ReferrerInfo");
+                    b.Navigation("ReferrerInfo")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

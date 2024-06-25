@@ -1,19 +1,24 @@
-﻿using Pokemons.DataLayer.Database.Models.Entities;
+﻿using Pokemons.Core.Services.PlayerService;
+using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
 
 namespace Pokemons.Core.Services.ReferralService;
 
 public class ReferralService : IReferralService
 {
-    public ReferralService(IReferralNodeRepository nodeRepository)
+    public ReferralService(IReferralNodeRepository nodeRepository, IPlayerService playerService)
     {
         _nodeRepository = nodeRepository;
+        _playerService = playerService;
     }
 
     private readonly IReferralNodeRepository _nodeRepository;
+    private readonly IPlayerService _playerService;
 
     public async Task CreateNode(long playerId, long referrerId)
     {
+        if (!await _playerService.IsPlayerExist(referrerId) || playerId == referrerId) return;
+        
         var node = await _nodeRepository.GetReferralNode(playerId);
         if (node is not null) return;
 

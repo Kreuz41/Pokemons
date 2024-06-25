@@ -16,7 +16,7 @@ public class ReferralNodeConfiguration : IEntityTypeConfiguration<ReferralNode>
             .HasForeignKey(r => r.ReferrerId);
 
         builder.HasOne<Player>(r => r.Referral)
-            .WithOne(p => p.ReferrerInfo)
-            .HasForeignKey<ReferralNode>(r => r.ReferralId);
+            .WithMany(p => p.ReferrerInfo)
+            .HasForeignKey(r => r.ReferralId);
     }
 }
