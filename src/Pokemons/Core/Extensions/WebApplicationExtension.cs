@@ -1,4 +1,6 @@
-﻿using Pokemons.API.Middlewares;
+﻿using Microsoft.EntityFrameworkCore;
+using Pokemons.API.Middlewares;
+using Pokemons.DataLayer.Database;
 
 namespace Pokemons.Core.Extensions;
 
@@ -7,7 +9,14 @@ public static class WebApplicationExtension
     public static void Configure(this WebApplication app)
     {
         ConfigureSwagger(app);
+        ConfigureDatabase(app);
         ConfigurePipeline(app);
+    }
+
+    private static async void ConfigureDatabase(WebApplication app)
+    {
+        var service = app.Services.GetRequiredService<AppDbContext>();
+        await service.Database.MigrateAsync();
     }
 
     private static void ConfigurePipeline(WebApplication app)

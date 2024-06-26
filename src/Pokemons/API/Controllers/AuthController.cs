@@ -14,6 +14,14 @@ public class AuthController : ControllerBase
     }
 
     private readonly IAuthHandler _handler;
+
+    [HttpPost("createUser")]
+    public async Task<IResult> CreateUser([FromBody] StartSessionDto data)
+    {
+        var userId = (long)HttpContext.Items["UserId"]!;
+        var result = await _handler.CreateUser(data, userId);
+        return result.Status ? Results.Created() : Results.Conflict(result);
+    }
     
     [HttpPost("startSession")]
     public async Task<IResult> StartSession([FromBody] StartSessionDto data)

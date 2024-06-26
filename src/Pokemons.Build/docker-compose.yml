@@ -1,0 +1,47 @@
+services: 
+  api:
+    image: pokemons-api
+    container_name: api
+    build:
+      context: ..
+      dockerfile: Pokemons/Dockerfile
+      
+    env_file: .env
+    ports:
+      - "6000:8080"
+    depends_on: 
+      - postgres
+  
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5430:5432"
+    env_file: .env
+    volumes:
+      - pokemons_data:/var/lib/postgresql/data
+        
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - default
+  
+  bot:
+    image: auth-bot
+    build:
+      context: ..
+      dockerfile: PokemonsBot/Dockerfile
+    env_file: .env
+    ports:
+      - "5010:8080"
+    depends_on: 
+      - api
+
+volumes: 
+  pokemons_data:
+    
+networks:
+  default:
+    driver: bridge

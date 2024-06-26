@@ -35,7 +35,7 @@ public class AuthHandler : IAuthHandler
     public async Task<CallResult<PlayerAuthResponseDto>> StartSession(long playerId, StartSessionDto dto)
     {
         if (!await _playerService.IsPlayerExist(playerId))
-            await CreatePlayer(playerId, dto);
+            return CallResult<PlayerAuthResponseDto>.Failure("Player does not exist");
 
         var player = await _playerService.GetPlayer(playerId);
         var battle = await _battleService.GetBattleByPlayerId(playerId);
@@ -52,7 +52,16 @@ public class AuthHandler : IAuthHandler
         await _marketService.Save(playerId);
         await _ratingService.Save(playerId);
     }
-    
+
+    public async Task<CallResult<bool>> CreateUser(StartSessionDto data, long playerId)
+    {
+        if (await _playerService.IsPlayerExist(playerId)) return CallResult<bool>.Failure("Player already exist");
+
+        await CreatePlayer(playerId, data);
+
+        return CallResult<bool>.Success(true);
+    }
+
     private async Task CreatePlayer(long playerId, StartSessionDto dto)
     {
         await _playerService.CreatePlayer(playerId, dto);

@@ -7,17 +7,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Pokemons.API/Pokemons.API.csproj", "Pokemons.API/"]
-RUN dotnet restore "Pokemons.API/Pokemons.API.csproj"
+COPY ["Pokemons/Pokemons.csproj", "Pokemons/"]
+RUN dotnet restore "Pokemons/Pokemons.csproj"
 COPY . .
-WORKDIR "/src/Pokemons.API"
-RUN dotnet build "Pokemons.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Pokemons"
+RUN dotnet build "Pokemons.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Pokemons.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Pokemons.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Pokemons.API.dll"]
+ENTRYPOINT ["dotnet", "Pokemons.dll"]

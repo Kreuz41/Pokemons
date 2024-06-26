@@ -8,4 +8,5 @@ public interface IAuthHandler
 {
     Task<CallResult<PlayerAuthResponseDto>> StartSession(long playerId, StartSessionDto dto);
     Task EndSession(long playerId);
+    Task<CallResult<bool>> CreateUser(StartSessionDto data, long playerId);
 }
