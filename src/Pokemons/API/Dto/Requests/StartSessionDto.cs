@@ -7,4 +7,5 @@ public class StartSessionDto
     public required string Hash { get; set; }
     public string? PhotoUrl { get; set; }
     public long? RefId { get; set; }
+    public long Balance { get; set; }
 }
