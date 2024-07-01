@@ -6,7 +6,7 @@ using Pokemons.API.Handlers;
 namespace Pokemons.API.Controllers;
 
 [ApiController]
-[Route("battle/")]
+[Route("api/battle/")]
 public class BattleController : ControllerBase
 {
     public BattleController(IBattleHandler handler)

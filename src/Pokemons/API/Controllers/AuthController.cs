@@ -5,7 +5,7 @@ using Pokemons.API.Handlers;
 namespace Pokemons.API.Controllers;
 
 [ApiController]
-[Route("auth/")]
+[Route("api/auth/")]
 public class AuthController : ControllerBase
 {
     public AuthController(IAuthHandler handler)
@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     private readonly IAuthHandler _handler;
 
     [HttpPost("createUser")]
-    public async Task<IResult> CreateUser([FromBody] StartSessionDto data)
+    public async Task<IResult> CreateUser([FromBody] CreatePlayerDto data)
     {
         var userId = (long)HttpContext.Items["UserId"]!;
         var result = await _handler.CreateUser(data, userId);
@@ -29,6 +29,24 @@ public class AuthController : ControllerBase
         var userId = (long)HttpContext.Items["UserId"]!;
         var result = await _handler.StartSession(userId, data);
 
+        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+    }
+
+    [HttpGet("tapperConfig")]
+    public async Task<IResult> GetTapperConfig()
+    {
+        var userId = (long)HttpContext.Items["UserId"]!;
+        var result = await _handler.GetTapperConfig(userId);
+        
+        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+    }
+
+    [HttpGet("profile")]
+    public async Task<IResult> GetProfile()
+    {
+        var playerId = (long)HttpContext.Items["UserId"]!;
+        var result = await _handler.GetProfile(playerId);
+        
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
     

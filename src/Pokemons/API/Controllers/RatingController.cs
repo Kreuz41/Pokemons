@@ -4,7 +4,7 @@ using Pokemons.API.Handlers;
 namespace Pokemons.API.Controllers;
 
 [ApiController]
-[Route("rating/")]
+[Route("api/rating/")]
 public class RatingController : ControllerBase
 {
     public RatingController(IRatingHandler handler)

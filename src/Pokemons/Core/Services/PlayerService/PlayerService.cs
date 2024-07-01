@@ -51,7 +51,7 @@ public class PlayerService : IPlayerService
     public async Task<Player?> GetPlayer(long userId) =>
         await _playerRepository.GetPlayerById(userId);
 
-    public async Task<Player> CreatePlayer(long userId, StartSessionDto dto) =>
+    public async Task<Player> CreatePlayer(long userId, CreatePlayerDto dto) =>
         await _playerRepository.CreatePlayer(userId, dto);
 
     public async Task<bool> IsPlayerExist(long playerId) =>
@@ -65,8 +65,27 @@ public class PlayerService : IPlayerService
         var player = await _playerRepository.GetPlayerById(playerId);
         if (player is null) return 0;
         player.DefeatedEntities++;
+        LevelUpdate(player);
         await _playerRepository.FastUpdate(player);
         return player.DefeatedEntities;
+    }
+
+    public async Task UpdatePlayerData(StartSessionDto dto, Player player)
+    {
+        player.Name = dto.Name;
+        player.Surname = dto.Surname;
+        player.Username = dto.Username;
+        
+        await _playerRepository.FastUpdate(player);
+    }
+
+    private void LevelUpdate(Player player)
+    {
+        player.Exp += 5000;
+        if (player.Exp != 50000) return;
+        
+        player.Exp = 0;
+        player.Level++;
     }
 
     private int GetEnergy(Player player)

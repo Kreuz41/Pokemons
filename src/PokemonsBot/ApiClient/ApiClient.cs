@@ -6,7 +6,7 @@ public class ApiClient
 {
     private const string BaseUrl = "http://api:8080/";
 
-    public static async Task CreateUser(long userId, StartSessionDto dto)
+    public static async Task CreateUser(long userId, CreatePlayerDto dto)
     {
         using var client = new HttpClient();
         client.BaseAddress = new Uri(BaseUrl);

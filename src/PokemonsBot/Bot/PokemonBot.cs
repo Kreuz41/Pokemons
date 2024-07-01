@@ -34,7 +34,7 @@ public class PokemonBot
             if (query.Length > 1)
                 if (!long.TryParse(query[1], out refId)) refId = 0;
             
-            await ApiClient.ApiClient.CreateUser(update.Message.Chat.Id, new StartSessionDto
+            await ApiClient.ApiClient.CreateUser(update.Message.Chat.Id, new CreatePlayerDto
             {
                 Hash = "",
                 Name = update.Message.Chat.FirstName,

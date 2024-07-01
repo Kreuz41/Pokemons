@@ -28,7 +28,9 @@ public class MarketHandler : IMarketHandler
     public async Task<CallResult<MarketResponseDto>> GetMarketByUserId(long playerId)
     {
         var market = await _marketService.GetMarketByPlayerId(playerId);
-        return CallResult<MarketResponseDto>.Success(_mapper.Map<MarketResponseDto>(market));
+        var response = _mapper.Map<MarketResponseDto>(market);
+        response.DamagePerClickNextValue = response.DamagePerClickLevel++;
+        return CallResult<MarketResponseDto>.Success(response);
     }
 
     public async Task<CallResult<MarketResponseDto>> UpgradeUserStat(long playerId, StatType type)

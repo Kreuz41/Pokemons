@@ -44,6 +44,7 @@ public class RatingRepository : IRatingRepository
             Name = r.Player.Name,
             Surname = r.Player.Surname,
             PhotoUrl = r.Player.PhotoUrl,
+            Username = r.Player.Username,
             Position = r.LeaguePosition,
         }).ToList();
         
@@ -75,6 +76,12 @@ public class RatingRepository : IRatingRepository
         var rating = await _cacheRepository.DeleteMember<Rating>(playerId.ToString());
         await _databaseRepository.UpdateRatings([rating]);
     }
+
+    public async Task<IEnumerable<Rating>> GetRatings() =>
+        await _databaseRepository.GetAllRatings();
+
+    public async Task UpdateRange(IEnumerable<Rating> ratings) =>
+        await _databaseRepository.UpdateRatings(ratings);
 
     public async Task FastUpdate(Rating rating) =>
         await _cacheRepository.SetMember(rating.PlayerId.ToString(), rating);

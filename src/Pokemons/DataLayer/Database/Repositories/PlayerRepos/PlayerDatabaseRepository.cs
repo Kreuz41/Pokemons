@@ -41,4 +41,11 @@ public class PlayerDatabaseRepository : IPlayerDatabaseRepository
         
         await _unitOfWork.CommitTransaction();
     }
+
+    public async Task UpdatePlayers(IEnumerable<Player> players)
+    {
+        await _unitOfWork.BeginTransaction();
+        _context.Players.UpdateRange(players);
+        await _unitOfWork.CommitTransaction();
+    }
 }

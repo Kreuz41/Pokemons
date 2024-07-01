@@ -1,4 +1,5 @@
 ﻿using Pokemons.Core.Enums;
+using Pokemons.Core.Helpers;
 using Pokemons.DataLayer.Cache.Models;
 using Pokemons.DataLayer.Database.Models.Entities;
 
@@ -11,4 +12,6 @@ public interface IRatingRepository
     Task<Rating?> GetByPlayerId(long playerId);
     Task Update(Rating rating);
     Task Save(long playerId);
+    Task<IEnumerable<Rating>> GetRatings();
+    Task UpdateRange(IEnumerable<Rating> ratings);
 }

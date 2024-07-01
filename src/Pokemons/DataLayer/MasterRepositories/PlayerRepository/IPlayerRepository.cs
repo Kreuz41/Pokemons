@@ -6,7 +6,7 @@ namespace Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 public interface IPlayerRepository
 {
     Task<Player?> GetPlayerById(long id);
-    Task<Player> CreatePlayer(long userId, StartSessionDto dto);
+    Task<Player> CreatePlayer(long userId, CreatePlayerDto dto);
     Task Save(long id);
     Task Update(Player player);
     Task FastUpdate(Player player);

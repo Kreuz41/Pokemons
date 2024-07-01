@@ -7,4 +7,5 @@ public interface IPlayerDatabaseRepository
     Task<Player?> GetById(long id);
     Task CreatePlayer(Player player);
     Task UpdatePlayer(Player player);
+    Task UpdatePlayers(IEnumerable<Player> players);
 }

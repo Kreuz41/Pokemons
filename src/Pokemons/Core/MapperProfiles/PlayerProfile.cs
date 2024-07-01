@@ -8,6 +8,6 @@ public class PlayerProfile : Profile
 {
     public PlayerProfile()
     {
-        CreateMap<Player, PlayerAuthResponseDto>();
+        CreateMap<Player, TapperConfigResponseDto>();
     }
 }

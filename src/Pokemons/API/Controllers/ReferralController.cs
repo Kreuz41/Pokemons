@@ -4,7 +4,7 @@ using Pokemons.API.Handlers;
 namespace Pokemons.API.Controllers;
 
 [ApiController]
-[Route("referral/")]
+[Route("api/referral/")]
 public class ReferralController : ControllerBase
 {
     public ReferralController(IReferralHandler handler)

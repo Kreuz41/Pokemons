@@ -15,7 +15,8 @@ public static class WebApplicationExtension
 
     private static async void ConfigureDatabase(WebApplication app)
     {
-        var service = app.Services.GetRequiredService<AppDbContext>();
+        using var scope = app.Services.CreateScope();
+        var service = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await service.Database.MigrateAsync();
     }
 
@@ -27,7 +28,10 @@ public static class WebApplicationExtension
         app.UseCors(options => options.WithOrigins("http://localhost:3001", "http://localhost:3002",
             "http://localhost:3000", "http://localhost:8080",
             "http://localhost:4200", "http://localhost:5173", "http://localhost:5010",
-            "https://cix-lilac.vercel.app").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+            "https://cix-lilac.vercel.app")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
 
         app.UseMiddleware<AuthMiddleware>();
     }

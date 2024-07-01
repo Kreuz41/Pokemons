@@ -1,7 +1,6 @@
 ﻿using Pokemons.Core.Enums;
 using Pokemons.Core.Helpers;
 using Pokemons.DataLayer.Cache.Models;
-using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.RatingRepository;
 
 namespace Pokemons.Core.Services.RatingService;
@@ -35,4 +34,31 @@ public class RatingService : IRatingService
 
     public async Task Save(long playerId) =>
         await _ratingRepository.Save(playerId);
+
+    public async Task StartUpdateLeagueRating()
+    { 
+        var ratings = (await _ratingRepository.GetRatings()).ToList();
+        foreach (var rating in 
+                 ratings.Where(rating => 
+                     rating.Player.DefeatedEntities > LeagueHelper.NeededToNextLeague(rating.Player.Rating.LeagueType)))
+            rating.Player.Rating.LeagueType++;
+        
+        var groupedRatings = ratings.GroupBy(r => r.LeagueType)
+                .Select(r => new
+                {
+                    LeagueType = r.Key,
+                    Ratings = r.OrderByDescending(g => g.Player.DefeatedEntities).ToList()
+                })
+                .ToList();
+
+        foreach (var group in groupedRatings)
+        {
+            for (var i = 0; i < group.Ratings.Count; i++)
+            {
+                group.Ratings[i].LeaguePosition = i + 1;
+            }
+        }
+
+        await _ratingRepository.UpdateRange(groupedRatings.SelectMany(g => g.Ratings));
+    }
 }

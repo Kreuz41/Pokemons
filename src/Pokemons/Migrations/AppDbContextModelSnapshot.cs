@@ -22,6 +22,28 @@ namespace Pokemons.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ActiveMission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDifficult")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEnded")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActiveMissions");
+                });
+
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Battle", b =>
                 {
                     b.Property<long>("Id")
@@ -72,16 +94,25 @@ namespace Pokemons.Migrations
                     b.Property<int>("DamagePerClickLevel")
                         .HasColumnType("integer");
 
+                    b.Property<int>("DamagePerClickNextValue")
+                        .HasColumnType("integer");
+
                     b.Property<int>("EnergyChargeCost")
                         .HasColumnType("integer");
 
                     b.Property<int>("EnergyChargeLevel")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("EnergyChargeNextValue")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("EnergyCost")
                         .HasColumnType("integer");
 
                     b.Property<int>("EnergyLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EnergyNextValue")
                         .HasColumnType("integer");
 
                     b.Property<long>("PlayerId")
@@ -93,10 +124,16 @@ namespace Pokemons.Migrations
                     b.Property<int>("SuperChargeCooldownLevel")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("SuperChargeCooldownNextValue")
+                        .HasColumnType("numeric");
+
                     b.Property<int>("SuperChargeCost")
                         .HasColumnType("integer");
 
                     b.Property<int>("SuperChargeLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SuperChargeNextValue")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -105,6 +142,32 @@ namespace Pokemons.Migrations
                         .IsUnique();
 
                     b.ToTable("Markets");
+                });
+
+            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Mission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("ActiveMissionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CompleteTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("PlayerId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActiveMissionId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("Missions");
                 });
 
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Player", b =>
@@ -133,11 +196,17 @@ namespace Pokemons.Migrations
                     b.Property<decimal>("EnergyCharge")
                         .HasColumnType("numeric");
 
+                    b.Property<int>("Exp")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("LastCommitDamageTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("LastSuperChargeActivatedTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
@@ -161,6 +230,9 @@ namespace Pokemons.Migrations
 
                     b.Property<int>("TotalDamage")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -243,6 +315,25 @@ namespace Pokemons.Migrations
                     b.Navigation("Player");
                 });
 
+            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Mission", b =>
+                {
+                    b.HasOne("Pokemons.DataLayer.Database.Models.Entities.ActiveMission", "ActiveMission")
+                        .WithMany("Missions")
+                        .HasForeignKey("ActiveMissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Player")
+                        .WithMany("Missions")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ActiveMission");
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Rating", b =>
                 {
                     b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Player")
@@ -273,12 +364,19 @@ namespace Pokemons.Migrations
                     b.Navigation("Referrer");
                 });
 
+            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ActiveMission", b =>
+                {
+                    b.Navigation("Missions");
+                });
+
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Player", b =>
                 {
                     b.Navigation("Battles");
 
                     b.Navigation("Market")
                         .IsRequired();
+
+                    b.Navigation("Missions");
 
                     b.Navigation("Rating")
                         .IsRequired();

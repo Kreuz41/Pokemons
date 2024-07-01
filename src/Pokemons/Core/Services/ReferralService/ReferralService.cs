@@ -40,7 +40,6 @@ public class ReferralService : IReferralService
             Inline = 2
         };
         await _nodeRepository.CreateNode(secondNode);
-        // TODO: Проверить
     }
 
     public async Task<IEnumerable<Player>> GetReferrals(long playerId) => 

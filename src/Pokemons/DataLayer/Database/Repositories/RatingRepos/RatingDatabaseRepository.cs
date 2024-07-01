@@ -56,4 +56,10 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
 
     public async Task<Rating?> GetPlayerRating(long playerId) =>
         await _context.Rating.FirstOrDefaultAsync(r => r.PlayerId == playerId);
+
+    public async Task<IEnumerable<Rating>> GetAllRatings() =>
+        await _context.Rating
+            .Include(r => r.Player)
+            .AsNoTracking()
+            .ToListAsync();
 }

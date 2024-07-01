@@ -10,7 +10,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Battle> Battles { get; set; } = null!;
     public DbSet<Market> Markets { get; set; } = null!;
     public DbSet<Rating> Rating { get; set; } = null!;
+    public DbSet<Mission> Missions { get; set; } = null!;
     public DbSet<ReferralNode> ReferralNodes { get; set; } = null!;
+    public DbSet<ActiveMission> ActiveMissions { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,6 +20,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new BattleConfiguration());
         modelBuilder.ApplyConfiguration(new MarketConfiguration());
         modelBuilder.ApplyConfiguration(new RatingConfiguration());
+        modelBuilder.ApplyConfiguration(new MissionConfiguration());
         modelBuilder.ApplyConfiguration(new ReferralNodeConfiguration());
+        modelBuilder.ApplyConfiguration(new ActiveMissionConfiguration());
     }
 }

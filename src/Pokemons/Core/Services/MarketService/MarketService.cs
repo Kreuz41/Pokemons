@@ -44,12 +44,13 @@ public class MarketService : IMarketService
         if (player.Balance < market.SuperChargeCooldownCost) return false;
 
         player.Balance -= market.SuperChargeCooldownCost;
-        player.SuperChargeCooldown += 0.02m;
+        player.SuperChargeCooldown = market.SuperChargeCooldownNextValue;
         market.SuperChargeCooldownCost *= 2;
         if (market.SuperChargeCooldownLevel == 0)
             player.LastSuperChargeActivatedTime = _timeProvider.Now();
         
         market.SuperChargeCooldownLevel++;
+        market.SuperChargeCooldownNextValue += 0.02m;
         
         return true;
     }
@@ -58,7 +59,8 @@ public class MarketService : IMarketService
         if (player.Balance < market.SuperChargeCost) return false;
 
         player.Balance -= market.SuperChargeCost;
-        player.SuperCharge += 1000;
+        player.SuperCharge = market.SuperChargeNextValue;
+        market.SuperChargeNextValue += 1000;
         market.SuperChargeCost *= 2;
         market.SuperChargeLevel++;
         
@@ -69,7 +71,8 @@ public class MarketService : IMarketService
         if (player.Balance < market.EnergyChargeCost) return false;
 
         player.Balance -= market.EnergyChargeCost;
-        player.EnergyCharge += 0.02m;
+        player.EnergyCharge = market.EnergyChargeNextValue;
+        market.EnergyChargeNextValue += 0.02m;
         market.EnergyChargeCost *= 2;
         market.EnergyChargeLevel++;
         
@@ -80,8 +83,9 @@ public class MarketService : IMarketService
         if (player.Balance < market.EnergyCost) return false;
 
         player.Balance -= market.EnergyCost;
-        player.Energy += 500;
+        player.Energy = market.EnergyNextValue;
         market.EnergyCost *= 2;
+        market.EnergyNextValue += 500;
         market.EnergyLevel++;
         
         return true;
@@ -91,7 +95,8 @@ public class MarketService : IMarketService
         if (player.Balance < market.DamagePerClickCost) return false;
 
         player.Balance -= market.DamagePerClickCost;
-        player.DamagePerClick++;
+        player.DamagePerClick = market.DamagePerClickNextValue;
+        market.DamagePerClickNextValue++;
         market.DamagePerClickCost *= 2;
         market.DamagePerClickLevel++;
         

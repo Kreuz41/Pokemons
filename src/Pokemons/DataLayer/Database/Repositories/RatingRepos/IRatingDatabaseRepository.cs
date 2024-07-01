@@ -11,4 +11,5 @@ public interface IRatingDatabaseRepository
     Task UpdateRatings(IEnumerable<Rating> ratings);
     Task<IEnumerable<Rating>> GetLeagueRating(int leagueType, int offset);
     Task<Rating?> GetPlayerRating(long playerId);
+    Task<IEnumerable<Rating>> GetAllRatings();
 }

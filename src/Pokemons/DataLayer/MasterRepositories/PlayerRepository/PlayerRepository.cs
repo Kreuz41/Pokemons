@@ -27,13 +27,14 @@ public class PlayerRepository : IPlayerRepository
         return player;
     }
 
-    public async Task<Player> CreatePlayer(long userId, StartSessionDto dto)
+    public async Task<Player> CreatePlayer(long userId, CreatePlayerDto dto)
     {
         var player = new Player
         {
             Name = dto.Name,
             Surname = dto.Surname,
             PhotoUrl = dto.PhotoUrl,
+            Username = dto.Username,
             Id = userId
         };
 
@@ -60,4 +61,7 @@ public class PlayerRepository : IPlayerRepository
 
     public async Task FastUpdate(Player player) =>
         await _cacheRepository.SetMember(player.Id.ToString(), player);
+
+    public async Task UpdatePlayers(IEnumerable<Player> players) =>
+        await _playerDatabaseRepository.UpdatePlayers(players);
 }
