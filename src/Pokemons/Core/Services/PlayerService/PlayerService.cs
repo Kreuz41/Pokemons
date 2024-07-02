@@ -30,6 +30,7 @@ public class PlayerService : IPlayerService
         
         player.Taps += taps;
         player.TotalDamage += damage;
+        player.Balance += damage;
 
         await _playerRepository.FastUpdate(player);
         
