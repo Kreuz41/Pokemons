@@ -32,12 +32,15 @@ public class AuthMiddleware : IMiddleware
             return;
         }
 
-        if (!await _playerService.IsPlayerExist(id) && context.Request.Path.ToString().EndsWith("createUser"))
+        if (!await _playerService.IsPlayerExist(id))
         {
-            context.Response.StatusCode = 404;
-            await context.Response.WriteAsJsonAsync(
-                CallResult.CallResult<bool>.Failure($"User does not exist"));
-            return;
+            if (!context.Request.Path.ToString().EndsWith("createUser"))
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsJsonAsync(
+                    CallResult.CallResult<bool>.Failure($"User does not exist"));
+                return;
+            }
         }
         context.Items.Add("UserId", id);
         
