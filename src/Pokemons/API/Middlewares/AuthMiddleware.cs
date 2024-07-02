@@ -5,7 +5,7 @@ namespace Pokemons.API.Middlewares;
 public class AuthMiddleware : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-    {
+    { 
         var header = context.Request.Headers["userId"];
         if (header.Count == 0)
         {

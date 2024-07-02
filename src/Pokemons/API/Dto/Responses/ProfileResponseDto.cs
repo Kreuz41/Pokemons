@@ -8,4 +8,5 @@ public class ProfileResponseDto
     public decimal SuperChargeCooldown { get; set; }
     public int TotalDamage { get; set; }
     public int TotalTaps { get; set; }
+    public string? PhotoUrl { get; set; }
 }

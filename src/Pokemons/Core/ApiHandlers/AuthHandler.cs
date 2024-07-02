@@ -36,19 +36,16 @@ public class AuthHandler : IAuthHandler
     private readonly IMissionService _missionService;
     private readonly IMapper _mapper;
 
-    public async Task<CallResult<PlayerAuthResponseDto>> StartSession(long playerId, StartSessionDto dto)
+    public async Task<CallResult<bool>> StartSession(long playerId, StartSessionDto dto)
     {
         if (!await _playerService.IsPlayerExist(playerId))
-            return CallResult<PlayerAuthResponseDto>.Failure("Player does not exist");
+            return CallResult<bool>.Failure("Player does not exist");
 
         var player = await _playerService.GetPlayer(playerId);
         if (player!.Name != dto.Name || player.Surname != dto.Surname || player.Username != dto.Username)
             await _playerService.UpdatePlayerData(dto, player);
         
-        return CallResult<PlayerAuthResponseDto>.Success(new PlayerAuthResponseDto
-        {
-            PhotoUrl = player.PhotoUrl
-        });
+        return CallResult<bool>.Success(true);
     }
 
     public async Task EndSession(long playerId)
@@ -94,7 +91,8 @@ public class AuthHandler : IAuthHandler
             EnergyCooldown = player.EnergyCharge,
             TotalTaps = player.Taps,
             TotalDamage = player.TotalDamage,
-            SuperChargeCooldown = player.SuperChargeCooldown
+            SuperChargeCooldown = player.SuperChargeCooldown,
+            PhotoUrl = player.PhotoUrl
         };
 
         return CallResult<ProfileResponseDto>.Success(response);
