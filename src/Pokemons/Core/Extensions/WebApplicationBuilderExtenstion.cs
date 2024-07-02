@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Pokemons.API.Handlers;
 using Pokemons.API.Middlewares;
 using Pokemons.Core.ApiHandlers;
+using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.BackgroundServices.LeagueUpdater;
 using Pokemons.Core.MapperProfiles;
 using Pokemons.Core.Providers.TimeProvider;
@@ -105,7 +106,10 @@ public static class WebApplicationBuilderExtenstion
     
     private static void ConfigureTimeProvider(IHostApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<ITimeProvider, TimeProvider>();
+        if (builder.Environment.EnvironmentName == Environments.Production)
+            builder.Services.AddSingleton<ITimeProvider, TimeProvider>();
+        else
+            builder.Services.AddSingleton<ITimeProvider, DevelopmentTimeProvider>();
     }
 
     private static void ConfigureCacheRepository(IHostApplicationBuilder builder)
@@ -141,5 +145,6 @@ public static class WebApplicationBuilderExtenstion
     private static void ConfigureBackgroundServices(IHostApplicationBuilder builder)
     {
         builder.Services.AddHostedService<LeagueUpdaterService>();
+        builder.Services.AddHostedService<CacheCollectorService>();
     }
 }

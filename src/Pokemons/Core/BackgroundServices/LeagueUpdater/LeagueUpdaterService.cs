@@ -1,22 +1,25 @@
-﻿using Pokemons.Core.Services.RatingService;
+﻿using Pokemons.Core.Providers.TimeProvider;
+using Pokemons.Core.Services.RatingService;
 
 namespace Pokemons.Core.BackgroundServices.LeagueUpdater;
 
 public class LeagueUpdaterService : BackgroundService
 {
-    public LeagueUpdaterService(IServiceScopeFactory scopeFactory)
+    public LeagueUpdaterService(IServiceScopeFactory scopeFactory, ITimeProvider timeProvider)
     {
         _scopeFactory = scopeFactory;
+        _timeProvider = timeProvider;
     }
     
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ITimeProvider _timeProvider;
 
     public static bool IsLeagueUpdating { get; private set; } = false;
-    private PeriodicTimer Timer { get; set; } = new(TimeSpan.FromMinutes(30));
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (await Timer.WaitForNextTickAsync(stoppingToken))
+        var timer  = new PeriodicTimer(_timeProvider.GetTimeSpanForLeagueUpdater());
+        while (await timer.WaitForNextTickAsync(stoppingToken))
         {
             IsLeagueUpdating = true;
             using var scope = _scopeFactory.CreateScope();

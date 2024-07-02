@@ -74,7 +74,7 @@ public class RatingRepository : IRatingRepository
     public async Task Save(long playerId)
     {
         var rating = await _cacheRepository.DeleteMember<Rating>(playerId.ToString());
-        await _databaseRepository.UpdateRatings([rating]);
+        if (rating is not null) await _databaseRepository.UpdateRatings([rating]);
     }
 
     public async Task<IEnumerable<Rating>> GetRatings() =>

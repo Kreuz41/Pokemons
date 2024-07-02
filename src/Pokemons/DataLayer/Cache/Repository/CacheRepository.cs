@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Text.Json;
+using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.DataLayer.Database.Models.Entities;
 using StackExchange.Redis;
 
@@ -7,20 +8,20 @@ namespace Pokemons.DataLayer.Cache.Repository;
 
 public class CacheRepository : ICacheRepository
 {
-    public CacheRepository(IConnectionMultiplexer redis)
+    public CacheRepository(IConnectionMultiplexer redis, ITimeProvider timeProvider)
     {
+        _timeProvider = timeProvider;
         _database = redis.GetDatabase();
-        _subscriber ??= redis.GetSubscriber();
     }
 
     private readonly IDatabase _database;
-    private static ISubscriber? _subscriber;
+    private readonly ITimeProvider _timeProvider;
     
     public async Task SetMember<T>(string key, T data, int? minutes = null, Func<string>? keyPattern = null)
     {
         await _database.StringSetAsync(GetKey<T>(key) + keyPattern?.Invoke(),
             JsonSerializer.Serialize(data),
-            minutes is null ? null : TimeSpan.FromMinutes((double)minutes));
+            minutes is null ? null : _timeProvider.GetTimeForCacheLifeTime(minutes.Value));
     }
 
     public async Task<T?> GetMember<T>(string key, Func<string>? keyPattern = null) where T : class

@@ -37,6 +37,7 @@ public class PlayerRepository : IPlayerRepository
             Username = dto.Username,
             Id = userId
         };
+        player.CurrentEnergy = player.Energy;
 
         await _playerDatabaseRepository.CreatePlayer(player);
         await _cacheRepository.SetMember(player.Id.ToString(), player);
