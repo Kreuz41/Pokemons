@@ -92,7 +92,9 @@ public class AuthHandler : IAuthHandler
             TotalTaps = player.Taps,
             TotalDamage = player.TotalDamage,
             SuperChargeCooldown = player.SuperChargeCooldown,
-            PhotoUrl = player.PhotoUrl
+            PhotoUrl = player.PhotoUrl,
+            Exp = player.Exp,
+            Level = player.Level
         };
 
         return CallResult<ProfileResponseDto>.Success(response);
