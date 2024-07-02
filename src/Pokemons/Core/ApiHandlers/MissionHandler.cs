@@ -26,7 +26,7 @@ public class MissionHandler : IMissionHandler
         
         return CallResult<MissionsResponseDto>.Success(new MissionsResponseDto
         {
-            Missions = result.Select(m => new MissionInfo(m.Id, m.ActiveMission.Id, m.ActiveMission.IsDifficult, m.CompleteTime is null))
+            Missions = result.Select(m => new MissionInfo(m.ActiveMission.Id, m.ActiveMission.IsDifficult, m.CompleteTime is null))
         });
     }
 
@@ -35,7 +35,7 @@ public class MissionHandler : IMissionHandler
         if (!await _playerService.IsPlayerExist(playerId)) 
             return CallResult<bool>.Failure("Player does not exist");
         
-        if (!await _missionService.IsMissionExist(missionId))
+        if (!await _missionService.IsMissionExist(missionId, playerId))
             return CallResult<bool>.Failure("Mission does not exist");
 
         await _missionService.CompleteMission(playerId, missionId);

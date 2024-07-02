@@ -15,8 +15,8 @@ public class MissionRepository : IMissionRepository
     public async Task<IEnumerable<Mission>> GetAllMissions(long playerId) =>
         await _databaseRepository.GetAllMissions(playerId);
 
-    public async Task<Mission?> GetMission(int missionId) =>
-        await _databaseRepository.GetMission(missionId);
+    public async Task<Mission?> GetMission(int missionId, long playerId) =>
+        await _databaseRepository.GetMission(missionId, playerId);
 
     public async Task UpdateMission(Mission mission) =>
         await _databaseRepository.UpdateMission(mission);

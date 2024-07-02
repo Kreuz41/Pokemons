@@ -18,12 +18,12 @@ public class MissionService : IMissionService
     public async Task<IEnumerable<Mission>> GetMissions(long playerId) =>
         await _missionRepository.GetAllMissions(playerId);
 
-    public async Task<bool> IsMissionExist(int missionId) =>
-        await _missionRepository.GetMission(missionId) != null;
+    public async Task<bool> IsMissionExist(int missionId, long playerId) =>
+        await _missionRepository.GetMission(missionId, playerId) != null;
 
     public async Task CompleteMission(long playerId, int missionId)
     {
-        var mission = await _missionRepository.GetMission(missionId);
+        var mission = await _missionRepository.GetMission(missionId, playerId);
         if (mission is null) return;
         
         mission.CompleteTime = _timeProvider.Now();

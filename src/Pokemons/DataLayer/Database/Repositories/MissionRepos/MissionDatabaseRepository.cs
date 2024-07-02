@@ -21,8 +21,9 @@ public class MissionDatabaseRepository : IMissionDatabaseRepository
             .Where(m => m.PlayerId == playerId)
             .ToListAsync();
 
-    public async Task<Mission?> GetMission(int missionId) =>
-        await _context.Missions.FirstOrDefaultAsync(m => m.Id == missionId);
+    public async Task<Mission?> GetMission(int missionId, long playerId) =>
+        await _context.Missions
+            .FirstOrDefaultAsync(m => m.ActiveMissionId == missionId && m.PlayerId == playerId);
 
     public async Task UpdateMission(Mission mission)
     {
