@@ -50,7 +50,10 @@ public class BattleHandler : IBattleHandler
             var defeated = await _playerService.EntityDefeated(playerId);
             await _ratingService.UpdateRating(playerId, defeated);
         }
-        
-        return CallResult<CommitDamageResponseDto>.Success(_mapper.Map<CommitDamageResponseDto>(battle));
+
+        var player = await _playerService.GetPlayer(playerId);
+        var response = _mapper.Map<CommitDamageResponseDto>(battle);
+        response.RemainingEnergy = player?.CurrentEnergy ?? 0;
+        return CallResult<CommitDamageResponseDto>.Success(response);
     }
 }
