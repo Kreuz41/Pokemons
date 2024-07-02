@@ -45,7 +45,7 @@ public class MarketHandler : IMarketHandler
         if (!_marketService.TryUpgradeStat(player, market, type))
             return CallResult<MarketResponseDto>.Failure("Not enough money or invalid stat type");
 
-        await _playerService.Save(playerId);
+        await _playerService.Update(player);
         await _marketService.Update(market);
 
         return CallResult<MarketResponseDto>.Success(_mapper.Map<MarketResponseDto>(market));

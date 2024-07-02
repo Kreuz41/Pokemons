@@ -79,6 +79,9 @@ public class PlayerService : IPlayerService
         await _playerRepository.FastUpdate(player);
     }
 
+    public async Task Update(Player player) =>
+        await _playerRepository.Update(player);
+
     private void LevelUpdate(Player player)
     {
         player.Exp += 5000;
