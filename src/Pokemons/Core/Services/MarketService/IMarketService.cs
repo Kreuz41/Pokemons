@@ -9,4 +9,5 @@ public interface IMarketService
     Task<Market?> GetMarketByPlayerId(long playerId);
     Task Save(long playerId);
     bool TryUpgradeStat(Player player, Market market, StatType type);
+    Task Update(Market market);
 }

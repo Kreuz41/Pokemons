@@ -35,6 +35,7 @@ public class MarketRepository : IMarketRepository
     public async Task Update(Market market)
     {
         await _databaseRepository.Save(market);
+        await _cacheRepository.DeleteMember<Market>(market.PlayerId.ToString());
         await _cacheRepository.SetMember(market.PlayerId.ToString(), market);
     }
 

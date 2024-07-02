@@ -38,6 +38,9 @@ public class MarketService : IMarketService
         };
     }
 
+    public async Task Update(Market market) =>
+        await _marketRepository.Update(market);
+
     #region UpgradeStats
     private bool UpgradeSuperChargeCooldown(Player player, Market market)
     {
