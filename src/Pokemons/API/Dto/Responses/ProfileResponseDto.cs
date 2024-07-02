@@ -9,4 +9,6 @@ public class ProfileResponseDto
     public int TotalDamage { get; set; }
     public int TotalTaps { get; set; }
     public string? PhotoUrl { get; set; }
+    public int Level { get; set; }
+    public int Exp { get; set; }
 }

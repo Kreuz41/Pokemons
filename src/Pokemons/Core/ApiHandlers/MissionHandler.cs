@@ -26,7 +26,7 @@ public class MissionHandler : IMissionHandler
         
         return CallResult<MissionsResponseDto>.Success(new MissionsResponseDto
         {
-            Missions = result.Select(m => new MissionInfo(m.Id, m.ActiveMission.IsDifficult, m.CompleteTime))
+            Missions = result.Select(m => new MissionInfo(m.Id, m.ActiveMission.IsDifficult, m.CompleteTime is not null))
         });
     }
 

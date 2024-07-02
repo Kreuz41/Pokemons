@@ -13,5 +13,5 @@ public class CallResult<T>
         new() { Status = true, Data = data};
     
     public static CallResult<T> Failure(string message) => 
-        new() { Status = true, Message = message };
+        new() { Status = false, Message = message };
 }
