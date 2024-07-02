@@ -32,7 +32,7 @@ public class AuthMiddleware : IMiddleware
             return;
         }
 
-        if (!await _playerService.IsPlayerExist(id))
+        if (!await _playerService.IsPlayerExist(id) && (context.Request.Path.Value?.EndsWith("createUser") ?? false))
         {
             context.Response.StatusCode = 404;
             await context.Response.WriteAsJsonAsync(
