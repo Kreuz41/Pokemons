@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pokemons.API.Middlewares;
+using Pokemons.Core.Helpers;
+using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.DataLayer.Database;
 
 namespace Pokemons.Core.Extensions;
@@ -10,6 +12,7 @@ public static class WebApplicationExtension
     {
         ConfigureSwagger(app);
         ConfigureDatabase(app);
+        ConfigureServices(app);
         ConfigurePipeline(app);
     }
 
@@ -42,5 +45,10 @@ public static class WebApplicationExtension
         
         app.UseSwagger();
         app.UseSwaggerUI();
+    }
+
+    private static void ConfigureServices(WebApplication app)
+    {
+        SessionHelper.TimeProvider = app.Services.GetService<ITimeProvider>()!;
     }
 }

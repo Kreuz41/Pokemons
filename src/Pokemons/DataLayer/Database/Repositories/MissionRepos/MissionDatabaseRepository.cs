@@ -17,12 +17,14 @@ public class MissionDatabaseRepository : IMissionDatabaseRepository
 
     public async Task<IEnumerable<Mission>> GetAllMissions(long playerId) =>
         await _context.Missions
+            .AsNoTracking()
             .Include(m => m.ActiveMission)
             .Where(m => m.PlayerId == playerId)
             .ToListAsync();
 
     public async Task<Mission?> GetMission(int missionId, long playerId) =>
         await _context.Missions
+            .AsNoTracking()
             .FirstOrDefaultAsync(m => m.ActiveMissionId == missionId && m.PlayerId == playerId);
 
     public async Task UpdateMission(Mission mission)
@@ -33,7 +35,9 @@ public class MissionDatabaseRepository : IMissionDatabaseRepository
     }
 
     public async Task<IEnumerable<ActiveMission>> GetActiveMissions() =>
-        await _context.ActiveMissions.Where(a => !a.IsEnded).ToListAsync();
+        await _context.ActiveMissions
+            .AsNoTracking()
+            .Where(a => !a.IsEnded).ToListAsync();
 
     public async Task SaveMissions(IEnumerable<Mission> missions)
     {

@@ -16,7 +16,9 @@ public class MarketDatabaseRepository : IMarketDatabaseRepository
     private readonly IUnitOfWork _unitOfWork;
 
     public async Task<Market> GetByPlayerId(long playerId) =>
-        await _context.Markets.FirstOrDefaultAsync(p => p.PlayerId == playerId) 
+        await _context.Markets
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.PlayerId == playerId) 
         ?? throw new NullReferenceException("Market cannot be null");
 
     public async Task UpdateMarket(Market market)

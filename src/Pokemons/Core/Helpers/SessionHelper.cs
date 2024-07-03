@@ -7,15 +7,15 @@ namespace Pokemons.Core.Helpers;
 public static class SessionHelper
 {
     private static ConcurrentDictionary<long, DateTime> _sessions { get; set; } = new();
-    private static ITimeProvider _timeProvider { get; set; } = new TimeProvider();
+    public static ITimeProvider TimeProvider { get; set; }
 
     public static void UpdateSession(long id) =>
-        _sessions.AddOrUpdate(id, _timeProvider.Now(), (id, time) => _timeProvider.Now());
+        _sessions.AddOrUpdate(id, TimeProvider.Now(), (id, time) => TimeProvider.Now());
 
     public static IEnumerable<long> GetEnded()
     {
-        var now = _timeProvider.Now();
-        var sessionLifetime = _timeProvider.GetSessionLifeTime();
+        var now = TimeProvider.Now();
+        var sessionLifetime = TimeProvider.GetSessionLifeTime();
             
         var endedSessions = _sessions
             .Where(p => now - p.Value > sessionLifetime)

@@ -44,6 +44,7 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
     {
         const int ratingLimit = 10;
         var ratings = await _context.Rating
+            .AsNoTracking()
             .Include(r => r.Player)
             .Where(r => (int)r.LeagueType == leagueType 
                         && ratingLimit * offset < r.LeaguePosition 
@@ -55,11 +56,13 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
     }
 
     public async Task<Rating?> GetPlayerRating(long playerId) =>
-        await _context.Rating.FirstOrDefaultAsync(r => r.PlayerId == playerId);
+        await _context.Rating
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.PlayerId == playerId);
 
     public async Task<IEnumerable<Rating>> GetAllRatings() =>
         await _context.Rating
-            .Include(r => r.Player)
             .AsNoTracking()
+            .Include(r => r.Player)
             .ToListAsync();
 }

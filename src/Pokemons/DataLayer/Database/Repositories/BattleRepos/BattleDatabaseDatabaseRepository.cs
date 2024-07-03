@@ -21,7 +21,9 @@ public class BattleDatabaseRepository : IBattleDatabaseRepository
     private readonly ITimeProvider _timeProvider;
 
     public async Task<Battle?> GetBattleByPlayerId(long playerId) =>
-        await _context.Battles.FirstOrDefaultAsync(b => b.PlayerId == playerId);
+        await _context.Battles
+            .AsNoTracking()
+            .FirstOrDefaultAsync(b => b.PlayerId == playerId);
 
     public async Task<Battle> CreateBattleForPlayer(Battle battle)
     {
