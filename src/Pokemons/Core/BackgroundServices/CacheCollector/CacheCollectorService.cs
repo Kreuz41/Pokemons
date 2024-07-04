@@ -20,7 +20,7 @@ public class CacheCollectorService : BackgroundService
         var timer = new PeriodicTimer(_timeProvider.GetTimeSpanForCacheCollecting());
 
         while (await timer.WaitForNextTickAsync(stoppingToken))
-        {
+        { 
             using var scope = _scopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService<IAuthHandler>()!;
             

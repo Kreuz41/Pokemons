@@ -29,6 +29,13 @@ public class MissionDatabaseRepository : IMissionDatabaseRepository
 
     public async Task UpdateMission(Mission mission)
     {
+        var trackedEntity = _context.ChangeTracker.Entries<Player>()
+            .FirstOrDefault(e => e.Entity.Id == mission.Id);
+        if (trackedEntity != null)
+            _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+        _context.Attach(mission);
+        _context.Entry(mission).State = EntityState.Modified;
+        
         await _unitOfWork.BeginTransaction();
         _context.Missions.Update(mission);
         await _unitOfWork.CommitTransaction();
