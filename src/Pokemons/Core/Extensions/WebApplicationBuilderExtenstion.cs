@@ -135,11 +135,11 @@ public static class WebApplicationBuilderExtenstion
     
     private static void ConfigureDbContext(IHostApplicationBuilder builder)
     {
-        builder.Services.AddDbContextFactory<AppDbContext>(optionsAction =>
+        builder.Services.AddDbContext<AppDbContext>(optionsAction =>
         {
             optionsAction.UseNpgsql(builder.Configuration.GetConnectionString("Database") 
                                     ?? throw new ArgumentNullException());
-        });
+        }, ServiceLifetime.Singleton);
     }
 
     private static void ConfigureBackgroundServices(IHostApplicationBuilder builder)

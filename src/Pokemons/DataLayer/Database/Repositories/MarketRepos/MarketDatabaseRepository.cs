@@ -38,13 +38,6 @@ public class MarketDatabaseRepository : IMarketDatabaseRepository
     public async Task Save(Market market)
     {
         await _unitOfWork.BeginTransaction();
-        var trackedEntity = _context.ChangeTracker.Entries<Market>()
-            .FirstOrDefault(e => e.Entity.Id == market.Id);
-        if (trackedEntity != null)
-            _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
-        
-        _context.Attach(market);
-        _context.Entry(market).State = EntityState.Modified;
         _context.Markets.Update(market);
         await _unitOfWork.CommitTransaction();
     }

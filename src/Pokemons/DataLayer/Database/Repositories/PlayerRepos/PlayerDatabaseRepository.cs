@@ -30,15 +30,7 @@ public class PlayerDatabaseRepository : IPlayerDatabaseRepository
     public async Task UpdatePlayer(Player player)
     {
         await _unitOfWork.BeginTransaction();
-        var trackedEntity = _context.ChangeTracker.Entries<Player>()
-            .FirstOrDefault(e => e.Entity.Id == player.Id);
-        if (trackedEntity != null)
-            _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
-        
-        _context.Attach(player);
-        _context.Entry(player).State = EntityState.Modified;
         _context.Update(player);
-        
         await _unitOfWork.CommitTransaction();
     }
 
