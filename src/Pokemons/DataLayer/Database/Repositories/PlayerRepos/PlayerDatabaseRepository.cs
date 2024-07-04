@@ -30,6 +30,13 @@ public class PlayerDatabaseRepository : IPlayerDatabaseRepository
     public async Task UpdatePlayer(Player player)
     {
         await _unitOfWork.BeginTransaction();
+        var trackedEntity = _context.ChangeTracker.Entries<Player>()
+            .FirstOrDefault(e => e.Entity.Id == player.Id);
+        if (trackedEntity != null)
+            _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+        _context.Entry(player).State = EntityState.Modified;
+        _context.Attach(player);
+        
         _context.Update(player);
         await _unitOfWork.CommitTransaction();
     }
@@ -37,6 +44,16 @@ public class PlayerDatabaseRepository : IPlayerDatabaseRepository
     public async Task UpdatePlayers(IEnumerable<Player> players)
     {
         await _unitOfWork.BeginTransaction();
+        foreach (var player in players)
+        {
+            var trackedEntity = _context.ChangeTracker.Entries<Player>()
+                .FirstOrDefault(e => e.Entity.Id == player.Id);
+            if (trackedEntity != null)
+                _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+            _context.Entry(player).State = EntityState.Modified;
+            _context.Attach(player);
+        }
+        
         _context.Players.UpdateRange(players);
         await _unitOfWork.CommitTransaction();
     }

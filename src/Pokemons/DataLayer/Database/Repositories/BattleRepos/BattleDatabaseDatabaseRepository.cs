@@ -35,7 +35,14 @@ public class BattleDatabaseRepository : IBattleDatabaseRepository
     }
 
     public async Task UpdateBattle(Battle battle)
-    { 
+    {
+        var trackedEntity = _context.ChangeTracker.Entries<Battle>()
+            .FirstOrDefault(e => e.Entity.Id == battle.Id);
+        if (trackedEntity != null)
+            _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+        _context.Attach(battle);
+        _context.Entry(battle).State = EntityState.Modified;
+        
         await _unitOfWork.BeginTransaction();
         _context.Update(battle);
         await _unitOfWork.CommitTransaction();
