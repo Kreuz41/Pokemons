@@ -4,7 +4,7 @@ namespace PokemonsBot.ApiClient;
 
 public class ApiClient
 {
-    private const string BaseUrl = "http://api:8080/";
+    private const string BaseUrl = "http://api:8080/api";
 
     public static async Task CreateUser(long userId, CreatePlayerDto dto)
     {
