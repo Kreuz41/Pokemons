@@ -19,7 +19,6 @@ public class AuthController : ControllerBase
     public async Task<IResult> CreateUser([FromBody] CreatePlayerDto data)
     {
         var userId = (long)HttpContext.Items["UserId"]!;
-        Console.WriteLine(userId);
         var result = await _handler.CreateUser(data, userId);
         return result.Status ? Results.Created() : Results.Conflict(result);
     }

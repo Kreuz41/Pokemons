@@ -26,8 +26,7 @@ commandHandler.RegisterCommand(async context =>
 {
     long refId = 0;
     var text = context.Update.Message!.Text ?? "";
-    var query = text.Split('?');
-    if (query.Length > 1) query = query[1].Split('=');
+    var query = text.Split(' ');
     if (query.Length > 1)
         if (!long.TryParse(query[1], out refId)) refId = 0;
     
