@@ -13,7 +13,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Mission> Missions { get; set; } = null!;
     public DbSet<ReferralNode> ReferralNodes { get; set; } = null!;
     public DbSet<ActiveMission> ActiveMissions { get; set; } = null!;
-    
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.EnableSensitiveDataLogging();
+        base.OnConfiguring(optionsBuilder);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PlayerConfiguration());

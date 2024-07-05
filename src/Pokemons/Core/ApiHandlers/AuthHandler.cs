@@ -50,10 +50,10 @@ public class AuthHandler : IAuthHandler
 
     public async Task EndSession(long playerId)
     {
-        await _playerService.Save(playerId);
         await _battleService.Save(playerId);
         await _marketService.Save(playerId);
         await _ratingService.Save(playerId);
+        await _playerService.Save(playerId);
     }
 
     public async Task<CallResult<bool>> CreateUser(CreatePlayerDto data, long playerId)

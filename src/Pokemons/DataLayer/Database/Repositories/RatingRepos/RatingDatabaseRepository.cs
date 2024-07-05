@@ -25,11 +25,13 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
 
     public async Task<long> GetMaxPositionInGlobalRating() =>
         await _context.Set<Rating>()
+            .AsNoTracking()
             .MaxAsync(r => (long?)r.GlobalRatingPosition) 
         ?? 0;
 
     public async Task<long> GetMaxPositionInLeague(LeagueType leagueType) =>
         await _context.Set<Rating>().Where(r => r.LeagueType == leagueType)
+            .AsNoTracking()
             .MaxAsync(r => (long?)r.LeaguePosition) 
         ?? 0;
 
@@ -44,12 +46,12 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
     {
         const int ratingLimit = 10;
         var ratings = await _context.Rating
-            .AsNoTracking()
             .Include(r => r.Player)
             .Where(r => (int)r.LeagueType == leagueType 
                         && ratingLimit * offset < r.LeaguePosition 
                         && ratingLimit * (offset + 1) > r.LeaguePosition)
             .OrderBy(r => r.LeaguePosition)
+            .AsNoTracking()
             .ToListAsync();
 
         return ratings;
@@ -62,7 +64,7 @@ public class RatingDatabaseRepository : IRatingDatabaseRepository
 
     public async Task<IEnumerable<Rating>> GetAllRatings() =>
         await _context.Rating
-            .AsNoTracking()
             .Include(r => r.Player)
+            .AsNoTracking()
             .ToListAsync();
 }

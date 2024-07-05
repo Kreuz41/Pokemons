@@ -49,8 +49,14 @@ public class PlayerService : IPlayerService
         return (player.SuperCharge, player.DefeatedEntities);
     }
 
-    public async Task<Player?> GetPlayer(long userId) =>
-        await _playerRepository.GetPlayerById(userId);
+    public async Task<Player?> GetPlayer(long userId)
+    {
+        var player = await _playerRepository.GetPlayerById(userId);
+        if (player is null) return null;
+
+        player.CurrentEnergy = GetEnergy(player);
+        return player;
+    }
 
     public async Task<Player> CreatePlayer(long userId, CreatePlayerDto dto) =>
         await _playerRepository.CreatePlayer(userId, dto);

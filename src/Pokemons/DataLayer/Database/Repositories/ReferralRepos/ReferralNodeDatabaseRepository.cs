@@ -26,9 +26,9 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
     public async Task<IEnumerable<Player>> GetReferrals(long playerId)
     {
         var nodes = await _context.ReferralNodes
-            .AsNoTracking()
             .Where(r => r.ReferrerId == playerId)
             .Include(referralNode => referralNode.Referral)
+            .AsNoTracking()
             .ToListAsync();
         
         return nodes.Select(n => n.Referral);
@@ -36,8 +36,7 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
 
     public async Task<ReferralNode?> GetFirstReferralNode(long referral) =>
         await _context.ReferralNodes
-            .AsNoTracking()
             .Include(r => r.Referrer)
-            .FirstOrDefaultAsync(
-            r => r.ReferralId == referral && r.Inline == 1);
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.ReferralId == referral && r.Inline == 1);
 }

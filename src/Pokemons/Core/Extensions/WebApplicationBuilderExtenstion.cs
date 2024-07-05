@@ -96,12 +96,12 @@ public static class WebApplicationBuilderExtenstion
 
     private static void ConfigureServices(IHostApplicationBuilder builder)
     {
-        builder.Services.AddTransient<IPlayerService, PlayerService>();
-        builder.Services.AddTransient<IBattleService, BattleService>();
-        builder.Services.AddTransient<IMarketService, MarketService>();
-        builder.Services.AddTransient<IRatingService, RatingService>();
-        builder.Services.AddTransient<IMissionService, MissionService>();
-        builder.Services.AddTransient<IReferralService, ReferralService>();
+        builder.Services.AddScoped<IPlayerService, PlayerService>();
+        builder.Services.AddScoped<IBattleService, BattleService>();
+        builder.Services.AddScoped<IMarketService, MarketService>();
+        builder.Services.AddScoped<IRatingService, RatingService>();
+        builder.Services.AddScoped<IMissionService, MissionService>();
+        builder.Services.AddScoped<IReferralService, ReferralService>();
     }
     
     private static void ConfigureTimeProvider(IHostApplicationBuilder builder)
@@ -130,7 +130,7 @@ public static class WebApplicationBuilderExtenstion
         if (builder.Environment.EnvironmentName == Environments.Development)
             builder.Configuration.AddUserSecrets<Program>();
         
-        builder.Services.AddTransient<AuthMiddleware>();
+        builder.Services.AddScoped<AuthMiddleware>();
     }
     
     private static void ConfigureDbContext(IHostApplicationBuilder builder)
@@ -139,6 +139,7 @@ public static class WebApplicationBuilderExtenstion
         {
             optionsAction.UseNpgsql(builder.Configuration.GetConnectionString("Database") 
                                     ?? throw new ArgumentNullException());
+            optionsAction.EnableSensitiveDataLogging();
         });
     }
 
