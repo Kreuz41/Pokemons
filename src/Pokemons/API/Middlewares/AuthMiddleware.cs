@@ -23,7 +23,6 @@ public class AuthMiddleware : IMiddleware
                 CallResult.CallResult<bool>.Failure("UserId not found"));
             return;
         }
-        
         var isSuccess = long.TryParse(header, out var id);
         if (!isSuccess)
         {
@@ -43,7 +42,7 @@ public class AuthMiddleware : IMiddleware
                 return;
             }
         }
-        
+
         SessionHelper.UpdateSession(id);
         context.Items.Add("UserId", id);
         
