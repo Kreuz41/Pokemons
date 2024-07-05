@@ -2,7 +2,6 @@ using Pokemons.API.Dto.Requests;
 using PokemonsBot.ApiClient;
 using PokemonsBot.Core.Bot;
 using PokemonsBot.Core.Bot.Commands.CommandHandler;
-using PokemonsBot.Core.Kafka;
 using PokemonsBot.Core.Settings;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -14,8 +13,6 @@ if (builder.Environment.EnvironmentName == Environments.Development)
     builder.Configuration.AddUserSecrets<Program>();
 
 builder.Services.AddSingleton<BotClient>();
-
-builder.Services.AddSingleton<Producer>();
 
 builder.Services.AddSingleton<ICommandHandler, CommandHandler>();
 
