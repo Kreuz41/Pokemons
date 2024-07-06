@@ -21,7 +21,9 @@ public class PlayerService : IPlayerService
         var player = await _playerRepository.GetPlayerById(playerId);
         if (player is null) return (0, 0);
 
-        player.CurrentEnergy += GetEnergy(player);
+        var energy = GetEnergy(player);
+        player.CurrentEnergy += energy;
+        player.CurrentEnergy = player.CurrentEnergy > player.Energy ? player.Energy : player.CurrentEnergy;
         
         var damage = player.DamagePerClick * taps;
         damage = damage > player.CurrentEnergy ? player.CurrentEnergy : damage;
@@ -54,7 +56,7 @@ public class PlayerService : IPlayerService
         var player = await _playerRepository.GetPlayerById(userId);
         if (player is null) return null;
 
-        player.CurrentEnergy = GetEnergy(player);
+        player.CurrentEnergy += GetEnergy(player);
         return player;
     }
 
@@ -101,7 +103,7 @@ public class PlayerService : IPlayerService
     private int GetEnergy(Player player)
     {
         var energy = player.LastCommitDamageTime != default
-            ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) * player.EnergyCharge)
+            ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) / 10 * player.EnergyCharge)
             : player.Energy;
         
         return energy > player.Energy ? player.Energy : energy;
