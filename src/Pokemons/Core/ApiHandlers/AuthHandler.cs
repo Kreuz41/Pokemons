@@ -75,6 +75,7 @@ public class AuthHandler : IAuthHandler
 
         var result = _mapper.Map<TapperConfigResponseDto>(player);
         result.EntityData = _mapper.Map<CommitDamageResponseDto>(battle);
+        result.EntityData.RemainingEnergy = player!.CurrentEnergy;
 
         return CallResult<TapperConfigResponseDto>.Success(result);
     }
