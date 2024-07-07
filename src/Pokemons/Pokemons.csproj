@@ -21,6 +21,7 @@
         </PackageReference>
         <PackageReference Include="Npgsql" Version="8.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
+        <PackageReference Include="RabbitMQ.Client" Version="7.0.0-rc.4" />
         <PackageReference Include="StackExchange.Redis" Version="2.7.33" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
         <PackageReference Include="Telegram.Bot" Version="20.0.0-alpha.1" />
@@ -30,6 +31,11 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\PokemonsDomain\PokemonsDomain.csproj" />
+      <ProjectReference Include="..\PokemonsDomain\PokemonsDomain.csproj" />
     </ItemGroup>
 
 </Project>

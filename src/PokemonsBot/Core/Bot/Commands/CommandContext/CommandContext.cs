@@ -8,5 +8,5 @@ public class CommandContext
     public ITelegramBotClient Client { get; set; } = null!;
     public Update Update { get; set; } = null!;
     public CancellationToken StoppingToken { get; set; }
-    public ChatId ChatId { get; set; } = null!;
+    public long ChatId { get; set; }
 }

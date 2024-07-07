@@ -2,6 +2,7 @@
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
+using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.Core.Services.PlayerService;
 
@@ -60,7 +61,7 @@ public class PlayerService : IPlayerService
         return player;
     }
 
-    public async Task<Player> CreatePlayer(long userId, CreatePlayerDto dto) =>
+    public async Task<Player> CreatePlayer(long userId, CreateUserModel dto) =>
         await _playerRepository.CreatePlayer(userId, dto);
 
     public async Task<bool> IsPlayerExist(long playerId) =>
@@ -112,6 +113,6 @@ public class PlayerService : IPlayerService
     private bool CanUseSuperCharge(Player player)
     {
         var cooldown = (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
-        return cooldown * player.SuperChargeCooldown >= 3;
+        return cooldown * player.SuperChargeCooldown >= 8;
     }
 }

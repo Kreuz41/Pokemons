@@ -5,6 +5,7 @@ using Pokemons.API.Middlewares;
 using Pokemons.Core.ApiHandlers;
 using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.BackgroundServices.LeagueUpdater;
+using Pokemons.Core.BackgroundServices.RabbitMqListener;
 using Pokemons.Core.MapperProfiles;
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.Core.Services.BattleService;
@@ -147,5 +148,11 @@ public static class WebApplicationBuilderExtenstion
     {
         builder.Services.AddHostedService<LeagueUpdaterService>();
         builder.Services.AddHostedService<CacheCollectorService>();
+
+        builder.Services.AddHostedService<RabbitMqListener>(option => 
+            new RabbitMqListener(builder.Configuration["RabbitMQ"] 
+                                 ?? throw new InvalidOperationException(), 
+                option.GetService<IServiceScopeFactory>()!,
+                option.GetService<ILogger<RabbitMqListener>>()!));
     }
 }

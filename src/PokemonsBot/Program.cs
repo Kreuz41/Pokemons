@@ -3,6 +3,9 @@ using PokemonsBot.ApiClient;
 using PokemonsBot.Core.Bot;
 using PokemonsBot.Core.Bot.Commands.CommandHandler;
 using PokemonsBot.Core.Settings;
+using PokemonsBot.TransferClient.RabbitMQ;
+using PokemonsDomain.MessageBroker.Models;
+using PokemonsDomain.MessageBroker.Sender;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -15,6 +18,11 @@ if (builder.Environment.EnvironmentName == Environments.Development)
 builder.Services.AddSingleton<BotClient>();
 
 builder.Services.AddSingleton<ICommandHandler, CommandHandler>();
+
+builder.Services.AddSingleton<IBrokerSender>(option => 
+    new RabbitMqSender(builder.Configuration["RabbitMQ"] 
+                       ?? throw new ArgumentException("Broker path cannot be null"),
+        option.GetService<ILogger<RabbitMqSender>>()!));
 
 builder.Services.Configure<BotOption>(builder.Configuration.GetSection("BotOption"));
 
@@ -29,15 +37,21 @@ commandHandler.RegisterCommand(async context =>
     var query = text.Split(' ');
     if (query.Length > 1)
         if (!long.TryParse(query[1], out refId)) refId = 0;
-    
-    await ApiClient.CreateUser(context.Update.Message.Chat.Id, new CreatePlayerDto
+
+    var data = new CreateUserModel
     {
         Hash = "",
         Name = context.Update.Message.Chat.FirstName,
         Surname = context.Update.Message.Chat.LastName,
         PhotoUrl = context.Update.Message.Chat.Photo?.BigFileId,
-        RefId = refId
-    });
+        RefId = refId,
+        Username = context.Update.Message.Chat.Username,
+        UserId = context.ChatId
+    };
+
+    var broker = app.Services.GetService<IBrokerSender>()!;
+
+    await broker.Send(data);
             
     await context.Client.SendTextMessageAsync(context.Update.Message.Chat.Id,
         $"Welcome to pokemons",

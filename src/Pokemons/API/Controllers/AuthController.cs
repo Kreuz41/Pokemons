@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Handlers;
+using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.API.Controllers;
 
@@ -14,14 +15,6 @@ public class AuthController : ControllerBase
     }
 
     private readonly IAuthHandler _handler;
-
-    [HttpPost("createUser")]
-    public async Task<IResult> CreateUser([FromBody] CreatePlayerDto data)
-    {
-        var userId = (long)HttpContext.Items["UserId"]!;
-        var result = await _handler.CreateUser(data, userId);
-        return result.Status ? Results.Created() : Results.Conflict(result);
-    }
     
     [HttpPost("startSession")]
     public async Task<IResult> StartSession([FromBody] StartSessionDto data)

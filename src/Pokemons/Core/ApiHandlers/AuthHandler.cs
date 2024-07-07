@@ -9,6 +9,7 @@ using Pokemons.Core.Services.MissionService;
 using Pokemons.Core.Services.PlayerService;
 using Pokemons.Core.Services.RatingService;
 using Pokemons.Core.Services.ReferralService;
+using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.Core.ApiHandlers;
 
@@ -56,7 +57,7 @@ public class AuthHandler : IAuthHandler
         await _playerService.Save(playerId);
     }
 
-    public async Task<CallResult<bool>> CreateUser(CreatePlayerDto data, long playerId)
+    public async Task<CallResult<bool>> CreateUser(CreateUserModel data, long playerId)
     {
         if (await _playerService.IsPlayerExist(playerId)) return CallResult<bool>.Failure("Player already exist");
 
@@ -101,7 +102,7 @@ public class AuthHandler : IAuthHandler
         return CallResult<ProfileResponseDto>.Success(response);
     }
 
-    private async Task CreatePlayer(long playerId, CreatePlayerDto dto)
+    private async Task CreatePlayer(long playerId, CreateUserModel dto)
     {
         await _playerService.CreatePlayer(playerId, dto);
         await _battleService.CreateNewBattle(playerId, 0);

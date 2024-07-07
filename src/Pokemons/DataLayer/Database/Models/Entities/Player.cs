@@ -20,7 +20,7 @@ public class Player
     public DateTime LastCommitDamageTime { get; set; }
     public decimal EnergyCharge { get; set; } = 1;
 
-    public int SuperCharge { get; set; } = 10000;
+    public int SuperCharge { get; set; }
     public decimal SuperChargeCooldown { get; set; } = 1;
     public DateTime LastSuperChargeActivatedTime { get; set; }
     

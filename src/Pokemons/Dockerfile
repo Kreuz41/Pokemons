@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Pokemons/Pokemons.csproj", "Pokemons/"]
+COPY ["PokemonsDomain/PokemonsDomain.csproj", "PokemonsDomain/"]
 RUN dotnet restore "Pokemons/Pokemons.csproj"
 COPY . .
 WORKDIR "/src/Pokemons"

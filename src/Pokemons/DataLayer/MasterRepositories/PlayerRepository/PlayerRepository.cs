@@ -2,6 +2,7 @@
 using Pokemons.DataLayer.Cache.Repository;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.Database.Repositories.PlayerRepos;
+using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 
@@ -27,7 +28,7 @@ public class PlayerRepository : IPlayerRepository
         return player;
     }
 
-    public async Task<Player> CreatePlayer(long userId, CreatePlayerDto dto)
+    public async Task<Player> CreatePlayer(long userId, CreateUserModel dto)
     {
         var player = new Player
         {
