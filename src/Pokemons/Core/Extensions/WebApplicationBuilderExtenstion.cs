@@ -150,7 +150,7 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddHostedService<CacheCollectorService>();
 
         builder.Services.AddHostedService<RabbitMqListener>(option => 
-            new RabbitMqListener(builder.Configuration["RabbitMQ"] 
+            new RabbitMqListener(builder.Configuration.GetConnectionString("RabbitMQ") 
                                  ?? throw new InvalidOperationException(), 
                 option.GetService<IServiceScopeFactory>()!,
                 option.GetService<ILogger<RabbitMqListener>>()!));

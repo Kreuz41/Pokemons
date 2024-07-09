@@ -1,8 +1,9 @@
-﻿using Pokemons.DataLayer.Database.Models.Entities;
+﻿using Pokemons.API.Dto.Responses;
+using Pokemons.DataLayer.Database.Models.Entities;
 
 namespace Pokemons.API.Handlers;
 
 public interface IReferralHandler
 {
-    Task<CallResult.CallResult<IEnumerable<Player>>> GetReferralInfo(long playerId);
+    Task<CallResult.CallResult<Friends>> GetReferralInfo(long playerId);
 }

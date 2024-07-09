@@ -4,5 +4,5 @@ namespace Pokemons.DataLayer.Cache.Models;
 
 public class ReferralList
 {
-    public IEnumerable<Player> Referrals { get; set; } = [];
+    public IEnumerable<(Player, int)> Referrals { get; set; } = [];
 }

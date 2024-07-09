@@ -23,15 +23,15 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
         await _unitOfWork.CommitTransaction();
     }
 
-    public async Task<IEnumerable<Player>> GetReferrals(long playerId)
+    public async Task<IEnumerable<(Player, int)>> GetReferrals(long playerId)
     {
         var nodes = await _context.ReferralNodes
             .Where(r => r.ReferrerId == playerId)
-            .Include(referralNode => referralNode.Referral)
+            .Include(referralNode => referralNode.Referral.Rating)
             .AsNoTracking()
             .ToListAsync();
         
-        return nodes.Select(n => n.Referral);
+        return nodes.Select(n => (n.Referral, n.Inline));
     }
 
     public async Task<ReferralNode?> GetFirstReferralNode(long referral) =>

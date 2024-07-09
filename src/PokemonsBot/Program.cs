@@ -1,5 +1,3 @@
-using Pokemons.API.Dto.Requests;
-using PokemonsBot.ApiClient;
 using PokemonsBot.Core.Bot;
 using PokemonsBot.Core.Bot.Commands.CommandHandler;
 using PokemonsBot.Core.Settings;
@@ -20,7 +18,7 @@ builder.Services.AddSingleton<BotClient>();
 builder.Services.AddSingleton<ICommandHandler, CommandHandler>();
 
 builder.Services.AddSingleton<IBrokerSender>(option => 
-    new RabbitMqSender(builder.Configuration["RabbitMQ"] 
+    new RabbitMqSender(builder.Configuration.GetConnectionString("RabbitMQ") 
                        ?? throw new ArgumentException("Broker path cannot be null"),
         option.GetService<ILogger<RabbitMqSender>>()!));
 

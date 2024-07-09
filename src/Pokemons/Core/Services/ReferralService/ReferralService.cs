@@ -42,6 +42,6 @@ public class ReferralService : IReferralService
         await _nodeRepository.CreateNode(secondNode);
     }
 
-    public async Task<IEnumerable<Player>> GetReferrals(long playerId) => 
+    public async Task<IEnumerable<(Player, int)>> GetReferrals(long playerId) => 
         await _nodeRepository.GetReferrals(playerId);
 }

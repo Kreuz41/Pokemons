@@ -5,6 +5,6 @@ namespace Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
 public interface IReferralNodeRepository
 {
     Task CreateNode(ReferralNode node);
-    Task<IEnumerable<Player>> GetReferrals(long playerId);
+    Task<IEnumerable<(Player, int)>> GetReferrals(long playerId);
     Task<ReferralNode?> GetReferralNode(long playerId);
 }
