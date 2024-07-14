@@ -30,7 +30,6 @@ public class BotClient
     
     private async Task UpdateHandler(ITelegramBotClient client, Update update, CancellationToken stoppingToken)
     {
-        
         if (update.Message is null) return;
         var chatId = update.Message.Chat.Id;
         _logger.LogInformation($"Message received from {chatId}");

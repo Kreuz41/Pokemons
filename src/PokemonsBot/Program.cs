@@ -78,4 +78,6 @@ commandHandler.RegisterCommand(async context =>
     
 }).AddFilter(command => command.StartsWith("referrals"));
 
+_ = app.Services.GetService<BotClient>();
+
 app.Run();
