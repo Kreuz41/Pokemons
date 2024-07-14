@@ -12,7 +12,6 @@ public static class WebApplicationExtension
     {
         ConfigureSwagger(app);
         ConfigureDatabase(app);
-        ConfigureServices(app);
         ConfigurePipeline(app);
     }
 
@@ -45,10 +44,5 @@ public static class WebApplicationExtension
         
         app.UseSwagger();
         app.UseSwaggerUI();
-    }
-
-    private static void ConfigureServices(WebApplication app)
-    {
-        SessionHelper.TimeProvider = app.Services.GetService<ITimeProvider>()!;
     }
 }

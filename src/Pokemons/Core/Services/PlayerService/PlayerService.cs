@@ -1,6 +1,7 @@
 ﻿using Pokemons.API.Dto.Requests;
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.DataLayer.Database.Models.Entities;
+using Pokemons.DataLayer.MasterRepositories.BattleRepository;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 using PokemonsDomain.MessageBroker.Models;
 
@@ -8,18 +9,22 @@ namespace Pokemons.Core.Services.PlayerService;
 
 public class PlayerService : IPlayerService
 {
-    public PlayerService(IPlayerRepository playerRepository, ITimeProvider timeProvider)
+    public PlayerService(IPlayerRepository playerRepository, ITimeProvider timeProvider, 
+        IBattleRepository battleRepository)
     {
         _playerRepository = playerRepository;
         _timeProvider = timeProvider;
+        _battleRepository = battleRepository;
     }
 
     private readonly IPlayerRepository _playerRepository;
+    private readonly IBattleRepository _battleRepository;
     private readonly ITimeProvider _timeProvider;
 
     public async Task<(int, int)> CommitDamage(long playerId, int taps)
     {
-        var player = await _playerRepository.GetPlayerById(playerId);
+        var battle = await _battleRepository.GetPlayerBattle(playerId);
+        var player = await GetPlayer(playerId);
         if (player is null) return (0, 0);
 
         var energy = GetEnergy(player);
@@ -33,7 +38,11 @@ public class PlayerService : IPlayerService
         
         player.Taps += taps;
         player.TotalDamage += damage;
-        player.Balance += damage;
+
+        if (battle.IsGold)
+            player.GoldBalance += damage;
+        else
+            player.Balance += damage;
 
         await _playerRepository.FastUpdate(player);
         

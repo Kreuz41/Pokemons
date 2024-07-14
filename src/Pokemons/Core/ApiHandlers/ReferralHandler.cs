@@ -20,14 +20,14 @@ public class ReferralHandler : IReferralHandler
         var refs = await _referralService.GetReferrals(playerId);
         var response = refs.Select(value => new FriendsItem
             {
-                Id = value.Item1.Id,
-                Name = value.Item1.Name,
-                Surname = value.Item1.Surname,
-                DefeatedEntities = value.Item1.DefeatedEntities,
-                Level = value.Item1.Level,
-                PhotoUrl = value.Item1.PhotoUrl,
-                LeagueType = (int)value.Item1.Rating.LeagueType,
-                Inline = value.Item2,
+                Id = value.Player.Id,
+                Name = value.Player.Name,
+                Surname = value.Player.Surname,
+                DefeatedEntities = value.Player.DefeatedEntities,
+                Level = value.Player.Level,
+                PhotoUrl = value.Player.PhotoUrl,
+                LeagueType = (int)value.Player.Rating.LeagueType,
+                Inline = value.Inline,
                 ProfitNumber = 0
             })
             .ToList();

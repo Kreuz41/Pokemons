@@ -1,4 +1,5 @@
 ﻿using Pokemons.Core.Services.PlayerService;
+using Pokemons.DataLayer.Cache.Models;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
 
@@ -42,6 +43,6 @@ public class ReferralService : IReferralService
         await _nodeRepository.CreateNode(secondNode);
     }
 
-    public async Task<IEnumerable<(Player, int)>> GetReferrals(long playerId) => 
+    public async Task<IEnumerable<ReferralInline>> GetReferrals(long playerId) => 
         await _nodeRepository.GetReferrals(playerId);
 }

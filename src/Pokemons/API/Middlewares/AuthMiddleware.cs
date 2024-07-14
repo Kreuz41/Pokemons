@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.Helpers;
 using Pokemons.Core.Services.PlayerService;
 
@@ -43,7 +44,7 @@ public class AuthMiddleware : IMiddleware
             }
         }
 
-        SessionHelper.UpdateSession(id);
+        CacheCollectorService.UpdateSession(id);
         context.Items.Add("UserId", id);
         
         await next(context);

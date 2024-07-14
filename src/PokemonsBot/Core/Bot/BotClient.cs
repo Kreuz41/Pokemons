@@ -34,7 +34,7 @@ public class BotClient
         if (update.Message is null) return;
         var chatId = update.Message.Chat.Id;
         _logger.LogInformation($"Message received from {chatId}");
-
+        
         var command =  "";
         if (update.Message.Text?.StartsWith('/') ?? false)
             command = update.Message.Text.TrimStart('/');

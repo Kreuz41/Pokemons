@@ -1,13 +1,10 @@
 services: 
   api:
     image: pokemons-api
-    container_name: api
     build:
       context: ..
       dockerfile: Pokemons/Dockerfile
     env_file: .env
-    environment:
-      RabbitMQ: rabbitmq
     ports:
       - 6000:8080
     depends_on: 
@@ -20,8 +17,6 @@ services:
       context: ..
       dockerfile: PokemonsBot/Dockerfile
     env_file: .env
-    environment:
-      RabbitMQ: rabbitmq
     ports:
       - 5010:8080
     depends_on: 

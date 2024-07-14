@@ -10,7 +10,8 @@ public class Player
     public string? Username { get; set; }
     public string? PhotoUrl { get; set; }
     public long Balance { get; set; }
-    public int DamagePerClick { get; set; } = 1;
+    public long GoldBalance { get; set; }
+    public int DamagePerClick { get; set; } = 1000;
 
     public int Level { get; set; }
     public int Exp { get; set; }
@@ -28,8 +29,8 @@ public class Player
     public int TotalDamage { get; set; }
     public int DefeatedEntities { get; set; }
 
+    public Rating Rating { get; set; } = null!;
     [JsonIgnore] public Market Market { get; set; } = null!;
-    [JsonIgnore] public Rating Rating { get; set; } = null!;
     [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = new List<ReferralNode>();
     
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = new List<Battle>();

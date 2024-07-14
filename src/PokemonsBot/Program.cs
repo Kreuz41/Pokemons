@@ -35,17 +35,27 @@ commandHandler.RegisterCommand(async context =>
     var query = text.Split(' ');
     if (query.Length > 1)
         if (!long.TryParse(query[1], out refId)) refId = 0;
-
+    
     var data = new CreateUserModel
     {
         Hash = "",
         Name = context.Update.Message.Chat.FirstName,
         Surname = context.Update.Message.Chat.LastName,
-        PhotoUrl = context.Update.Message.Chat.Photo?.BigFileId,
         RefId = refId,
         Username = context.Update.Message.Chat.Username,
         UserId = context.ChatId
     };
+    
+    /*
+    var photos = await context.Client.GetUserProfilePhotosAsync(context.ChatId, 
+        cancellationToken: context.StoppingToken);
+    if (photos.TotalCount > 0)
+    {
+        var currentPhoto = photos.Photos[0][0];
+        var file = await context.Client.GetFileAsync(currentPhoto.FileId);
+        await using var fileSavingStream = 
+    }
+    */
 
     var broker = app.Services.GetService<IBrokerSender>()!;
 
@@ -56,11 +66,16 @@ commandHandler.RegisterCommand(async context =>
         replyMarkup: new InlineKeyboardMarkup([
             InlineKeyboardButton.WithWebApp("open", new WebAppInfo
             {
-                Url = builder.Configuration["BotOption:WebAppLink"] ?? throw new ArgumentException("Link cannot be null")
+                Url = builder.Configuration["BotOption:WebAppLink"] 
+                      ?? throw new ArgumentException("Link cannot be null")
             }), 
         ]),
         cancellationToken: context.StoppingToken);
 }).AddFilter(command => command.StartsWith("start"));
 
-var service = app.Services.GetService<BotClient>();
+commandHandler.RegisterCommand(async context =>
+{
+    
+}).AddFilter(command => command.StartsWith("referrals"));
+
 app.Run();

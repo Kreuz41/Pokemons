@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pokemons.DataLayer.Cache.Models;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.Database.Repositories.UnitOfWork;
 
@@ -23,7 +24,7 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
         await _unitOfWork.CommitTransaction();
     }
 
-    public async Task<IEnumerable<(Player, int)>> GetReferrals(long playerId)
+    public async Task<IEnumerable<ReferralInline>> GetReferrals(long playerId)
     {
         var nodes = await _context.ReferralNodes
             .Where(r => r.ReferrerId == playerId)
@@ -31,7 +32,11 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
             .AsNoTracking()
             .ToListAsync();
         
-        return nodes.Select(n => (n.Referral, n.Inline));
+        return nodes.Select(n => new ReferralInline
+        {
+            Player = n.Referral,
+            Inline = n.Inline
+        });
     }
 
     public async Task<ReferralNode?> GetFirstReferralNode(long referral) =>

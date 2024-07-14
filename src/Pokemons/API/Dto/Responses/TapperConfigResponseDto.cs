@@ -2,7 +2,8 @@
 
 public class TapperConfigResponseDto
 {
-    public int Balance { get; set; }
+    public long Balance { get; set; }
+    public long GoldBalance { get; set; }
     public int Coins { get; set; }
     public int DamagePerClick { get; set; }
     public int Energy { get; set; }

@@ -15,6 +15,9 @@ public class BattleService : IBattleService
 
     private readonly IBattleRepository _battleRepository;
     private readonly ITimeProvider _timeProvider;
+    
+    private const int EntitiesCount = 20;
+    private const int GoldEntitiesCount = 5;
 
     public async Task<Battle> TakeDamage(long playerId, int damage)
     {
@@ -34,7 +37,6 @@ public class BattleService : IBattleService
     public async Task<Battle> CreateNewBattle(long playerId, int defeatedEntities)
     {
         var health = 5000 + 5000 * defeatedEntities;
-        var entityType = (BattleEntityType)Random.Shared.Next(1, Enum.GetValues<BattleEntityType>().Length + 1);
         var battle = new Battle
         {
             PlayerId = playerId,
@@ -42,8 +44,10 @@ public class BattleService : IBattleService
             RemainingHealth = health,
             BattleState = BattleState.Battle,
             BattleStartTime = _timeProvider.Now(),
-            EntityType = entityType
+            IsGold = (defeatedEntities + 1) % 6 == 0,
         };
+
+        battle.EntityTypeId = Random.Shared.Next(battle.IsGold ? GoldEntitiesCount : EntitiesCount);
         
         await _battleRepository.CreateBattle(battle);
         

@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Pokemons.API.Handlers;
 using Pokemons.API.Middlewares;
 using Pokemons.Core.ApiHandlers;
 using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.BackgroundServices.LeagueUpdater;
 using Pokemons.Core.BackgroundServices.RabbitMqListener;
+using Pokemons.Core.Helpers;
 using Pokemons.Core.MapperProfiles;
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.Core.Services.BattleService;
@@ -126,7 +128,12 @@ public static class WebApplicationBuilderExtenstion
     {
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddControllers();
-        builder.Services.AddSwaggerGen();
+        
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Pokemons", Version = "v1" });
+            c.OperationFilter<SwaggerOptionHelper>();
+        });
 
         if (builder.Environment.EnvironmentName == Environments.Development)
             builder.Configuration.AddUserSecrets<Program>();

@@ -19,7 +19,7 @@ public class ReferralNodeRepository : IReferralNodeRepository
     public async Task CreateNode(ReferralNode node) =>
         await _databaseRepository.CreateNode(node);
 
-    public async Task<IEnumerable<(Player, int)>> GetReferrals(long playerId)
+    public async Task<IEnumerable<ReferralInline>> GetReferrals(long playerId)
     {
         var referrals = await _cacheRepository.GetMember<ReferralList>(playerId.ToString());
         if (referrals is not null) return referrals.Referrals;
