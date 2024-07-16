@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Pokemons.Core.Enums;
 
 namespace Pokemons.DataLayer.Database.Models.Entities;
 
@@ -28,11 +29,11 @@ public class Player
     public int Taps { get; set; }
     public int TotalDamage { get; set; }
     public int DefeatedEntities { get; set; }
-
+    
+    public MemberGuildStatus GuildStatus { get; set; } = null!;
     public Rating Rating { get; set; } = null!;
     [JsonIgnore] public Market Market { get; set; } = null!;
     [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = new List<ReferralNode>();
-    
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = new List<Battle>();
     [JsonIgnore] public ICollection<ReferralNode> Referrals { get; set; } = new List<ReferralNode>();
     [JsonIgnore] public ICollection<Mission>? Missions { get; set; } = new List<Mission>();

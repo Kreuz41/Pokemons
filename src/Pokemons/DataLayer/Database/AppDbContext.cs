@@ -6,22 +6,19 @@ namespace Pokemons.DataLayer.Database;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public DbSet<Player> Players { get; set; } = null!;
-    public DbSet<Battle> Battles { get; set; } = null!;
-    public DbSet<Market> Markets { get; set; } = null!;
-    public DbSet<Rating> Rating { get; set; } = null!;
-    public DbSet<Mission> Missions { get; set; } = null!;
-    public DbSet<ReferralNode> ReferralNodes { get; set; } = null!;
-    public DbSet<ActiveMission> ActiveMissions { get; set; } = null!;
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.EnableSensitiveDataLogging();
-        base.OnConfiguring(optionsBuilder);
-    }
+    public DbSet<Player> Players { get; init; } = null!;
+    public DbSet<Battle> Battles { get; init; } = null!;
+    public DbSet<Market> Markets { get; init; } = null!;
+    public DbSet<Rating> Rating { get; init; } = null!;
+    public DbSet<Mission> Missions { get; init; } = null!;
+    public DbSet<ReferralNode> ReferralNodes { get; init; } = null!;
+    public DbSet<ActiveMission> ActiveMissions { get; init; } = null!;
+    public DbSet<Guild> Guilds { get; init; } = null!;
+    public DbSet<MemberGuildStatus> MemberGuildStatus { get; init; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new GuildConfiguration());
         modelBuilder.ApplyConfiguration(new PlayerConfiguration());
         modelBuilder.ApplyConfiguration(new BattleConfiguration());
         modelBuilder.ApplyConfiguration(new MarketConfiguration());
@@ -29,5 +26,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new MissionConfiguration());
         modelBuilder.ApplyConfiguration(new ReferralNodeConfiguration());
         modelBuilder.ApplyConfiguration(new ActiveMissionConfiguration());
+        modelBuilder.ApplyConfiguration(new MemberGuildStatusConfiguration());
     }
 }

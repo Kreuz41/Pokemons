@@ -11,6 +11,7 @@ using Pokemons.Core.Helpers;
 using Pokemons.Core.MapperProfiles;
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.Core.Services.BattleService;
+using Pokemons.Core.Services.GuildService;
 using Pokemons.Core.Services.MarketService;
 using Pokemons.Core.Services.MissionService;
 using Pokemons.Core.Services.PlayerService;
@@ -19,6 +20,7 @@ using Pokemons.Core.Services.ReferralService;
 using Pokemons.DataLayer.Cache.Repository;
 using Pokemons.DataLayer.Database;
 using Pokemons.DataLayer.Database.Repositories.BattleRepos;
+using Pokemons.DataLayer.Database.Repositories.GuildRepos;
 using Pokemons.DataLayer.Database.Repositories.MarketRepos;
 using Pokemons.DataLayer.Database.Repositories.MissionRepos;
 using Pokemons.DataLayer.Database.Repositories.PlayerRepos;
@@ -26,6 +28,7 @@ using Pokemons.DataLayer.Database.Repositories.RatingRepos;
 using Pokemons.DataLayer.Database.Repositories.ReferralRepos;
 using Pokemons.DataLayer.Database.Repositories.UnitOfWork;
 using Pokemons.DataLayer.MasterRepositories.BattleRepository;
+using Pokemons.DataLayer.MasterRepositories.GuildRepository;
 using Pokemons.DataLayer.MasterRepositories.MarketRepository;
 using Pokemons.DataLayer.MasterRepositories.MissionRepository;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
@@ -73,12 +76,14 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IReferralHandler, ReferralHandler>();
         builder.Services.AddScoped<IMissionHandler, MissionHandler>();
         builder.Services.AddScoped<IRatingHandler, RatingHandler>();
+        builder.Services.AddScoped<IGuildHandler, GuildHandler>();
     }
 
     private static void ConfigureDatabaseRepositories(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        builder.Services.AddScoped<IGuildDatabaseRepository, GuildDatabaseRepository>();
         builder.Services.AddScoped<IPlayerDatabaseRepository, PlayerDatabaseRepository>();
         builder.Services.AddScoped<IBattleDatabaseRepository, BattleDatabaseRepository>();
         builder.Services.AddScoped<IMarketDatabaseRepository, MarketDatabaseRepository>();
@@ -89,6 +94,7 @@ public static class WebApplicationBuilderExtenstion
 
     private static void ConfigureRepositories(IHostApplicationBuilder builder)
     {
+        builder.Services.AddScoped<IGuildRepository, GuildRepository>();
         builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
         builder.Services.AddScoped<IBattleRepository, BattleRepository>();
         builder.Services.AddScoped<IMarketRepository, MarketRepository>();
@@ -99,6 +105,7 @@ public static class WebApplicationBuilderExtenstion
 
     private static void ConfigureServices(IHostApplicationBuilder builder)
     {
+        builder.Services.AddScoped<IGuildService, GuildService>();
         builder.Services.AddScoped<IPlayerService, PlayerService>();
         builder.Services.AddScoped<IBattleService, BattleService>();
         builder.Services.AddScoped<IMarketService, MarketService>();

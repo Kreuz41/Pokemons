@@ -4,6 +4,7 @@ using Pokemons.API.Dto.Requests;
 using Pokemons.API.Dto.Responses;
 using Pokemons.API.Handlers;
 using Pokemons.Core.Services.BattleService;
+using Pokemons.Core.Services.GuildService;
 using Pokemons.Core.Services.MarketService;
 using Pokemons.Core.Services.MissionService;
 using Pokemons.Core.Services.PlayerService;
@@ -18,7 +19,7 @@ public class AuthHandler : IAuthHandler
     public AuthHandler(IMapper mapper, IPlayerService playerService, 
         IBattleService battleService, IMarketService marketService, 
         IReferralService referralService, IRatingService ratingService, 
-        IMissionService missionService)
+        IMissionService missionService, IGuildService guildService)
     {
         _mapper = mapper;
         _playerService = playerService;
@@ -27,6 +28,7 @@ public class AuthHandler : IAuthHandler
         _referralService = referralService;
         _ratingService = ratingService;
         _missionService = missionService;
+        _guildService = guildService;
     }
     
     private readonly IPlayerService _playerService;
@@ -35,6 +37,7 @@ public class AuthHandler : IAuthHandler
     private readonly IRatingService _ratingService;
     private readonly IReferralService _referralService;
     private readonly IMissionService _missionService;
+    private readonly IGuildService _guildService;
     private readonly IMapper _mapper;
 
     public async Task<CallResult<bool>> StartSession(long playerId, StartSessionDto dto)
@@ -51,9 +54,11 @@ public class AuthHandler : IAuthHandler
 
     public async Task EndSession(long playerId)
     {
+        await _guildService.Save(playerId);
         await _battleService.Save(playerId);
         await _marketService.Save(playerId);
         await _ratingService.Save(playerId);
+        
         await _playerService.Save(playerId);
     }
 
@@ -109,6 +114,7 @@ public class AuthHandler : IAuthHandler
         await _marketService.CreateMarket(playerId);
         await _ratingService.CreateRating(playerId);
         await _missionService.CreateMissions(playerId);
+        await _guildService.CreateMemberStatus(playerId);
         
         if (dto.RefId is not null)
             await _referralService.CreateNode(playerId, dto.RefId.Value);
