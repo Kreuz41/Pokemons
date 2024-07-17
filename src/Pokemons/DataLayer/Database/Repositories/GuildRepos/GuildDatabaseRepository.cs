@@ -67,4 +67,10 @@ public class GuildDatabaseRepository : IGuildDatabaseRepository
         _context.Guilds.Update(guild);
         await _unitOfWork.CommitTransaction();
     }
+
+    public async Task<IEnumerable<Guild>> GetPopularsGuild() =>
+        await _context.Guilds
+            .OrderBy(g => g.PlayersCount)
+            .Take(100)
+            .ToListAsync();
 }

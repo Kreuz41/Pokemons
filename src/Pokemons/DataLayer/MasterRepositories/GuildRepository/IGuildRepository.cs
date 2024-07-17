@@ -15,4 +15,5 @@ public interface IGuildRepository
     Task Save(long playerId);
     Task UpdateMember(MemberGuildStatus member);
     Task SaveGuild(Guild guild);
+    Task<IEnumerable<Guild>> GetPopularGuilds();
 }

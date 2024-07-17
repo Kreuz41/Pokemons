@@ -79,6 +79,14 @@ public class GuildHandler : IGuildHandler
 
     public async Task<CallResult<PopularGuilds>> GetMostPopularGuilds()
     {
-        return CallResult<PopularGuilds>.Failure("");
+        var guilds = await _guildService.GetMostPopularGuilds();
+        var response = new PopularGuilds(guilds.Select(g => new GuildShortDescription
+        {
+            Id = g.Id,
+            MembersCount = g.PlayersCount,
+            Name = g.Name,
+            Rating = 0
+        }));
+        return CallResult<PopularGuilds>.Success(response);
     }
 }

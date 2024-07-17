@@ -101,6 +101,9 @@ public class GuildRepository : IGuildRepository
         await _guildDatabaseRepository.SaveGuild(guild);
     }
 
+    public async Task<IEnumerable<Guild>> GetPopularGuilds() =>
+        await _guildDatabaseRepository.GetPopularsGuild();
+
     public async Task Save(long playerId)
     {
         var member = await _cacheRepository.DeleteMember<MemberGuildStatus>(playerId.ToString());

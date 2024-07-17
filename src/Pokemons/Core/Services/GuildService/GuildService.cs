@@ -84,6 +84,9 @@ public class GuildService : IGuildService
         OnChangeRequestStatus(memberId, isConfirm);
     }
 
+    public async Task<IEnumerable<Guild>> GetMostPopularGuilds() =>
+        await _guildRepository.GetPopularGuilds();
+
     protected virtual void OnRequestSend(long playerId, long guildId)
     {
         RequestSend?.Invoke(playerId, guildId);
