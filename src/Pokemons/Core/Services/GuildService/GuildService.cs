@@ -19,8 +19,7 @@ public class GuildService : IGuildService
     public async Task CreateGuild(string name, long founderId)
     {
         var createdGuild = await _guildRepository.CreateGuild(name, founderId);
-        await _guildRepository.ChangeGuildStatus(founderId, MemberStatus.Founder);
-        await _guildRepository.ChangeGuildId(founderId, createdGuild.Id);
+        await _guildRepository.ChangeGuildStatus(founderId, createdGuild.Id, MemberStatus.Founder);
     }
 
     public async Task CreateMemberStatus(long playerId) =>

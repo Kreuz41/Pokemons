@@ -10,8 +10,7 @@ public interface IGuildRepository
     Task<MemberGuildStatus?> GetGuildMember(long playerId);
     Task<Guild?> GetGuildByPlayerId(long playerId);
     Task<IEnumerable<Player>> GetAllGuildMembers(long guildId);
-    Task ChangeGuildStatus(long playerId, MemberStatus founder);
-    Task ChangeGuildId(long playerId, long guildId);
+    Task ChangeGuildStatus(long playerId, long guildId, MemberStatus founder);
     Task Save(long playerId);
     Task UpdateMember(MemberGuildStatus member);
     Task SaveGuild(Guild guild);

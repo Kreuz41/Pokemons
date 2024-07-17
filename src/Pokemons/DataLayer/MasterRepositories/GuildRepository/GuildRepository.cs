@@ -74,20 +74,14 @@ public class GuildRepository : IGuildRepository
         return members;
     }
 
-    public async Task ChangeGuildStatus(long playerId, MemberStatus founder)
+    public async Task ChangeGuildStatus(long playerId, long guildId, MemberStatus founder)
     {
         var memberStatus = await GetGuildMember(playerId);
         if (memberStatus is null) return;
         memberStatus.MemberStatus = founder;
+        memberStatus.GuildId = guildId;
         await _cacheRepository.SetMember(playerId.ToString(), memberStatus);
-    }
-
-    public async Task ChangeGuildId(long playerId, long guildId)
-    {
-        var member = await GetGuildMember(playerId);
-        if (member is null) return;
-        member.GuildId = guildId;
-        await _cacheRepository.SetMember(playerId.ToString(), member);
+        await _guildDatabaseRepository.Save(memberStatus);
     }
 
     public async Task UpdateMember(MemberGuildStatus member)
