@@ -45,4 +45,12 @@ public class GuildController : ControllerBase
         var response = await _handler.ChangeJoinRequestStatus(playerId, memberId, isConfirm);
         return response.Status ? Results.Ok(response) : Results.BadRequest(response);
     }
+
+    [HttpGet("getMostPopular")]
+    public async Task<IResult> GetMostPopular()
+    {
+        var playerId = (long)HttpContext.Items["UserId"]!;
+        var response = await _handler.GetMostPopularGuilds();
+        return response.Status ? Results.Ok(response) : Results.BadRequest(response);
+    }
 }

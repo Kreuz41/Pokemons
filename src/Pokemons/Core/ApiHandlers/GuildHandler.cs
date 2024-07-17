@@ -35,7 +35,7 @@ public class GuildHandler : IGuildHandler
         var guild = await _guildService.GetGuildByPlayerId(playerId);
 
         if (guild is null)
-            return CallResult<GuildResponseDto>.Failure("Invalid guild");
+            return CallResult<GuildResponseDto>.Failure("Guild doesn't exist");
 
         var members = await _guildService.GetGuildMembers(guild.Id);
 
@@ -75,5 +75,10 @@ public class GuildHandler : IGuildHandler
         await _guildService.ChangeJoinRequestStatus(memberId, isConfirm);
 
         return CallResult<bool>.Success(true);
+    }
+
+    public async Task<CallResult<PopularGuilds>> GetMostPopularGuilds()
+    {
+        return CallResult<PopularGuilds>.Failure("");
     }
 }
