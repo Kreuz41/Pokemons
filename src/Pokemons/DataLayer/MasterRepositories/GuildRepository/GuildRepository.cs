@@ -80,8 +80,7 @@ public class GuildRepository : IGuildRepository
         if (memberStatus is null) return;
         memberStatus.MemberStatus = founder;
         memberStatus.GuildId = guildId;
-        await _cacheRepository.SetMember(playerId.ToString(), memberStatus);
-        await _guildDatabaseRepository.Save(memberStatus);
+        await UpdateMember(memberStatus);
     }
 
     public async Task UpdateMember(MemberGuildStatus member)

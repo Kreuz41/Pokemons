@@ -8,7 +8,7 @@ public class TimeProvider : ITimeProvider
         (long)(Now() - date).TotalSeconds;
 
     public TimeSpan GetTimeSpanForCacheCollecting() =>
-        TimeSpan.FromMinutes(1);
+        TimeSpan.FromMinutes(5);
 
     public TimeSpan GetTimeSpanForLeagueUpdater() =>
         TimeSpan.FromMinutes(30);
@@ -17,5 +17,5 @@ public class TimeProvider : ITimeProvider
         TimeSpan.FromMinutes(minutes);
 
     public TimeSpan GetSessionLifeTime() =>
-        TimeSpan.FromMinutes(30);
+        TimeSpan.FromMinutes(1);
 }
