@@ -10,6 +10,7 @@ public class GuildResponseDto
     public int TotalBalance { get; set; }
     public int MembersCount { get; set; }
     public IEnumerable<GuildMember> Members { get; set; } = null!;
+    public MemberStatus Status { get; set; }
 }
 
 public record GuildMember(long Id, 

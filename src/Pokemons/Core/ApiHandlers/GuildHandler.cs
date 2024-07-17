@@ -46,6 +46,7 @@ public class GuildHandler : IGuildHandler
             MembersCount = guild.PlayersCount,
             Balance = guild.Balance,
             TotalBalance = guild.TotalBalance,
+            Status = members.FirstOrDefault(m => m.Id == playerId).GuildStatus.MemberStatus,
             Members = members.Select(p => 
                 new GuildMember(p.Id, 
                     p.Name, 
