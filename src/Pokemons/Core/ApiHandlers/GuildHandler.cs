@@ -54,6 +54,7 @@ public class GuildHandler : IGuildHandler
                     p.PhotoUrl, 
                     p.DefeatedEntities, 
                     p.TotalDamage, 
+                    p.Level,
                     p.GuildStatus.MemberStatus))
         });
     }

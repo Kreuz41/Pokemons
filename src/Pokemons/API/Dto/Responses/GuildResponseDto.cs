@@ -13,10 +13,12 @@ public class GuildResponseDto
     public MemberStatus Status { get; set; }
 }
 
-public record GuildMember(long Id, 
-    string? Name, 
-    string? Surname, 
-    string? PhotoUrl, 
-    int DefeatedEntities, 
+public record GuildMember(
+    long Id,
+    string? Name,
+    string? Surname,
+    string? PhotoUrl,
+    int DefeatedEntities,
     int TotalDamage,
+    int Level,
     MemberStatus Status);
