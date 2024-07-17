@@ -64,6 +64,9 @@ public class GuildService : IGuildService
         var member = await _guildRepository.GetGuildMember(memberId);
         if (member is null) return;
         
+        if (member.MemberStatus == MemberStatus.Member)
+            return;
+        
         member.MemberStatus = isConfirm ? MemberStatus.Member : MemberStatus.Nothing;
 
         if (isConfirm)

@@ -91,7 +91,7 @@ public class GuildRepository : IGuildRepository
 
     public async Task SaveGuild(Guild guild)
     {
-        await _cacheRepository.SetMember(guild.Id.ToString(), guild, 5);
+        await _cacheRepository.DeleteMember<Guild>(guild.Id.ToString());
         await _guildDatabaseRepository.SaveGuild(guild);
     }
 
