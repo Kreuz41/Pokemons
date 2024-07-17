@@ -45,8 +45,8 @@ public class GuildRepository : IGuildRepository
 
     public async Task<Guild?> GetGuildByPlayerId(long playerId)
     {
-        var member = await _cacheRepository.GetMember<MemberGuildStatus>(playerId.ToString());
-        if (member?.GuildId is null)
+        var member = await GetGuildMember(playerId);
+        if (member is null)
             return null;
         
         var guild = await _cacheRepository.GetMember<Guild>(member.GuildId.ToString()!);
