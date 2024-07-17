@@ -62,8 +62,9 @@ public class GuildRepository : IGuildRepository
 
     public async Task<IEnumerable<Player>> GetAllGuildMembers(long guildId)
     {
-        var cache = await _cacheRepository.GetMember<GuildMembers>(guildId.ToString());
-        if (cache is not null) return cache.Members;
+        /*var cache = await _cacheRepository.GetMember<GuildMembers>(guildId.ToString());
+        if (cache is not null) return cache.Members;*/
+        // TODO: dsfsdsfbddwdf
 
         var members = await _guildDatabaseRepository.GetAllMembers(guildId);
         await _cacheRepository.SetMember(guildId.ToString(), new GuildMembers
