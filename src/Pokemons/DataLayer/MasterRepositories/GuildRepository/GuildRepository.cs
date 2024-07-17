@@ -87,6 +87,7 @@ public class GuildRepository : IGuildRepository
     public async Task UpdateMember(MemberGuildStatus member)
     {
         await _cacheRepository.SetMember(member.PlayerId.ToString(), member);
+        await _guildDatabaseRepository.Save(member);
     }
 
     public async Task SaveGuild(Guild guild)
