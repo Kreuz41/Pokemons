@@ -73,4 +73,7 @@ public class GuildDatabaseRepository : IGuildDatabaseRepository
             .OrderBy(g => g.PlayersCount)
             .Take(100)
             .ToListAsync();
+
+    public async Task<Guild?> GetById(long guildId) =>
+        await _context.Guilds.FirstOrDefaultAsync(g => g.Id == guildId);
 }

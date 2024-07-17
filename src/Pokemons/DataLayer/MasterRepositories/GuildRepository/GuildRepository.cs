@@ -62,26 +62,33 @@ public class GuildRepository : IGuildRepository
 
     public async Task<IEnumerable<Player>> GetAllGuildMembers(long guildId)
     {
-        /*var cache = await _cacheRepository.GetMember<GuildMembers>(guildId.ToString());
-        if (cache is not null) return cache.Members;*/
-        // TODO: dsfsdsfbddwdf
+        var cache = await _cacheRepository.GetMember<GuildMembers>(guildId.ToString());
+        if (cache is not null) return cache.Members;
 
-        var members = await _guildDatabaseRepository.GetAllMembers(guildId);
-        await _cacheRepository.SetMember(guildId.ToString(), new GuildMembers
-        {
-            Members = members
-        });
-
-        return members;
+        var allGuildMembers = await AllGuildMembers(guildId);
+        
+        return allGuildMembers;
     }
 
-    public async Task ChangeGuildStatus(long playerId, long guildId, MemberStatus founder)
+    private async Task<Player[]> AllGuildMembers(long guildId)
+    {
+        var members = await _guildDatabaseRepository.GetAllMembers(guildId);
+        var allGuildMembers = members as Player[] ?? members.ToArray();
+        await _cacheRepository.SetMember(guildId.ToString(), new GuildMembers
+        {
+            Members = allGuildMembers
+        });
+        return allGuildMembers;
+    }
+
+    public async Task ChangeGuildStatus(long playerId, long guildId, MemberStatus status)
     {
         var memberStatus = await GetGuildMember(playerId);
         if (memberStatus is null) return;
-        memberStatus.MemberStatus = founder;
+        memberStatus.MemberStatus = status;
         memberStatus.GuildId = guildId;
         await UpdateMember(memberStatus);
+        _ = await AllGuildMembers(guildId);
     }
 
     public async Task UpdateMember(MemberGuildStatus member)
@@ -89,7 +96,7 @@ public class GuildRepository : IGuildRepository
         await _cacheRepository.SetMember(member.PlayerId.ToString(), member);
         await _guildDatabaseRepository.Save(member);
     }
-
+    
     public async Task SaveGuild(Guild guild)
     {
         await _cacheRepository.DeleteMember<Guild>(guild.Id.ToString());
