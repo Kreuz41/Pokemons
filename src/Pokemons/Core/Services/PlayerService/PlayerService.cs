@@ -161,7 +161,7 @@ public class PlayerService : IPlayerService
 
     private bool CanUseSuperCharge(Player player)
     {
-        var cooldown = (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
-        return cooldown * player.SuperChargeCooldown >= 8;
+        var cooldown = (_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
+        return cooldown * (double)player.SuperChargeCooldown >= 8;
     }
 }

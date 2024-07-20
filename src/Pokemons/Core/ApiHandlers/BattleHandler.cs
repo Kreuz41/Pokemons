@@ -28,22 +28,22 @@ public class BattleHandler : IBattleHandler
     private readonly IRatingService _ratingService;
     private readonly IMapper _mapper;
 
-    public async Task<CallResult<CommitDamageResponseDto>> CommitDamage(CommitDamageDto dto, long playerId)
+    public async Task<CallResult<TapperConfigResponseDto>> CommitDamage(CommitDamageDto dto, long playerId)
     {
         var userData = await _playerService.CommitDamage(playerId, dto.Taps);
         return await TakeDamage(playerId, userData.Item1, userData.Item2);
     }
 
-    public async Task<CallResult<CommitDamageResponseDto>> UseSuperCharge(long playerId)
+    public async Task<CallResult<TapperConfigResponseDto>> UseSuperCharge(long playerId)
     {
         var userData = await _playerService.UseSuperCharge(playerId);
         return await TakeDamage(playerId, userData.Item1, userData.Item2);
     }
     
-    private async Task<CallResult<CommitDamageResponseDto>> TakeDamage(long playerId, int damage, int defeatedEntities)
+    private async Task<CallResult<TapperConfigResponseDto>> TakeDamage(long playerId, int damage, int defeatedEntities)
     {
         var battle = await _battleService.TakeDamage(playerId, damage);
-        if (battle.Id == 0) return CallResult<CommitDamageResponseDto>.Failure("Invalid battle");
+        if (battle.Id == 0) return CallResult<TapperConfigResponseDto>.Failure("Invalid battle");
         if (battle.BattleState == BattleState.Defeated)
         {
             battle = await _battleService.CreateNewBattle(playerId, defeatedEntities);
@@ -52,8 +52,10 @@ public class BattleHandler : IBattleHandler
         }
 
         var player = await _playerService.GetPlayer(playerId);
-        var response = _mapper.Map<CommitDamageResponseDto>(battle);
-        response.RemainingEnergy = player?.CurrentEnergy ?? 0;
-        return CallResult<CommitDamageResponseDto>.Success(response);
+        var response = _mapper.Map<TapperConfigResponseDto>(player);
+        response.EntityData = _mapper.Map<CommitDamageResponseDto>(battle);
+        response.CurrentEnergy = player?.CurrentEnergy ?? 0;
+        response.SuperChargeRemaining = await _playerService.GetSuperChargeSecondsRemaining(playerId);
+        return CallResult<TapperConfigResponseDto>.Success(response);
     }
 }
