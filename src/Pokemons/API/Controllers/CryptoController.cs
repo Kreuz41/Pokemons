@@ -7,18 +7,22 @@ namespace Pokemons.API.Controllers;
 [Route("crypto/")]
 public class CryptoController : ControllerBase
 {
-    public CryptoController(ICryptoHandler cryptoHandler)
+    public CryptoController(ICryptoHandler cryptoHandler, IAuthHandler authHandler)
     {
         _cryptoHandler = cryptoHandler;
+        _authHandler = authHandler;
     }
 
     private readonly ICryptoHandler _cryptoHandler;
+    private readonly IAuthHandler _authHandler;
     
     [HttpPost("buyPremium")]
     public async Task<IResult> BuyPremium()
     {
         var playerId = (long)HttpContext.Items["UserId"]!;
         var result = await _cryptoHandler.BuyPrem(playerId);
-        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+        if (!result.Status) return Results.BadRequest(result);
+        var response = await _authHandler.GetProfile(playerId);
+        return response.Status ? Results.Ok(response) : Results.BadRequest(response);
     }
 }
