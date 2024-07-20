@@ -47,7 +47,8 @@ public class RatingRepository : IRatingRepository
             Username = r.Player.Username,
             Position = r.LeaguePosition,
             DefeatedEntities = r.Player.DefeatedEntities,
-            TotalDamage = r.Player.TotalDamage
+            TotalDamage = r.Player.TotalDamage,
+            Level = r.Player.Level
         }).ToList();
         
         await _cacheRepository.SetMember(leagueType.ToString(), descriptions,
