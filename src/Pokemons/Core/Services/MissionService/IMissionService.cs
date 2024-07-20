@@ -8,4 +8,5 @@ public interface IMissionService
     Task<bool> IsMissionExist(int missionId, long playerId);
     Task<Mission?> CompleteMission(long playerId, int missionId);
     Task CreateMissions(long playerId);
+    Task<bool> IsMissionCompleted(int missionId, long playerId);
 }

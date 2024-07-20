@@ -42,4 +42,10 @@ public class MissionService : IMissionService
         });
         await _missionRepository.SaveMissions(missions);
     }
+
+    public async Task<bool> IsMissionCompleted(int missionId, long playerId)
+    {
+        var mission = await _missionRepository.GetMission(missionId, playerId);
+        return mission?.CompleteTime is not null;
+    }
 }
