@@ -130,6 +130,17 @@ public class PlayerService : IPlayerService
         await _playerRepository.FastUpdate(player);
     }
 
+    public async Task<int> GetSuperChargeSecondsRemaining(long playerId)
+    {
+        var player = await GetPlayer(playerId);
+        if (player is null) return int.MaxValue;
+        
+        var cooldown = 
+            (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalSeconds / player.SuperChargeCooldown;
+        
+        return (int)(TimeSpan.FromHours(8).TotalSeconds - (int)cooldown);
+    }
+
     private void LevelUpdate(Player player)
     {
         player.Exp += 5000;

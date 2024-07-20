@@ -83,6 +83,7 @@ public class AuthHandler : IAuthHandler
         var result = _mapper.Map<TapperConfigResponseDto>(player);
         result.EntityData = _mapper.Map<CommitDamageResponseDto>(battle);
         result.EntityData.RemainingEnergy = player!.CurrentEnergy;
+        result.SuperChargeRemaining = await _playerService.GetSuperChargeSecondsRemaining(playerId);
 
         return CallResult<TapperConfigResponseDto>.Success(result);
     }
@@ -104,7 +105,9 @@ public class AuthHandler : IAuthHandler
             Exp = player.Exp,
             Level = player.Level,
             IsPremium = player.IsPremium,
-            CryptoBalance = player.CryptoBalance
+            CryptoBalance = player.CryptoBalance,
+            Firstname = player.Name,
+            Lastname = player.Surname
         };
 
         return CallResult<ProfileResponseDto>.Success(response);

@@ -18,4 +18,5 @@ public interface IPlayerService
     Task ConfirmMissionReward(long playerId, int activeMissionReward);
     Task<bool> IsEnoughCrypto(long playerId);
     Task BuyPrem(long playerId);
+    Task<int> GetSuperChargeSecondsRemaining(long playerId);
 }
