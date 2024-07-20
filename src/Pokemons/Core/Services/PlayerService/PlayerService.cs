@@ -35,6 +35,9 @@ public class PlayerService : IPlayerService
         damage = damage > player.CurrentEnergy ? player.CurrentEnergy : damage;
         player.CurrentEnergy -= damage;
         player.LastCommitDamageTime = _timeProvider.Now();
+
+        if (player.IsFirstEntry)
+            player.IsFirstEntry = false;
         
         player.Taps += taps;
         player.TotalDamage += damage;
@@ -65,7 +68,7 @@ public class PlayerService : IPlayerService
     {
         var player = await _playerRepository.GetPlayerById(userId);
         if (player is null) return null;
-
+        
         player.CurrentEnergy += GetEnergy(player);
         return player;
     }
