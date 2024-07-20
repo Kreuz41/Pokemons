@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pokemons.DataLayer.Database;
@@ -11,9 +12,11 @@ using Pokemons.DataLayer.Database;
 namespace Pokemons.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240719132804_MissionRewardAdded")]
+    partial class MissionRewardAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,25 +48,6 @@ namespace Pokemons.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActiveMissions");
-                });
-
-            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ActiveNews", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<DateTime>("AddDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ActiveNews");
                 });
 
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Battle", b =>
@@ -249,65 +233,6 @@ namespace Pokemons.Migrations
                     b.HasIndex("PlayerId");
 
                     b.ToTable("Missions");
-                });
-
-            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.News", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ActiveNewsId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("boolean");
-
-                    b.Property<long>("PlayerId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActiveNewsId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("News");
-                });
-
-            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Notification", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("GuildMemberName")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("NotificationType")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("PlayerId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ReferralName")
-                        .HasColumnType("text");
-
-                    b.Property<decimal?>("TopUpValue")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Player", b =>
@@ -497,36 +422,6 @@ namespace Pokemons.Migrations
                     b.Navigation("Player");
                 });
 
-            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.News", b =>
-                {
-                    b.HasOne("Pokemons.DataLayer.Database.Models.Entities.ActiveNews", "ActiveNews")
-                        .WithMany("PlayerNews")
-                        .HasForeignKey("ActiveNewsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Player")
-                        .WithMany("News")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ActiveNews");
-
-                    b.Navigation("Player");
-                });
-
-            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Notification", b =>
-                {
-                    b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Player")
-                        .WithMany("Notifications")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-                });
-
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Rating", b =>
                 {
                     b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Player")
@@ -562,11 +457,6 @@ namespace Pokemons.Migrations
                     b.Navigation("Missions");
                 });
 
-            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ActiveNews", b =>
-                {
-                    b.Navigation("PlayerNews");
-                });
-
             modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Guild", b =>
                 {
                     b.Navigation("Members");
@@ -583,10 +473,6 @@ namespace Pokemons.Migrations
                         .IsRequired();
 
                     b.Navigation("Missions");
-
-                    b.Navigation("News");
-
-                    b.Navigation("Notifications");
 
                     b.Navigation("Rating")
                         .IsRequired();

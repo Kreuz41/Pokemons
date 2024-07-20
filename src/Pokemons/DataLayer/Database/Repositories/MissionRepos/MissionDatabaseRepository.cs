@@ -25,6 +25,7 @@ public class MissionDatabaseRepository : IMissionDatabaseRepository
     public async Task<Mission?> GetMission(int missionId, long playerId) =>
         await _context.Missions
             .AsNoTracking()
+            .Include(m => m.ActiveMission)
             .FirstOrDefaultAsync(m => m.ActiveMissionId == missionId && m.PlayerId == playerId);
 
     public async Task UpdateMission(Mission mission)

@@ -38,7 +38,8 @@ public class MissionHandler : IMissionHandler
         if (!await _missionService.IsMissionExist(missionId, playerId))
             return CallResult<bool>.Failure("Mission does not exist");
 
-        await _missionService.CompleteMission(playerId, missionId);
+        var mission = await _missionService.CompleteMission(playerId, missionId);
+        await _playerService.ConfirmMissionReward(playerId, mission!.ActiveMission.Reward);
 
         return CallResult<bool>.Success(true);
     }

@@ -9,5 +9,6 @@ public class TapperConfigResponseDto
     public int Energy { get; set; }
     public int CurrentEnergy { get; set; }
     public int SuperChargeRemaining { get; set; }
+    public bool IsFirstEntry { get; set; }
     public required CommitDamageResponseDto EntityData { get; set; }
 }

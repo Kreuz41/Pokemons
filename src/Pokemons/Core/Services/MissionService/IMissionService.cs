@@ -6,6 +6,6 @@ public interface IMissionService
 {
     Task<IEnumerable<Mission>> GetMissions(long playerId);
     Task<bool> IsMissionExist(int missionId, long playerId);
-    Task CompleteMission(long playerId, int missionId);
+    Task<Mission?> CompleteMission(long playerId, int missionId);
     Task CreateMissions(long playerId);
 }

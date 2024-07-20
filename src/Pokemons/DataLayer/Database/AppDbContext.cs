@@ -15,15 +15,20 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ActiveMission> ActiveMissions { get; init; } = null!;
     public DbSet<Guild> Guilds { get; init; } = null!;
     public DbSet<MemberGuildStatus> MemberGuildStatus { get; init; } = null!;
-    
+    public DbSet<ActiveNews> ActiveNews { get; init; } = null!;
+    public DbSet<News> News { get; set; } = null!;
+    public DbSet<Notification> Notifications { get; set; } = null!;
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new NewsConfiguration());
         modelBuilder.ApplyConfiguration(new GuildConfiguration());
         modelBuilder.ApplyConfiguration(new PlayerConfiguration());
         modelBuilder.ApplyConfiguration(new BattleConfiguration());
         modelBuilder.ApplyConfiguration(new MarketConfiguration());
         modelBuilder.ApplyConfiguration(new RatingConfiguration());
         modelBuilder.ApplyConfiguration(new MissionConfiguration());
+        modelBuilder.ApplyConfiguration(new ActiveNewsConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationConfiguration());
         modelBuilder.ApplyConfiguration(new ReferralNodeConfiguration());
         modelBuilder.ApplyConfiguration(new ActiveMissionConfiguration());
         modelBuilder.ApplyConfiguration(new MemberGuildStatusConfiguration());

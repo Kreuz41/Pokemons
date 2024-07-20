@@ -64,7 +64,8 @@ public class AuthHandler : IAuthHandler
 
     public async Task<CallResult<bool>> CreateUser(CreateUserModel data, long playerId)
     {
-        if (await _playerService.IsPlayerExist(playerId)) return CallResult<bool>.Failure("Player already exist");
+        if (await _playerService.IsPlayerExist(playerId)) 
+            return CallResult<bool>.Failure("Player already exist");
 
         await CreatePlayer(playerId, data);
 

@@ -1,9 +1,11 @@
+using Pokemons.Core.BackgroundServices.RabbitMqListener;
 using PokemonsBot.Core.Bot;
 using PokemonsBot.Core.Bot.Commands.CommandHandler;
 using PokemonsBot.Core.Settings;
 using PokemonsBot.TransferClient.RabbitMQ;
 using PokemonsDomain.MessageBroker.Models;
 using PokemonsDomain.MessageBroker.Sender;
+using RabbitMQ.Client;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -17,12 +19,33 @@ builder.Services.AddSingleton<BotClient>();
 
 builder.Services.AddSingleton<ICommandHandler, CommandHandler>();
 
-builder.Services.AddSingleton<IBrokerSender>(option => 
-    new RabbitMqSender(builder.Configuration.GetConnectionString("RabbitMQ") 
-                       ?? throw new ArgumentException("Broker path cannot be null"),
-        option.GetService<ILogger<RabbitMqSender>>()!));
+builder.Services.AddSingleton<IBrokerSender, RabbitMqSender>();
 
 builder.Services.Configure<BotOption>(builder.Configuration.GetSection("BotOption"));
+
+builder.Services.AddSingleton<IConnection>(provider =>
+{
+    var logger = provider.GetService<ILogger<RabbitMqListener>>()!;
+    var factory = new ConnectionFactory();
+    builder.Configuration.GetSection("RabbitMqConnectionFactory").Bind(factory);
+    var isConnected = false;
+    while (!isConnected)
+    {
+        try
+        {
+            var connection = factory.CreateConnectionAsync().Result;
+            isConnected = true;
+            return connection;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e?.Message);
+            Task.Delay(1000);
+        }
+    }
+
+    throw new ArgumentException("Message broker is invalid");
+});
 
 var app = builder.Build();
 

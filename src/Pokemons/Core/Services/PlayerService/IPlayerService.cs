@@ -15,4 +15,5 @@ public interface IPlayerService
     Task<int> EntityDefeated(long playerId);
     Task UpdatePlayerData(StartSessionDto dto, Player player);
     Task Update(Player player);
+    Task ConfirmMissionReward(long playerId, int activeMissionReward);
 }

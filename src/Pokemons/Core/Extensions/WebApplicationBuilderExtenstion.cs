@@ -14,6 +14,7 @@ using Pokemons.Core.Services.BattleService;
 using Pokemons.Core.Services.GuildService;
 using Pokemons.Core.Services.MarketService;
 using Pokemons.Core.Services.MissionService;
+using Pokemons.Core.Services.NotificationService;
 using Pokemons.Core.Services.PlayerService;
 using Pokemons.Core.Services.RatingService;
 using Pokemons.Core.Services.ReferralService;
@@ -31,9 +32,11 @@ using Pokemons.DataLayer.MasterRepositories.BattleRepository;
 using Pokemons.DataLayer.MasterRepositories.GuildRepository;
 using Pokemons.DataLayer.MasterRepositories.MarketRepository;
 using Pokemons.DataLayer.MasterRepositories.MissionRepository;
+using Pokemons.DataLayer.MasterRepositories.NotificationRepository;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 using Pokemons.DataLayer.MasterRepositories.RatingRepository;
 using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
+using RabbitMQ.Client;
 using StackExchange.Redis;
 using TimeProvider = Pokemons.Core.Providers.TimeProvider.TimeProvider;
 
@@ -51,6 +54,7 @@ public static class WebApplicationBuilderExtenstion
         ConfigureRepositories(builder);
         ConfigureTimeProvider(builder);
         ConfigureCacheRepository(builder);
+        ConfigureRabbitMqConnection(builder);
         ConfigureBackgroundServices(builder);
         ConfigureDatabaseRepositories(builder);
     }
@@ -71,12 +75,13 @@ public static class WebApplicationBuilderExtenstion
     private static void ConfigureApiHandlers(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IAuthHandler, AuthHandler>();
-        builder.Services.AddScoped<IBattleHandler, BattleHandler>();
-        builder.Services.AddScoped<IMarketHandler, MarketHandler>();
-        builder.Services.AddScoped<IReferralHandler, ReferralHandler>();
-        builder.Services.AddScoped<IMissionHandler, MissionHandler>();
-        builder.Services.AddScoped<IRatingHandler, RatingHandler>();
         builder.Services.AddScoped<IGuildHandler, GuildHandler>();
+        builder.Services.AddScoped<IBattleHandler, BattleHandler>();
+        builder.Services.AddScoped<IRatingHandler, RatingHandler>();
+        builder.Services.AddScoped<IMarketHandler, MarketHandler>();
+        builder.Services.AddScoped<IMissionHandler, MissionHandler>();
+        builder.Services.AddScoped<IReferralHandler, ReferralHandler>();
+        builder.Services.AddScoped<INotificationHandler, NotificationHandler>();
     }
 
     private static void ConfigureDatabaseRepositories(IHostApplicationBuilder builder)
@@ -101,6 +106,7 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IRatingRepository, RatingRepository>();
         builder.Services.AddScoped<IMissionRepository, MissionRepository>();
         builder.Services.AddScoped<IReferralNodeRepository, ReferralNodeRepository>();
+        builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
     }
 
     private static void ConfigureServices(IHostApplicationBuilder builder)
@@ -112,6 +118,7 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IRatingService, RatingService>();
         builder.Services.AddScoped<IMissionService, MissionService>();
         builder.Services.AddScoped<IReferralService, ReferralService>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
     }
     
     private static void ConfigureTimeProvider(IHostApplicationBuilder builder)
@@ -146,6 +153,37 @@ public static class WebApplicationBuilderExtenstion
             builder.Configuration.AddUserSecrets<Program>();
         
         builder.Services.AddScoped<AuthMiddleware>();
+        builder.Services.Configure<ConnectionFactory>(builder.Configuration.GetSection("RabbitMqConnectionFactory") 
+                                                      ?? throw new NullReferenceException(
+                                                          "Rabbit connection not found"));
+    }
+
+    private static void ConfigureRabbitMqConnection(IHostApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<IConnection>(provider =>
+        {
+            var logger = provider.GetService<ILogger<RabbitMqListener>>()!;
+            var factory = new ConnectionFactory();
+            builder.Configuration.GetSection("RabbitMqConnectionFactory").Bind(factory);
+            
+            var isConnected = false;
+            while (!isConnected)
+            {
+                try
+                {
+                    var connection = factory.CreateConnectionAsync().Result;
+                    isConnected = true;
+                    return connection;
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(e?.Message);
+                    Task.Delay(1000).Wait();
+                }
+            }
+
+            throw new ArgumentException("Message broker is invalid");
+        });
     }
     
     private static void ConfigureDbContext(IHostApplicationBuilder builder)
@@ -162,11 +200,6 @@ public static class WebApplicationBuilderExtenstion
     {
         builder.Services.AddHostedService<LeagueUpdaterService>();
         builder.Services.AddHostedService<CacheCollectorService>();
-
-        builder.Services.AddHostedService<RabbitMqListener>(option => 
-            new RabbitMqListener(builder.Configuration.GetConnectionString("RabbitMQ") 
-                                 ?? throw new InvalidOperationException(), 
-                option.GetService<IServiceScopeFactory>()!,
-                option.GetService<ILogger<RabbitMqListener>>()!));
+        builder.Services.AddHostedService<RabbitMqListener>();
     }
 }

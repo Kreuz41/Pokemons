@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Pokemons.API.Handlers;
 using PokemonsDomain.MessageBroker.Models;
+using PokemonsDomain.MessageBroker.Properties.RabbitMq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -8,71 +9,73 @@ namespace Pokemons.Core.BackgroundServices.RabbitMqListener;
 
 public class RabbitMqListener : BackgroundService
 {
+    private readonly IConnection _connection;
+
     private readonly ILogger<RabbitMqListener> _logger;
 
-    private readonly string _rabbitPath;
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public RabbitMqListener(string rabbitPath, IServiceScopeFactory scopeFactory, ILogger<RabbitMqListener> logger)
+    public RabbitMqListener(IServiceScopeFactory scopeFactory, ILogger<RabbitMqListener> logger,
+        IConnection connection)
     {
-        _rabbitPath = rabbitPath;
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _connection = connection;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation($"Start to listen rabbitmq from {_rabbitPath}...");
+        using var channel = await _connection.CreateChannelAsync(stoppingToken);
 
-        var factory = new ConnectionFactory
+        await channel.ExchangeDeclareAsync(RabbitMqExchangeNames.PlayerEventExchange, ExchangeType.Direct);
+
+        var routing = "bot.create.player";
+        var queue = await channel.QueueDeclareAsync();
+        
+        _logger.LogInformation($"Start to listen rabbitmq by {routing} . . .");
+        
+        await channel.QueueBindAsync(
+            queue: queue, 
+            exchange: RabbitMqExchangeNames.PlayerEventExchange, 
+            routingKey: routing,
+            arguments: null,
+            cancellationToken: stoppingToken);
+        
+        var consumer = new EventingBasicConsumer(channel);
+        consumer.Received += async (sender, args) =>
         {
-            HostName = _rabbitPath
+            var body = args.Body.ToArray();
+            var obj = JsonSerializer.Deserialize<CreateUserModel>(body);
+            if (obj is null) return;
+
+            _logger.LogInformation($"Message received. Object Id: {obj.UserId}");
+
+            using var scope = _scopeFactory.CreateScope();
+            var service = scope.ServiceProvider.GetService<IAuthHandler>()!;
+            await service.CreateUser(obj, obj.UserId);
         };
 
-        var isConnected = false;
-        while (!stoppingToken.IsCancellationRequested && !isConnected)
+        await channel.BasicConsumeAsync(
+            queue.QueueName,
+            true,
+            consumer);
+
+        await Task.Delay(Timeout.Infinite, stoppingToken);
+    }
+
+    private EventHandler<BasicDeliverEventArgs>? ConsumerOnReceived()
+    {
+        return async (sender, args) =>
         {
-            try
-            {
-                using var connection = await factory.CreateConnectionAsync(stoppingToken);
-                using var channel = await connection.CreateChannelAsync(stoppingToken);
+            var body = args.Body.ToArray();
+            var obj = JsonSerializer.Deserialize<CreateUserModel>(body);
+            if (obj is null) return;
 
-                await channel.QueueDeclareAsync(
-                    "CreatePlayer",
-                    false,
-                    false,
-                    false,
-                    null,
-                    cancellationToken: stoppingToken);
+            _logger.LogInformation($"Message received. Object Id: {obj.UserId}");
 
-                var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += async (sender, args) =>
-                {
-                    var body = args.Body.ToArray();
-                    var obj = JsonSerializer.Deserialize<CreateUserModel>(body);
-                    if (obj is null) return;
-
-                    _logger.LogInformation($"Message received: {obj.UserId}");
-
-                    using var scope = _scopeFactory.CreateScope();
-                    var service = scope.ServiceProvider.GetService<IAuthHandler>()!;
-                    await service.CreateUser(obj, obj.UserId);
-                };
-
-                await channel.BasicConsumeAsync(
-                    "CreatePlayer",
-                    true,
-                    consumer);
-
-                isConnected = true;
-                
-                await Task.Delay(Timeout.Infinite, stoppingToken);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                await Task.Delay(1000, stoppingToken);
-            }
-        }
+            using var scope = _scopeFactory.CreateScope();
+            var service = scope.ServiceProvider.GetService<IAuthHandler>()!;
+            await service.CreateUser(obj, obj.UserId);
+        };
     }
 }

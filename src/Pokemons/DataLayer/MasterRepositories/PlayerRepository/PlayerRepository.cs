@@ -50,6 +50,7 @@ public class PlayerRepository : IPlayerRepository
     {
         var player = await _cacheRepository.GetMember<Player>(id.ToString());
         if (player is null) return;
+        if (player.IsFirstEntry) player.IsFirstEntry = false;
         
         await _playerDatabaseRepository.UpdatePlayer(player);
         await _cacheRepository.DeleteMember<Player>(id.ToString());

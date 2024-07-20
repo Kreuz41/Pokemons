@@ -53,4 +53,6 @@ public class GuildController : ControllerBase
         var response = await _handler.GetMostPopularGuilds();
         return response.Status ? Results.Ok(response) : Results.BadRequest(response);
     }
+    
+    // TODO: добавление админов
 }

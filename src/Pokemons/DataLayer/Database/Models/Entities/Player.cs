@@ -13,6 +13,7 @@ public class Player
     public long Balance { get; set; }
     public long GoldBalance { get; set; }
     public int DamagePerClick { get; set; } = 1000;
+    public bool IsFirstEntry { get; set; } = true;
 
     public int Level { get; set; }
     public int Exp { get; set; }
@@ -33,8 +34,10 @@ public class Player
     public MemberGuildStatus GuildStatus { get; set; } = null!;
     public Rating Rating { get; set; } = null!;
     [JsonIgnore] public Market Market { get; set; } = null!;
-    [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = new List<ReferralNode>();
-    [JsonIgnore] public ICollection<Battle> Battles { get; set; } = new List<Battle>();
-    [JsonIgnore] public ICollection<ReferralNode> Referrals { get; set; } = new List<ReferralNode>();
-    [JsonIgnore] public ICollection<Mission>? Missions { get; set; } = new List<Mission>();
+    [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = [];
+    [JsonIgnore] public ICollection<Battle> Battles { get; set; } = [];
+    [JsonIgnore] public ICollection<ReferralNode> Referrals { get; set; } = [];
+    [JsonIgnore] public ICollection<Mission> Missions { get; set; } = [];
+    [JsonIgnore] public ICollection<News> News { get; set; } = [];
+    [JsonIgnore] public ICollection<Notification> Notifications { get; set; } = [];
 }

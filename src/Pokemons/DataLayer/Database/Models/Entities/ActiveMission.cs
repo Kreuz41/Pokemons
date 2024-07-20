@@ -6,6 +6,7 @@ public class ActiveMission
 {
     public int Id { get; set; }
     public bool IsDifficult { get; set; }
+    public int Reward { get; set; }
     public bool IsEnded { get; set; }
     public DateTime? EndDate { get; set; }
     

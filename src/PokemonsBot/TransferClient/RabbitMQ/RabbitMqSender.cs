@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using PokemonsDomain.MessageBroker.Properties.RabbitMq;
 using PokemonsDomain.MessageBroker.Sender;
 using RabbitMQ.Client;
 
@@ -6,13 +7,13 @@ namespace PokemonsBot.TransferClient.RabbitMQ;
 
 public class RabbitMqSender : IBrokerSender
 {
-    public RabbitMqSender(string rabbitPath, ILogger<RabbitMqSender> logger)
+    public RabbitMqSender(IConnection connection, ILogger<RabbitMqSender> logger)
     {
-        _rabbitPath = rabbitPath;
+        _connection = connection;
         _logger = logger;
     }
 
-    private readonly string _rabbitPath;
+    private readonly IConnection _connection;
     private readonly ILogger<RabbitMqSender> _logger;
 
     public async Task Send(object obj) =>
@@ -20,26 +21,10 @@ public class RabbitMqSender : IBrokerSender
 
     public async Task Send(byte[] bytes)
     {
-        var factory = new ConnectionFactory
-        {
-            HostName = _rabbitPath
-        };
+        using var channel = await _connection.CreateChannelAsync();
 
-        _logger.LogInformation($"Start to send in rabbit to {_rabbitPath}");
-        
-        using var connection = await factory.CreateConnectionAsync();
-        using var channel = await connection.CreateChannelAsync();
+        await channel.ExchangeDeclareAsync(RabbitMqExchangeNames.PlayerEventExchange, ExchangeType.Direct);
 
-        await channel.QueueDeclareAsync(
-            queue: "CreatePlayer", 
-            durable: false, 
-            exclusive: false, 
-            autoDelete: false, 
-            arguments: null);
-
-        await channel.BasicPublishAsync(
-            exchange: "", 
-            routingKey: "CreatePlayer", 
-            body: bytes);
+        await channel.BasicPublishAsync(RabbitMqExchangeNames.PlayerEventExchange, "bot.create.player", bytes, false);
     }
 }

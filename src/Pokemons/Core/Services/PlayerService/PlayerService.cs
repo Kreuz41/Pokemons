@@ -101,6 +101,15 @@ public class PlayerService : IPlayerService
     public async Task Update(Player player) =>
         await _playerRepository.Update(player);
 
+    public async Task ConfirmMissionReward(long playerId, int activeMissionReward)
+    {
+        var player = await _playerRepository.GetPlayerById(playerId);
+        if (player is null) return;
+        
+        player.GoldBalance += activeMissionReward;
+        await Update(player);
+    }
+
     private void LevelUpdate(Player player)
     {
         player.Exp += 5000;
