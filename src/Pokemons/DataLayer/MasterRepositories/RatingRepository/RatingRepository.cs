@@ -46,6 +46,8 @@ public class RatingRepository : IRatingRepository
             PhotoUrl = r.Player.PhotoUrl,
             Username = r.Player.Username,
             Position = r.LeaguePosition,
+            DefeatedEntities = r.Player.DefeatedEntities,
+            TotalDamage = r.Player.TotalDamage
         }).ToList();
         
         await _cacheRepository.SetMember(leagueType.ToString(), descriptions,
