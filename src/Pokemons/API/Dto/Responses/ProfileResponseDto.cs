@@ -11,4 +11,6 @@ public class ProfileResponseDto
     public string? PhotoUrl { get; set; }
     public int Level { get; set; }
     public int Exp { get; set; }
+    public bool IsPremium { get; set; }
+    public decimal CryptoBalance { get; set; }
 }

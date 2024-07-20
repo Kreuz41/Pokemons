@@ -20,6 +20,7 @@ public class PlayerService : IPlayerService
     private readonly IPlayerRepository _playerRepository;
     private readonly IBattleRepository _battleRepository;
     private readonly ITimeProvider _timeProvider;
+    private const int PremCost = 10;
 
     public async Task<(int, int)> CommitDamage(long playerId, int taps)
     {
@@ -111,6 +112,22 @@ public class PlayerService : IPlayerService
         
         player.GoldBalance += activeMissionReward;
         await Update(player);
+    }
+
+    public async Task<bool> IsEnoughCrypto(long playerId)
+    {
+        var player = await GetPlayer(playerId);
+        return player?.CryptoBalance >= PremCost;
+    }
+
+    public async Task BuyPrem(long playerId)
+    {
+        var player = await GetPlayer(playerId);
+        if (player is null || player?.CryptoBalance < PremCost || player!.IsPremium)
+            return;
+
+        player!.CryptoBalance -= PremCost;
+        await _playerRepository.FastUpdate(player);
     }
 
     private void LevelUpdate(Player player)

@@ -12,7 +12,7 @@ public class Player
     public string? PhotoUrl { get; set; }
     public long Balance { get; set; }
     public long GoldBalance { get; set; }
-    public int DamagePerClick { get; set; } = 1000;
+    public int DamagePerClick { get; set; } = 1;
     public bool IsFirstEntry { get; set; } = true;
 
     public int Level { get; set; }
@@ -30,6 +30,9 @@ public class Player
     public int Taps { get; set; }
     public int TotalDamage { get; set; }
     public int DefeatedEntities { get; set; }
+
+    public bool IsPremium { get; set; } = false;
+    public decimal CryptoBalance { get; set; }
     
     public MemberGuildStatus GuildStatus { get; set; } = null!;
     public Rating Rating { get; set; } = null!;

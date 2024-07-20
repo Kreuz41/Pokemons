@@ -102,7 +102,9 @@ public class AuthHandler : IAuthHandler
             SuperChargeCooldown = player.SuperChargeCooldown,
             PhotoUrl = player.PhotoUrl,
             Exp = player.Exp,
-            Level = player.Level
+            Level = player.Level,
+            IsPremium = player.IsPremium,
+            CryptoBalance = player.CryptoBalance
         };
 
         return CallResult<ProfileResponseDto>.Success(response);

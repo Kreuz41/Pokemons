@@ -16,4 +16,6 @@ public interface IPlayerService
     Task UpdatePlayerData(StartSessionDto dto, Player player);
     Task Update(Player player);
     Task ConfirmMissionReward(long playerId, int activeMissionReward);
+    Task<bool> IsEnoughCrypto(long playerId);
+    Task BuyPrem(long playerId);
 }
