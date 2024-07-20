@@ -40,7 +40,7 @@ public class AuthHandler : IAuthHandler
     private readonly IGuildService _guildService;
     private readonly IMapper _mapper;
 
-    public async Task<CallResult<bool>> StartSession(long playerId, StartSessionDto dto)
+    public async Task<CallResult<bool>> StartSession(long playerId, EditProfileDto dto)
     {
         if (!await _playerService.IsPlayerExist(playerId))
             return CallResult<bool>.Failure("Player does not exist");
@@ -108,6 +108,16 @@ public class AuthHandler : IAuthHandler
         };
 
         return CallResult<ProfileResponseDto>.Success(response);
+    }
+
+    public async Task<CallResult<ProfileResponseDto>> UpdateProfile(long playerId, EditProfileDto dto)
+    {
+        var player = await _playerService.GetPlayer(playerId);
+        if (player is null) return CallResult<ProfileResponseDto>.Failure("Player not found");
+        
+        await _playerService.UpdatePlayerData(dto, player);
+
+        return await GetProfile(playerId);
     }
 
     private async Task CreatePlayer(long playerId, CreateUserModel dto)

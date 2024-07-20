@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Handlers;
 using PokemonsDomain.MessageBroker.Models;
@@ -17,7 +18,7 @@ public class AuthController : ControllerBase
     private readonly IAuthHandler _handler;
     
     [HttpPost("startSession")]
-    public async Task<IResult> StartSession([FromBody] StartSessionDto data)
+    public async Task<IResult> StartSession([FromBody] EditProfileDto data)
     {
         var userId = (long)HttpContext.Items["UserId"]!;
         var result = await _handler.StartSession(userId, data);
@@ -40,6 +41,15 @@ public class AuthController : ControllerBase
         var playerId = (long)HttpContext.Items["UserId"]!;
         var result = await _handler.GetProfile(playerId);
         
+        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+    }
+
+    [HttpPost("editProfile")]
+    public async Task<IResult> EditProfile([FromBody] EditProfileDto dto)
+    {
+        var playerId = (long)HttpContext.Items["UserId"]!;
+        var result = await _handler.UpdateProfile(playerId, dto);
+
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
     

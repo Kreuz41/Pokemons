@@ -16,7 +16,7 @@ public class CryptoHandler : ICryptoHandler
     public async Task<CallResult<bool>> BuyPrem(long playerId)
     {
         if (!await _playerService.IsEnoughCrypto(playerId))
-            return CallResult<bool>.Failure("Not enough usdt");
+            return CallResult<bool>.Failure("Not enough USDt");
 
         await _playerService.BuyPrem(playerId);
 

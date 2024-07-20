@@ -1,6 +1,6 @@
 ﻿namespace Pokemons.API.Dto.Requests;
 
-public class StartSessionDto
+public class EditProfileDto
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }

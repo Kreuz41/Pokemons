@@ -93,7 +93,7 @@ public class PlayerService : IPlayerService
         return player.DefeatedEntities;
     }
 
-    public async Task UpdatePlayerData(StartSessionDto dto, Player player)
+    public async Task UpdatePlayerData(EditProfileDto dto, Player player)
     {
         player.Name = dto.Name;
         player.Surname = dto.Surname;
