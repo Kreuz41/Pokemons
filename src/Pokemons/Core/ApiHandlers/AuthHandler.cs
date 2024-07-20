@@ -46,8 +46,6 @@ public class AuthHandler : IAuthHandler
             return CallResult<bool>.Failure("Player does not exist");
 
         var player = await _playerService.GetPlayer(playerId);
-        if (player!.Name != dto.Name || player.Surname != dto.Surname || player.Username != dto.Username)
-            await _playerService.UpdatePlayerData(dto, player);
         
         return CallResult<bool>.Success(true);
     }
