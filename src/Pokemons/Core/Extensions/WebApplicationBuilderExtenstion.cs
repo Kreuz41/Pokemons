@@ -31,6 +31,7 @@ using Pokemons.DataLayer.Database.Repositories.RatingRepos;
 using Pokemons.DataLayer.Database.Repositories.ReferralRepos;
 using Pokemons.DataLayer.Database.Repositories.UnitOfWork;
 using Pokemons.DataLayer.MasterRepositories.BattleRepository;
+using Pokemons.DataLayer.MasterRepositories.CommonRepository;
 using Pokemons.DataLayer.MasterRepositories.GuildRepository;
 using Pokemons.DataLayer.MasterRepositories.MarketRepository;
 using Pokemons.DataLayer.MasterRepositories.MissionRepository;
@@ -90,7 +91,7 @@ public static class WebApplicationBuilderExtenstion
     private static void ConfigureDatabaseRepositories(IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+        
         builder.Services.AddScoped<IGuildDatabaseRepository, GuildDatabaseRepository>();
         builder.Services.AddScoped<IPlayerDatabaseRepository, PlayerDatabaseRepository>();
         builder.Services.AddScoped<IBattleDatabaseRepository, BattleDatabaseRepository>();
@@ -107,6 +108,7 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IBattleRepository, BattleRepository>();
         builder.Services.AddScoped<IMarketRepository, MarketRepository>();
         builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+        builder.Services.AddScoped<ICommonRepository, CommonRepository>();
         builder.Services.AddScoped<IMissionRepository, MissionRepository>();
         builder.Services.AddScoped<IReferralNodeRepository, ReferralNodeRepository>();
         builder.Services.AddScoped<INotificationRepository, NotificationRepository>();

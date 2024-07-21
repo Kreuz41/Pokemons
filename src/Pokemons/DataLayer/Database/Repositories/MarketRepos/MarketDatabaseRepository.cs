@@ -15,11 +15,10 @@ public class MarketDatabaseRepository : IMarketDatabaseRepository
     private readonly AppDbContext _context;
     private readonly IUnitOfWork _unitOfWork;
 
-    public async Task<Market> GetByPlayerId(long playerId) =>
+    public async Task<Market?> GetByPlayerId(long playerId) =>
         await _context.Markets
             .AsNoTracking()
-            .FirstOrDefaultAsync(p => p.PlayerId == playerId) 
-        ?? throw new NullReferenceException("Market cannot be null");
+            .FirstOrDefaultAsync(p => p.PlayerId == playerId);
 
     public async Task<Market> Create(long playerId)
     {

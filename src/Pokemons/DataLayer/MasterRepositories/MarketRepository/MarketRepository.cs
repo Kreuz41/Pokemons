@@ -41,9 +41,9 @@ public class MarketRepository : IMarketRepository
 
     public async Task<Market> GetMarketByPlayerId(long playerId)
     {
-        var market = await _cacheRepository.GetMember<Market>(playerId.ToString()) 
+        var market = await _cacheRepository.GetMember<Market>(playerId.ToString())
                      ?? await _databaseRepository.GetByPlayerId(playerId)
-                     ?? throw new NullReferenceException("Market cannot be null");
+                     ?? await CreateMarket(playerId);
 
         await _cacheRepository.SetMember(playerId.ToString(), market);
         

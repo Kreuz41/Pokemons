@@ -34,6 +34,15 @@ public class AuthController : ControllerBase
         
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
+    
+    
+    [HttpPost("createUser")]
+    public async Task<IResult> CreateProfile([FromBody] CreateUserModel dto)
+    {
+        var playerId = (long)HttpContext.Items["UserId"]!;
+        var result = await _handler.CreateUser(dto, playerId);
+        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+    }
 
     [HttpGet("profile")]
     public async Task<IResult> GetProfile()

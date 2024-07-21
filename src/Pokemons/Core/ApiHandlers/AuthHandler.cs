@@ -10,6 +10,7 @@ using Pokemons.Core.Services.MissionService;
 using Pokemons.Core.Services.PlayerService;
 using Pokemons.Core.Services.RatingService;
 using Pokemons.Core.Services.ReferralService;
+using Pokemons.DataLayer.MasterRepositories.CommonRepository;
 using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.Core.ApiHandlers;
@@ -19,7 +20,7 @@ public class AuthHandler : IAuthHandler
     public AuthHandler(IMapper mapper, IPlayerService playerService, 
         IBattleService battleService, IMarketService marketService, 
         IReferralService referralService, IRatingService ratingService, 
-        IMissionService missionService, IGuildService guildService)
+        IMissionService missionService, IGuildService guildService, ICommonRepository commonRepository)
     {
         _mapper = mapper;
         _playerService = playerService;
@@ -29,6 +30,7 @@ public class AuthHandler : IAuthHandler
         _ratingService = ratingService;
         _missionService = missionService;
         _guildService = guildService;
+        _commonRepository = commonRepository;
     }
     
     private readonly IPlayerService _playerService;
@@ -38,6 +40,7 @@ public class AuthHandler : IAuthHandler
     private readonly IReferralService _referralService;
     private readonly IMissionService _missionService;
     private readonly IGuildService _guildService;
+    private readonly ICommonRepository _commonRepository;
     private readonly IMapper _mapper;
 
     public async Task<CallResult<bool>> StartSession(long playerId, EditProfileDto dto)
@@ -65,7 +68,7 @@ public class AuthHandler : IAuthHandler
         if (await _playerService.IsPlayerExist(playerId)) 
             return CallResult<bool>.Failure("Player already exist");
 
-        await CreatePlayer(playerId, data);
+        await _commonRepository.CreateUser(data, playerId);
 
         return CallResult<bool>.Success(true);
     }
@@ -119,18 +122,5 @@ public class AuthHandler : IAuthHandler
         await _playerService.UpdatePlayerData(dto, player);
 
         return await GetProfile(playerId);
-    }
-
-    private async Task CreatePlayer(long playerId, CreateUserModel dto)
-    {
-        await _playerService.CreatePlayer(playerId, dto);
-        await _battleService.CreateNewBattle(playerId, 0);
-        await _marketService.CreateMarket(playerId);
-        await _ratingService.CreateRating(playerId);
-        await _missionService.CreateMissions(playerId);
-        await _guildService.CreateMemberStatus(playerId);
-        
-        if (dto.RefId is not null)
-            await _referralService.CreateNode(playerId, dto.RefId.Value);
     }
 }

@@ -14,8 +14,23 @@ public class UnitOfWork : IUnitOfWork
     private IDbContextTransaction? _transaction;
     private readonly ILogger<UnitOfWork> _logger;
 
-    public async Task BeginTransaction() =>
-        _transaction = await _context.Database.BeginTransactionAsync();
+    public async Task BeginTransaction()
+    {
+        var isTransactionOpen = false;
+        while (!isTransactionOpen)
+        {
+            try
+            {
+                _transaction = await _context.Database.BeginTransactionAsync();
+                isTransactionOpen = true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e.Message);
+                await Task.Delay(100);
+            }
+        }
+    }
 
     public async Task RollbackTransaction()
     {
