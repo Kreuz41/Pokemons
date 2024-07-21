@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Handlers;
 
 namespace Pokemons.API.Controllers;
@@ -23,11 +24,16 @@ public class NotificationController : ControllerBase
     }
 
     [HttpPost("readNotification")]
-    public async Task<IResult> ReadNotification([FromBody] long notificationId)
+    public async Task<IResult> ReadNotification([FromBody] Dictionary<string, long> requestId)
     {
         var playerId = (long)HttpContext.Items["UserId"]!;
-        var result = await _handler.ReadNotification(playerId, notificationId);
-        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+        if (requestId.TryGetValue("id", out var notificationId))
+        {
+            var result = await _handler.ReadNotification(playerId, notificationId);
+            return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+        }
+
+        return Results.BadRequest(CallResult.CallResult<bool>.Failure("Param id not found"));
     }
     
     [HttpPost("readAllNotifications")]
