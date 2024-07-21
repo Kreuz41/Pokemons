@@ -40,8 +40,11 @@ public class NotificationRepository : INotificationRepository
         if (await GetAllNotifications(notification.PlayerId) is List<Notification> notifies)
         {
             var index = notifies.FindIndex(n => n.Id == notification.Id);
-            if (index > 0)
+            if (index >= 0)
                 notifies[index] = notification;
+            
+            await _cacheRepository.SetMember(notification.PlayerId.ToString(), 
+                notifies as IEnumerable<Notification>);
         }
     }
 
@@ -102,6 +105,9 @@ public class NotificationRepository : INotificationRepository
             var index = newsList.FindIndex(n => n.Id == news.Id);
             if (index > 0)
                 newsList[index] = news;
+            
+            await _cacheRepository.SetMember(news.PlayerId.ToString(), 
+                newsList as IEnumerable<News>);
         }
     }
 
@@ -126,6 +132,20 @@ public class NotificationRepository : INotificationRepository
 
         await _unitOfWork.BeginTransaction();
         _context.News.UpdateRange(enumerable);
+        await _unitOfWork.CommitTransaction();
+    }
+
+    public async Task CreateNotification(Notification notification)
+    {
+        await _unitOfWork.BeginTransaction();
+        await _context.Notifications.AddAsync(notification);
+        await _unitOfWork.CommitTransaction();
+    }
+
+    public async Task AddRangeNotifications(List<Notification> newList)
+    {
+        await _unitOfWork.BeginTransaction();
+        _context.Notifications.UpdateRange(newList);
         await _unitOfWork.CommitTransaction();
     }
 }

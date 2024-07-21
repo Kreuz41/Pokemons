@@ -21,6 +21,8 @@ builder.Services.AddSingleton<ICommandHandler, CommandHandler>();
 
 builder.Services.AddSingleton<IBrokerSender, RabbitMqSender>();
 
+builder.Services.AddHostedService<RabbitMqNotificationListener>();
+
 builder.Services.Configure<BotOption>(builder.Configuration.GetSection("BotOption"));
 
 builder.Services.AddSingleton<IConnection>(provider =>

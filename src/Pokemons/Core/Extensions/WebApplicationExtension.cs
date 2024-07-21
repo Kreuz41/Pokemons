@@ -2,6 +2,8 @@
 using Pokemons.API.Middlewares;
 using Pokemons.Core.Helpers;
 using Pokemons.Core.Providers.TimeProvider;
+using Pokemons.Core.Services.NotificationService;
+using Pokemons.Core.Services.ReferralService;
 using Pokemons.DataLayer.Database;
 
 namespace Pokemons.Core.Extensions;

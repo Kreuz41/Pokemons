@@ -1,5 +1,7 @@
-﻿using Pokemons.DataLayer.Database.Models.Entities;
+﻿using Pokemons.Core.BackgroundServices.RabbitMqNotificationSender;
+using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.NotificationRepository;
+using PokemonsDomain.Notification;
 
 namespace Pokemons.Core.Services.NotificationService;
 
@@ -10,7 +12,7 @@ public class NotificationService : INotificationService
         _notificationRepository = notificationRepository;
     }
 
-    private readonly INotificationRepository _notificationRepository;
+    private static INotificationRepository _notificationRepository = null!;
 
     public async Task<IEnumerable<Notification>> GetNotifications(long playerId, int offset) =>
         await _notificationRepository.GetNotificationsWithOffset(playerId, offset);

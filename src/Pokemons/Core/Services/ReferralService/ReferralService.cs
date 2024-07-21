@@ -1,7 +1,9 @@
-﻿using Pokemons.Core.Services.PlayerService;
+﻿using Pokemons.Core.BackgroundServices.NotificationCreator;
+using Pokemons.Core.Services.PlayerService;
 using Pokemons.DataLayer.Cache.Models;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
+using PokemonsDomain.Notification;
 
 namespace Pokemons.Core.Services.ReferralService;
 
@@ -31,6 +33,13 @@ public class ReferralService : IReferralService
         };
         await _nodeRepository.CreateNode(node);
         
+        NotificationCreator.AddNotification(new Notification
+        {
+            PlayerId = referrerId,
+            ReferralName = playerId.ToString(),
+            NotificationType = NotificationType.Referral
+        });
+        
         node = await _nodeRepository.GetReferralNode(referrerId);
         if (node is null) return;
         
@@ -41,8 +50,16 @@ public class ReferralService : IReferralService
             Inline = 2
         };
         await _nodeRepository.CreateNode(secondNode);
+
+        NotificationCreator.AddNotification(new Notification
+        {
+            PlayerId = secondNode.ReferrerId,
+            ReferralName = playerId.ToString(),
+            NotificationType = NotificationType.Referral
+        });
     }
 
     public async Task<IEnumerable<ReferralInline>> GetReferrals(long playerId) => 
         await _nodeRepository.GetReferrals(playerId);
+    
 }

@@ -6,7 +6,9 @@ using Pokemons.API.Middlewares;
 using Pokemons.Core.ApiHandlers;
 using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.BackgroundServices.LeagueUpdater;
+using Pokemons.Core.BackgroundServices.NotificationCreator;
 using Pokemons.Core.BackgroundServices.RabbitMqListener;
+using Pokemons.Core.BackgroundServices.RabbitMqNotificationSender;
 using Pokemons.Core.Helpers;
 using Pokemons.Core.MapperProfiles;
 using Pokemons.Core.Providers.TimeProvider;
@@ -201,5 +203,7 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddHostedService<LeagueUpdaterService>();
         builder.Services.AddHostedService<CacheCollectorService>();
         builder.Services.AddHostedService<RabbitMqListener>();
+        builder.Services.AddHostedService<RabbitMqNotificationSender>();
+        builder.Services.AddHostedService<NotificationCreator>();
     }
 }
