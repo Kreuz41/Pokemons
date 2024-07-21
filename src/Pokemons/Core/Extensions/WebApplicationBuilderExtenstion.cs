@@ -80,6 +80,7 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IGuildHandler, GuildHandler>();
         builder.Services.AddScoped<IBattleHandler, BattleHandler>();
         builder.Services.AddScoped<IRatingHandler, RatingHandler>();
+        builder.Services.AddScoped<ICryptoHandler, CryptoHandler>();
         builder.Services.AddScoped<IMarketHandler, MarketHandler>();
         builder.Services.AddScoped<IMissionHandler, MissionHandler>();
         builder.Services.AddScoped<IReferralHandler, ReferralHandler>();
