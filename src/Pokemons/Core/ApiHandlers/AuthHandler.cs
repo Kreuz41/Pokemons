@@ -81,6 +81,9 @@ public class AuthHandler : IAuthHandler
         var player = await _playerService.GetPlayer(playerId);
         var battle = await _battleService.GetBattleByPlayerId(playerId);
 
+        if (player is null || battle is null)
+            return CallResult<TapperConfigResponseDto>.Failure("Battle not found");
+
         var result = _mapper.Map<TapperConfigResponseDto>(player);
         result.EntityData = _mapper.Map<CommitDamageResponseDto>(battle);
         result.EntityData.RemainingEnergy = player!.CurrentEnergy;

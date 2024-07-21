@@ -7,8 +7,10 @@ public class TapperConfigResponseDto
     public int Coins { get; set; }
     public int DamagePerClick { get; set; }
     public int Energy { get; set; }
+    public int SuperCharge { get; set; }
     public int CurrentEnergy { get; set; }
     public DateTime SuperChargeRemaining { get; set; }
+    public DateTime LastSuperChargeActivatedTime { get; set; }
     public bool IsFirstEntry { get; set; }
     public required CommitDamageResponseDto EntityData { get; set; }
 }

@@ -57,8 +57,12 @@ public class BattleService : IBattleService
     public async Task<Battle?> GetBattleByPlayerId(long playerId) =>
         await _battleRepository.GetPlayerBattle(playerId);
 
-    public async Task Save(long playerId) =>
-        await _battleRepository.Save(await _battleRepository.GetPlayerBattle(playerId));
+    public async Task Save(long playerId)
+    {
+        var battle = await _battleRepository.GetPlayerBattle(playerId);
+        if (battle is not null)
+            await _battleRepository.Save(battle);
+    }
 
     private async Task EndBattle(Battle battle)
     {

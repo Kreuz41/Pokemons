@@ -26,7 +26,7 @@ public class PlayerService : IPlayerService
     {
         var battle = await _battleRepository.GetPlayerBattle(playerId);
         var player = await GetPlayer(playerId);
-        if (player is null) return (0, 0);
+        if (player is null || battle is null) return (0, 0);
 
         var energy = GetEnergy(player);
         player.CurrentEnergy += energy;
