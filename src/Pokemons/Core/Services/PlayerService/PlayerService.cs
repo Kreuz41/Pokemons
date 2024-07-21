@@ -127,6 +127,8 @@ public class PlayerService : IPlayerService
             return;
 
         player!.CryptoBalance -= PremCost;
+        player.IsPremium = true;
+        
         await _playerRepository.FastUpdate(player);
     }
 
