@@ -42,7 +42,7 @@ builder.Services.AddSingleton<IConnection>(provider =>
         catch (Exception e)
         {
             logger.LogError(e?.Message);
-            Task.Delay(1000);
+            Task.Delay(1000).Wait();
         }
     }
 
