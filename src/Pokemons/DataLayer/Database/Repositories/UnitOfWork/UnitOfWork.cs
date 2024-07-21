@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
+using Npgsql;
 
 namespace Pokemons.DataLayer.Database.Repositories.UnitOfWork;
 
@@ -43,12 +44,18 @@ public class UnitOfWork : IUnitOfWork
     public async Task CommitTransaction()
     {
         if (_transaction is null) return;
-        
+
         try
         {
             await _context.SaveChangesAsync();
             await _transaction.CommitAsync();
             await _transaction.DisposeAsync();
+        }
+        catch (NpgsqlException exception) when (exception.SqlState == "53300")
+        {
+            _logger.LogWarning(exception.Message);
+            await Task.Delay(100);
+            await CommitTransaction();
         }
         catch (Exception e)
         {

@@ -132,15 +132,15 @@ public class PlayerService : IPlayerService
         await _playerRepository.FastUpdate(player);
     }
 
-    public async Task<TimeSpan> GetSuperChargeSecondsRemaining(long playerId)
+    public async Task<DateTime> GetSuperChargeSecondsRemaining(long playerId)
     {
         var player = await GetPlayer(playerId);
-        if (player is null) return TimeSpan.Zero;
+        if (player is null) return DateTime.MinValue;
         
         var cooldown = 
             (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalSeconds / player.SuperChargeCooldown;
         
-        return TimeSpan.FromHours(8).Subtract(TimeSpan.FromSeconds((double)cooldown));
+        return DateTime.Now + TimeSpan.FromHours(8).Subtract(TimeSpan.FromSeconds((double)cooldown));
     }
 
     private void LevelUpdate(Player player)
