@@ -4,7 +4,7 @@ using Pokemons.API.Handlers;
 namespace Pokemons.API.Controllers;
 
 [ApiController]
-[Route("crypto/")]
+[Route("api/crypto/")]
 public class CryptoController : ControllerBase
 {
     public CryptoController(ICryptoHandler cryptoHandler, IAuthHandler authHandler)

@@ -4,7 +4,7 @@ using Pokemons.API.Handlers;
 namespace Pokemons.API.Controllers;
 
 [ApiController]
-[Route("notifications/")]
+[Route("api/notifications/")]
 public class NotificationController : ControllerBase
 {
     public NotificationController(INotificationHandler handler)
