@@ -136,11 +136,12 @@ public class PlayerService : IPlayerService
     {
         var player = await GetPlayer(playerId);
         if (player is null) return DateTime.MinValue;
+
+        var cooldown =
+            (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalSeconds;
         
-        var cooldown = 
-            (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalSeconds / player.SuperChargeCooldown;
-        
-        return DateTime.Now + TimeSpan.FromHours(8).Subtract(TimeSpan.FromSeconds((double)cooldown));
+        return DateTime.Now + TimeSpan.FromHours((double)(8 - player.SuperChargeCooldown))
+            .Subtract(TimeSpan.FromSeconds(cooldown));
     }
 
     private void LevelUpdate(Player player)
