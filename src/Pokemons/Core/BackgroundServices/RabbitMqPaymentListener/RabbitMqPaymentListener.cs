@@ -5,41 +5,35 @@ using PokemonsDomain.MessageBroker.Properties.RabbitMq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Pokemons.Core.BackgroundServices.RabbitMqListener;
+namespace Pokemons.Core.BackgroundServices.RabbitMqPaymentListener;
 
-public class RabbitMqListener : BackgroundService
+public class RabbitMqPaymentListener : BackgroundService
 {
-    private readonly IConnection _connection;
-
-    private readonly ILogger<RabbitMqListener> _logger;
-
-    private readonly IServiceScopeFactory _scopeFactory;
-
-    public RabbitMqListener(IServiceScopeFactory scopeFactory, ILogger<RabbitMqListener> logger,
-        IConnection connection)
+    public RabbitMqPaymentListener(IConnection connection, ILogger<RabbitMqPaymentListener> logger, IServiceScopeFactory scopeFactory)
     {
-        _scopeFactory = scopeFactory;
-        _logger = logger;
         _connection = connection;
+        _logger = logger;
+        _scopeFactory = scopeFactory;
     }
+    
+    private readonly IConnection _connection;
+    private readonly ILogger<RabbitMqPaymentListener> _logger;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var channel = await _connection.CreateChannelAsync(stoppingToken);
 
-        await channel.ExchangeDeclareAsync(RabbitMqExchangeNames.PlayerEventExchange, ExchangeType.Direct);
-
         var routing = "bot.create.player";
-        var queue = await channel.QueueDeclareAsync();
         
         _logger.LogInformation($"Start to listen rabbitmq by {routing} . . .");
-        
-        await channel.QueueBindAsync(
-            queue: queue, 
-            exchange: RabbitMqExchangeNames.PlayerEventExchange, 
-            routingKey: routing,
+
+        await channel.QueueDeclareAsync(
+            queue: routing,
+            durable: false,
             arguments: null,
-            cancellationToken: stoppingToken);
+            autoDelete: false
+            );
         
         var consumer = new EventingBasicConsumer(channel);
         consumer.Received += async (sender, args) =>
@@ -56,7 +50,7 @@ public class RabbitMqListener : BackgroundService
         };
 
         await channel.BasicConsumeAsync(
-            queue.QueueName,
+            routing,
             true,
             consumer);
 
