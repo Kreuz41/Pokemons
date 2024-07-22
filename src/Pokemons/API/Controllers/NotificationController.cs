@@ -69,7 +69,7 @@ public class NotificationController : ControllerBase
     }
     
     [HttpPost("readNews")]
-    public async Task<IResult> ReadNews([FromBody] long newsId)
+    public async Task<IResult> ReadNews([FromQuery] long newsId)
     {
         var playerId = (long)HttpContext.Items["UserId"]!;
         var result = await _handler.ReadNews(playerId, newsId);
