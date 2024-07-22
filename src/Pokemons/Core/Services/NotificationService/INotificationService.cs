@@ -13,4 +13,5 @@ public interface INotificationService
     Task<bool> IsNewsExist(long playerId, long newsId);
     Task ReadNews(long playerId, long newsId);
     Task ReadAllNews(long playerId);
+    Task DeleteNotification(long playerId, long notificationId);
 }

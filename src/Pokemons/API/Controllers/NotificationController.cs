@@ -44,6 +44,14 @@ public class NotificationController : ControllerBase
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
     
+    [HttpPost("deleteNotification")]
+    public async Task<IResult> DeleteNotification([FromQuery] long notificationId)
+    {
+        var playerId = (long)HttpContext.Items["UserId"]!;
+        var result = await _handler.DeleteNotification(playerId, notificationId);
+        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+    }
+    
     [HttpPost("deleteAllNotifications")]
     public async Task<IResult> DeleteAllNotifications()
     {

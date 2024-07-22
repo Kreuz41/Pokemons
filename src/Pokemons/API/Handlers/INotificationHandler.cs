@@ -12,4 +12,5 @@ public interface INotificationHandler
     Task<CallResult<IEnumerable<News>>> GetNews(long playerId, int offset);
     Task<CallResult<bool>> ReadNews(long playerId, long newsId);
     Task<CallResult<bool>> ReadAllNews(long playerId);
+    Task<CallResult<bool>> DeleteNotification(long playerId, long notificationId);
 }

@@ -156,7 +156,7 @@ public class PlayerService : IPlayerService
     private int GetEnergy(Player player)
     {
         var energy = player.LastCommitDamageTime != default
-            ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) * player.EnergyCharge)
+            ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) / player.EnergyCharge)
             : player.Energy;
         
         return energy > player.Energy ? player.Energy : energy;

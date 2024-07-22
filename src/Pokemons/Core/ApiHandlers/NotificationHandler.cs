@@ -69,4 +69,14 @@ public class NotificationHandler : INotificationHandler
         await _notificationService.ReadAllNews(playerId);
         return CallResult<bool>.Success(true);
     }
+
+    public async Task<CallResult<bool>> DeleteNotification(long playerId, long notificationId)
+    {
+        if (!await _notificationService.IsNotificationExist(playerId, notificationId))
+            return CallResult<bool>.Failure("Notification not found");
+
+        await _notificationService.DeleteNotification(playerId, notificationId);
+        
+        return CallResult<bool>.Success(true);
+    }
 }
