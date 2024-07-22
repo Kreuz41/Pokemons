@@ -162,4 +162,16 @@ public class NotificationRepository : INotificationRepository
         notifications.RemoveAt(index);
         await UpdateRangeNotifications(notifications);
     }
+
+    public async Task<int> GetUnreadNewsCount(long playerId)
+    {
+        var notifications = await GetAllNews(playerId);
+        return notifications.Count(n => !n.IsRead);
+    }
+
+    public async Task<int> GetUnreadNotifications(long playerId)
+    {
+        var notifies = await GetAllNotifications(playerId);
+        return notifies.Count(n => !n.IsRead);
+    }
 }

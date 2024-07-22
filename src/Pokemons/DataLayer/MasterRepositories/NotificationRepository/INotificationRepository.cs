@@ -18,4 +18,6 @@ public interface INotificationRepository
     Task CreateNotification(Notification notification);
     Task AddRangeNotifications(List<Notification> newList);
     Task DeleteNotification(long playerId, long notificationId);
+    Task<int> GetUnreadNewsCount(long playerId);
+    Task<int> GetUnreadNotifications(long playerId);
 }

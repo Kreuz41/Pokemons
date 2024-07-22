@@ -15,4 +15,6 @@ public class ProfileResponseDto
     public decimal CryptoBalance { get; set; }
     public string? Firstname { get; set; }
     public string? Lastname { get; set; }
+    public int UnreadNews { get; set; }
+    public int UnreadNotify { get; set; }
 }

@@ -6,11 +6,10 @@ using Pokemons.API.Handlers;
 using Pokemons.Core.Services.BattleService;
 using Pokemons.Core.Services.GuildService;
 using Pokemons.Core.Services.MarketService;
-using Pokemons.Core.Services.MissionService;
 using Pokemons.Core.Services.PlayerService;
 using Pokemons.Core.Services.RatingService;
-using Pokemons.Core.Services.ReferralService;
 using Pokemons.DataLayer.MasterRepositories.CommonRepository;
+using Pokemons.DataLayer.MasterRepositories.NotificationRepository;
 using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.Core.ApiHandlers;
@@ -18,29 +17,26 @@ namespace Pokemons.Core.ApiHandlers;
 public class AuthHandler : IAuthHandler
 {
     public AuthHandler(IMapper mapper, IPlayerService playerService, 
-        IBattleService battleService, IMarketService marketService, 
-        IReferralService referralService, IRatingService ratingService, 
-        IMissionService missionService, IGuildService guildService, ICommonRepository commonRepository)
+        IBattleService battleService, IMarketService marketService, IRatingService ratingService, 
+        IGuildService guildService, ICommonRepository commonRepository, INotificationRepository notificationRepository)
     {
         _mapper = mapper;
         _playerService = playerService;
         _battleService = battleService;
         _marketService = marketService;
-        _referralService = referralService;
         _ratingService = ratingService;
-        _missionService = missionService;
         _guildService = guildService;
         _commonRepository = commonRepository;
+        _notificationRepository = notificationRepository;
     }
     
     private readonly IPlayerService _playerService;
     private readonly IBattleService _battleService;
     private readonly IMarketService _marketService;
     private readonly IRatingService _ratingService;
-    private readonly IReferralService _referralService;
-    private readonly IMissionService _missionService;
     private readonly IGuildService _guildService;
     private readonly ICommonRepository _commonRepository;
+    private readonly INotificationRepository _notificationRepository;
     private readonly IMapper _mapper;
 
     public async Task<CallResult<bool>> StartSession(long playerId, EditProfileDto dto)
@@ -111,7 +107,9 @@ public class AuthHandler : IAuthHandler
             IsPremium = player.IsPremium,
             CryptoBalance = player.CryptoBalance,
             Firstname = player.Name,
-            Lastname = player.Surname
+            Lastname = player.Surname,
+            UnreadNews = await _notificationRepository.GetUnreadNewsCount(playerId),
+            UnreadNotify = await _notificationRepository.GetUnreadNotifications(playerId)
         };
 
         return CallResult<ProfileResponseDto>.Success(response);
