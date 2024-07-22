@@ -44,63 +44,64 @@ public class MarketService : IMarketService
     #region UpgradeStats
     private bool UpgradeSuperChargeCooldown(Player player, Market market)
     {
-        if (player.Balance < market.SuperChargeCooldownCost) return false;
+        if (player.Balance < market.SuperChargeCooldownCost || market.SuperChargeCooldownLevel >= 20) return false;
 
         player.Balance -= market.SuperChargeCooldownCost;
         player.SuperChargeCooldown = market.SuperChargeCooldownNextValue;
-        market.SuperChargeCooldownCost *= 2;
+        market.SuperChargeCooldownCost = (long)(market.SuperChargeCooldownCost * 2.6);
         if (market.SuperChargeCooldownLevel == 0)
             player.LastSuperChargeActivatedTime = _timeProvider.Now();
         
         market.SuperChargeCooldownLevel++;
-        market.SuperChargeCooldownNextValue += 0.02m;
+        market.SuperChargeCooldownNextValue += 0.25m;
         
         return true;
     }
     private bool UpgradeSuperChargeDamage(Player player, Market market)
     {
-        if (player.Balance < market.SuperChargeCost) return false;
+        if (player.Balance < market.SuperChargeCost || market.SuperChargeLevel >= 20) return false;
 
         player.Balance -= market.SuperChargeCost;
         player.SuperCharge = market.SuperChargeNextValue;
-        market.SuperChargeNextValue += 1000;
-        market.SuperChargeCost *= 2;
+        market.SuperChargeNextValue = (int)(market.SuperChargeNextValue * 1.03);
+        market.SuperChargeCost = (long)(market.SuperChargeCost * 2.6m);
         market.SuperChargeLevel++;
         
         return true;
     }
     private bool UpgradeEnergyCharge(Player player, Market market)
     {
-        if (player.Balance < market.EnergyChargeCost) return false;
+        if (player.Balance < market.EnergyChargeCost || market.EnergyChargeLevel >= 100) return false;
 
         player.Balance -= market.EnergyChargeCost;
         player.EnergyCharge = market.EnergyChargeNextValue;
-        market.EnergyChargeNextValue += 0.02m;
-        market.EnergyChargeCost *= 2;
+        market.EnergyChargeNextValue = 3600m / player.Energy;
+        market.EnergyChargeCost = (long)(market.EnergyChargeCost * 1.3);
         market.EnergyChargeLevel++;
         
         return true;
     }
     private bool UpgradeEnergyCapacity(Player player, Market market)
     {
-        if (player.Balance < market.EnergyCost) return false;
+        if (player.Balance < market.EnergyCost || market.EnergyLevel >= 100) return false;
 
         player.Balance -= market.EnergyCost;
         player.Energy = market.EnergyNextValue;
-        market.EnergyCost *= 2;
-        market.EnergyNextValue += 500;
+        market.EnergyCost = (long)(market.EnergyCost * 1.3);
+        market.EnergyNextValue = (int)(market.EnergyNextValue * 1.04);
         market.EnergyLevel++;
         
         return true;
     }
     private bool UpgradeDamagePerClick(Player player, Market market)
     {
-        if (player.Balance < market.DamagePerClickCost) return false;
+        if (player.Balance < market.DamagePerClickCost || market.DamagePerClickLevel >= 500) return false;
 
         player.Balance -= market.DamagePerClickCost;
         player.DamagePerClick = market.DamagePerClickNextValue;
-        market.DamagePerClickNextValue++;
-        market.DamagePerClickCost *= 2;
+        market.DamagePerClickCost = 
+            (long)(market.DamagePerClickNextValue * 1000 * Math.Pow(1.015, market.DamagePerClickLevel));
+        market.DamagePerClickNextValue = (int)(market.DamagePerClickNextValue * 1.02);
         market.DamagePerClickLevel++;
         
         return true;

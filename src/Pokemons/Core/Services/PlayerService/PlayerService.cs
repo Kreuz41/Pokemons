@@ -155,7 +155,7 @@ public class PlayerService : IPlayerService
     private int GetEnergy(Player player)
     {
         var energy = player.LastCommitDamageTime != default
-            ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) / 10 * player.EnergyCharge)
+            ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) * player.EnergyCharge)
             : player.Energy;
         
         return energy > player.Energy ? player.Energy : energy;
@@ -164,6 +164,6 @@ public class PlayerService : IPlayerService
     private bool CanUseSuperCharge(Player player)
     {
         var cooldown = (_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
-        return cooldown * (double)player.SuperChargeCooldown >= 8;
+        return cooldown >= 8 - (double)player.SuperChargeCooldown;
     }
 }
