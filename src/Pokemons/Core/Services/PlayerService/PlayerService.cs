@@ -111,7 +111,7 @@ public class PlayerService : IPlayerService
         if (player is null) return;
         
         player.GoldBalance += activeMissionReward;
-        await Update(player);
+        await _playerRepository.FastUpdate(player);
     }
 
     public async Task<bool> IsEnoughCrypto(long playerId)

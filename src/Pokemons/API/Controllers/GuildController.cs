@@ -30,7 +30,7 @@ public class GuildController : ControllerBase
         return response.Status ? Results.Ok(response) : Results.BadRequest(response);
     }
 
-    [HttpPost("sendJoinRequest")]
+    [HttpGet("sendJoinRequest")]
     public async Task<IResult> SendRequest([FromQuery] long guildId)
     {
         var playerId = (long)HttpContext.Items["UserId"]!;

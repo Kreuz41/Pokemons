@@ -64,6 +64,9 @@ public class GuildHandler : IGuildHandler
         if (await _guildService.IsPlayerInGuild(playerId))
             return CallResult<bool>.Failure("You cannot send join request because you are member another one");
 
+        if (!await _guildService.IsGuildExist(guildId))
+            return CallResult<bool>.Failure("Guild doesn't exist");
+
         await _guildService.SendRequestToJoin(playerId, guildId);
 
         return CallResult<bool>.Success(true);

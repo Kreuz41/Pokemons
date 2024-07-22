@@ -36,11 +36,13 @@ public class GuildDatabaseRepository : IGuildDatabaseRepository
     public async Task<Guild?> GetGuildByPlayerId(long playerId) =>
         (await _context.MemberGuildStatus
             .Include(g => g.Guild)
+            .AsNoTracking()
             .FirstOrDefaultAsync(m => m.PlayerId == playerId))?
         .Guild;
 
     public async Task<IEnumerable<Player>> GetAllMembers(long guildId) =>
         await _context.MemberGuildStatus
+            .AsNoTracking()
             .Include(m => m.Player)
             .Include(m => m.Player.GuildStatus)
             .Where(m => m.GuildId == guildId)
@@ -64,16 +66,33 @@ public class GuildDatabaseRepository : IGuildDatabaseRepository
     public async Task SaveGuild(Guild guild)
     {
         await _unitOfWork.BeginTransaction();
+        var tracked = _context.ChangeTracker.Entries<Guild>()
+            .FirstOrDefault(g => g.Entity.Id == guild.Id);
+        if (tracked != null)
+        {
+            _context.Entry(tracked.Entity).State = EntityState.Detached;
+            _context.Entry(tracked).State = EntityState.Modified;
+            _context.Attach(tracked);
+        }
+        
         _context.Guilds.Update(guild);
         await _unitOfWork.CommitTransaction();
     }
 
     public async Task<IEnumerable<Guild>> GetPopularsGuild() =>
         await _context.Guilds
+            .AsNoTracking()
             .OrderBy(g => g.PlayersCount)
             .Take(100)
             .ToListAsync();
 
     public async Task<Guild?> GetById(long guildId) =>
-        await _context.Guilds.FirstOrDefaultAsync(g => g.Id == guildId);
+        await _context.Guilds
+            .AsNoTracking()
+            .FirstOrDefaultAsync(g => g.Id == guildId);
+
+    public async Task<Guild?> GetGuildById(long guildId) =>
+        await _context.Guilds
+            .AsNoTracking()
+            .FirstOrDefaultAsync(g => g.Id == guildId);
 }

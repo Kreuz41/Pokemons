@@ -14,4 +14,5 @@ public interface IGuildDatabaseRepository
     Task SaveGuild(Guild guild);
     Task<IEnumerable<Guild>> GetPopularsGuild();
     Task<Guild?> GetById(long guildId);
+    Task<Guild?> GetGuildById(long guildId);
 }

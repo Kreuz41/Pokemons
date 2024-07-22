@@ -62,9 +62,6 @@ public class GuildRepository : IGuildRepository
 
     public async Task<IEnumerable<Player>> GetAllGuildMembers(long guildId)
     {
-        var cache = await _cacheRepository.GetMember<GuildMembers>(guildId.ToString());
-        if (cache is not null) return cache.Members;
-
         var allGuildMembers = await AllGuildMembers(guildId);
         
         return allGuildMembers;
@@ -105,6 +102,9 @@ public class GuildRepository : IGuildRepository
 
     public async Task<IEnumerable<Guild>> GetPopularGuilds() =>
         await _guildDatabaseRepository.GetPopularsGuild();
+
+    public async Task<Guild?> GetGuildById(long guildId) =>
+        await _guildDatabaseRepository.GetGuildById(guildId);
 
     public async Task Save(long playerId)
     {

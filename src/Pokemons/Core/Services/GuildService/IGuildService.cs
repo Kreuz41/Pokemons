@@ -14,4 +14,5 @@ public interface IGuildService
     Task<bool> IsPlayerAdmin(long playerId);
     Task ChangeJoinRequestStatus(long memberId, bool isConfirm);
     Task<IEnumerable<Guild>> GetMostPopularGuilds();
+    Task<bool> IsGuildExist(long guildId);
 }

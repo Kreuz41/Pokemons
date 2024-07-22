@@ -89,6 +89,11 @@ public class GuildService : IGuildService
     public async Task<IEnumerable<Guild>> GetMostPopularGuilds() =>
         await _guildRepository.GetPopularGuilds();
 
+    public async Task<bool> IsGuildExist(long guildId)
+    {
+        return await _guildRepository.GetGuildById(guildId) is not null;
+    }
+
     protected virtual void OnRequestSend(long playerId, long guildId)
     {
         RequestSend?.Invoke(playerId, guildId);
