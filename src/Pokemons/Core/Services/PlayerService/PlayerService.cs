@@ -135,7 +135,7 @@ public class PlayerService : IPlayerService
     public async Task<DateTime> GetSuperChargeSecondsRemaining(long playerId)
     {
         var player = await GetPlayer(playerId);
-        if (player is null) return DateTime.MinValue;
+        if (player is null) return DateTime.MaxValue;
 
         var cooldown =
             (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalSeconds;
