@@ -158,6 +158,8 @@ public class PlayerService : IPlayerService
         var energy = player.LastCommitDamageTime != default
             ? (int)(_timeProvider.GetSecondsBetweenDateAndNow(player.LastCommitDamageTime) / player.EnergyCharge)
             : player.Energy;
+
+        if (energy < 0) energy = 0;
         
         return energy > player.Energy ? player.Energy : energy;
     }

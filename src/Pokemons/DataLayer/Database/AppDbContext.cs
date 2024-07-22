@@ -4,8 +4,13 @@ using Pokemons.DataLayer.Database.Models.Entities;
 
 namespace Pokemons.DataLayer.Database;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public sealed class AppDbContext : DbContext
 {
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+    }
+    
     public DbSet<Player> Players { get; init; } = null!;
     public DbSet<Battle> Battles { get; init; } = null!;
     public DbSet<Market> Markets { get; init; } = null!;
@@ -18,6 +23,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ActiveNews> ActiveNews { get; init; } = null!;
     public DbSet<News> News { get; set; } = null!;
     public DbSet<Notification> Notifications { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new NewsConfiguration());

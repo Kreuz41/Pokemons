@@ -23,6 +23,8 @@ public class BattleService : IBattleService
     {
         var battle = await _battleRepository.GetPlayerBattle(playerId);
 
+        if (battle is null || damage < 0) return battle;
+        
         battle.RemainingHealth -= damage;
         if (battle.RemainingHealth > 0)
         {
