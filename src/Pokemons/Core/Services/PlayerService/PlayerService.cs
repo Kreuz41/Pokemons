@@ -34,7 +34,7 @@ public class PlayerService : IPlayerService
         
         var damage = player.DamagePerClick * taps;
         damage = damage > player.CurrentEnergy ? player.CurrentEnergy : damage;
-        player.CurrentEnergy -= damage;
+        player.CurrentEnergy -= taps;
         player.LastCommitDamageTime = _timeProvider.Now();
 
         if (player.IsFirstEntry)
@@ -62,7 +62,7 @@ public class PlayerService : IPlayerService
         
         player.LastSuperChargeActivatedTime = _timeProvider.Now();
         await _playerRepository.FastUpdate(player);
-        return (player.SuperCharge, player.DefeatedEntities);
+        return (player.SuperCharge * player.DamagePerClick, player.DefeatedEntities);
     }
 
     public async Task<Player?> GetPlayer(long userId)

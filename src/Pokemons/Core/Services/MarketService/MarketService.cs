@@ -44,9 +44,9 @@ public class MarketService : IMarketService
     #region UpgradeStats
     private bool UpgradeSuperChargeCooldown(Player player, Market market)
     {
-        if (player.Balance < market.SuperChargeCooldownCost || market.SuperChargeCooldownLevel >= 20) return false;
+        if (player.GoldBalance < market.SuperChargeCooldownCost || market.SuperChargeCooldownLevel >= 20) return false;
 
-        player.Balance -= market.SuperChargeCooldownCost;
+        player.GoldBalance -= market.SuperChargeCooldownCost;
         player.SuperChargeCooldown = market.SuperChargeCooldownNextValue;
         market.SuperChargeCooldownCost = (long)(market.SuperChargeCooldownCost * 2.6);
         if (market.SuperChargeCooldownLevel == 0)
