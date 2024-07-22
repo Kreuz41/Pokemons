@@ -154,4 +154,12 @@ public class NotificationRepository : INotificationRepository
         _context.Notifications.UpdateRange(newList);
         await _unitOfWork.CommitTransaction();
     }
+
+    public async Task DeleteNotification(long playerId, long notificationId)
+    {
+        var notifications = (await GetAllNotifications(playerId)).ToList();
+        var index = notifications.FindIndex(n => n.Id == notificationId && n.PlayerId == playerId);
+        notifications.RemoveAt(index);
+        await UpdateRangeNotifications(notifications);
+    }
 }

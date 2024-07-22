@@ -74,8 +74,6 @@ public class NotificationService : INotificationService
         await _notificationRepository.UpdateRangeNews(newsEnumerable);
     }
 
-    public async Task DeleteNotification(long playerId, long notificationId)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task DeleteNotification(long playerId, long notificationId) =>
+        await _notificationRepository.DeleteNotification(playerId, notificationId);
 }

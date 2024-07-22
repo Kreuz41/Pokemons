@@ -17,4 +17,5 @@ public interface INotificationRepository
     Task UpdateRangeNews(IEnumerable<News> news);
     Task CreateNotification(Notification notification);
     Task AddRangeNotifications(List<Notification> newList);
+    Task DeleteNotification(long playerId, long notificationId);
 }
