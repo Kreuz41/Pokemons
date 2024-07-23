@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 
 namespace Pokemons.DataLayer.Database.Repositories.UnitOfWork;
@@ -29,6 +31,7 @@ public class UnitOfWork : IUnitOfWork
             {
                 _logger.LogWarning(e.Message);
                 await Task.Delay(100);
+                await BeginTransaction();
             }
         }
     }
