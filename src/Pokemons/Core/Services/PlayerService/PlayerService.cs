@@ -20,6 +20,7 @@ public class PlayerService : IPlayerService
     private readonly IPlayerRepository _playerRepository;
     private readonly IBattleRepository _battleRepository;
     private readonly ITimeProvider _timeProvider;
+    
     private const int PremCost = 10;
 
     public async Task<(int, int)> CommitDamage(long playerId, int taps)

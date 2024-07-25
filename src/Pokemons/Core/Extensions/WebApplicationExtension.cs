@@ -42,7 +42,7 @@ public static class WebApplicationExtension
 
     private static void ConfigureSwagger(WebApplication app)
     {
-        if (!app.Environment.IsDevelopment()) return;
+        //if (!app.Environment.IsDevelopment()) return;
         
         app.UseSwagger();
         app.UseSwaggerUI();

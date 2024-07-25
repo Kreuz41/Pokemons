@@ -23,7 +23,7 @@ public class BattleRepository : IBattleRepository
     public async Task<Battle?> GetPlayerBattle(long playerId)
     {
         var battle = await _cacheRepository.GetMember<Battle>(playerId.ToString()) 
-                     ?? await _databaseRepository.GetBattleByPlayerId(playerId);
+                     ?? await _databaseRepository.GetActiveBattleByPlayerId(playerId);
         if (battle is null)
         {
             if (await _playerDatabaseRepository.GetById(playerId) is not null)

@@ -5,7 +5,7 @@ namespace Pokemons.DataLayer.Database.Repositories.BattleRepos;
 
 public interface IBattleDatabaseRepository
 {
-    Task<Battle?> GetBattleByPlayerId(long playerId);
+    Task<Battle?> GetActiveBattleByPlayerId(long playerId);
     Task<Battle> CreateBattleForPlayer(Battle battle);
     Task UpdateBattle(Battle battle);
 }

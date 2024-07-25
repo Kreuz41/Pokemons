@@ -193,7 +193,7 @@ public static class WebApplicationBuilderExtenstion
     
     private static void ConfigureDbContext(IHostApplicationBuilder builder)
     {
-        builder.Services.AddDbContextFactory<AppDbContext>(optionsAction =>
+        builder.Services.AddDbContextPool<AppDbContext>(optionsAction =>
         {
             optionsAction.UseNpgsql(builder.Configuration.GetConnectionString("Database") 
                                     ?? throw new ArgumentNullException());

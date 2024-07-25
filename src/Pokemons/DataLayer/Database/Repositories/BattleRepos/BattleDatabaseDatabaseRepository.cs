@@ -20,10 +20,11 @@ public class BattleDatabaseRepository : IBattleDatabaseRepository
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITimeProvider _timeProvider;
 
-    public async Task<Battle?> GetBattleByPlayerId(long playerId) =>
+    public async Task<Battle?> GetActiveBattleByPlayerId(long playerId) =>
         await _context.Battles
             .AsNoTracking()
-            .FirstOrDefaultAsync(b => b.PlayerId == playerId);
+            .FirstOrDefaultAsync(b => b.PlayerId == playerId 
+                                      && b.BattleState == BattleState.Battle);
 
     public async Task<Battle> CreateBattleForPlayer(Battle battle)
     {
