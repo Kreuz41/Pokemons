@@ -6,4 +6,5 @@ public class ReferralInline
 {
     public Player Player { get; set; } = null!;
     public int Inline { get; set; }
+    public int Balance { get; set; }
 }

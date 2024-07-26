@@ -35,4 +35,18 @@ public class ReferralNodeRepository : IReferralNodeRepository
 
     public async Task<ReferralNode?> GetReferralNode(long playerId) => 
         await _databaseRepository.GetFirstReferralNode(playerId);
+
+    public async Task<IEnumerable<ReferralNode>> GetParentsForPlayer(long playerId)
+    {
+        var parents = await _cacheRepository.GetMember<IEnumerable<ReferralNode>>(playerId.ToString());
+        if (parents is not null) return parents;
+
+        parents = await _databaseRepository.GetParentsForPlayer(playerId);
+        await _cacheRepository.SetMember(playerId.ToString(), parents, 5);
+
+        return parents;
+    }
+
+    public Task UpdateEnumerable(IEnumerable<ReferralNode> parents) =>
+        _databaseRepository.UpdateRange(parents);
 }

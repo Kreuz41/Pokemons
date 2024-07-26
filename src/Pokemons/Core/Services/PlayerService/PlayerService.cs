@@ -3,6 +3,7 @@ using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.BattleRepository;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
+using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
 using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.Core.Services.PlayerService;
@@ -10,15 +11,17 @@ namespace Pokemons.Core.Services.PlayerService;
 public class PlayerService : IPlayerService
 {
     public PlayerService(IPlayerRepository playerRepository, ITimeProvider timeProvider, 
-        IBattleRepository battleRepository)
+        IBattleRepository battleRepository, IReferralNodeRepository referralRepository)
     {
         _playerRepository = playerRepository;
         _timeProvider = timeProvider;
         _battleRepository = battleRepository;
+        _referralRepository = referralRepository;
     }
 
     private readonly IPlayerRepository _playerRepository;
     private readonly IBattleRepository _battleRepository;
+    private readonly IReferralNodeRepository _referralRepository;
     private readonly ITimeProvider _timeProvider;
     
     private const int PremCost = 10;
@@ -28,10 +31,6 @@ public class PlayerService : IPlayerService
         var battle = await _battleRepository.GetPlayerBattle(playerId);
         var player = await GetPlayer(playerId);
         if (player is null || battle is null) return (0, 0);
-
-        var energy = GetEnergy(player);
-        player.CurrentEnergy += energy;
-        player.CurrentEnergy = player.CurrentEnergy > player.Energy ? player.Energy : player.CurrentEnergy;
         
         var damage = player.DamagePerClick * taps;
         damage = damage > player.CurrentEnergy ? player.CurrentEnergy : damage;
@@ -47,11 +46,29 @@ public class PlayerService : IPlayerService
         if (battle.IsGold)
             player.GoldBalance += damage;
         else
-            player.Balance += damage;
+            await TopUpPlayerBalance(player, damage);
 
         await _playerRepository.FastUpdate(player);
         
         return (damage, player.DefeatedEntities);
+    }
+
+    public async Task TopUpPlayerBalance(Player player, int value)
+    {
+        player.Balance += value;
+
+        var parents = await _referralRepository.GetParentsForPlayer(player.Id);
+        foreach (var node in parents)
+        {
+            node.BalanceValue += value;
+            var parent = await _playerRepository.GetPlayerById(node.ReferrerId);
+            if (parent is null) continue;
+            
+            parent.Balance += value;
+            await _playerRepository.Update(parent);
+        }
+
+        await _referralRepository.UpdateEnumerable(parents);
     }
 
     public async Task<(int, int)> UseSuperCharge(long playerId)

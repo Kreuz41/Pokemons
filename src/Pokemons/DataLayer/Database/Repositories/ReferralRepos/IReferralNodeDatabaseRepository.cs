@@ -8,4 +8,6 @@ public interface IReferralNodeDatabaseRepository
     Task CreateNode(ReferralNode node);
     Task<IEnumerable<ReferralInline>> GetReferrals(long playerId);
     Task<ReferralNode?> GetFirstReferralNode(long referral);
+    Task<IEnumerable<ReferralNode>> GetParentsForPlayer(long playerId);
+    Task UpdateRange(IEnumerable<ReferralNode> parents);
 }

@@ -35,7 +35,8 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
         return nodes.Select(n => new ReferralInline
         {
             Player = n.Referral,
-            Inline = n.Inline
+            Inline = n.Inline,
+            Balance = n.BalanceValue
         });
     }
 
@@ -44,4 +45,25 @@ public class ReferralNodeDatabaseRepository : IReferralNodeDatabaseRepository
             .Include(r => r.Referrer)
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.ReferralId == referral && r.Inline == 1);
+
+    public async Task<IEnumerable<ReferralNode>> GetParentsForPlayer(long playerId) =>
+        await _context.ReferralNodes
+            .Include(r => r.Referrer)
+            .Where(r => r.ReferralId == playerId)
+            .ToListAsync();
+
+    public async Task UpdateRange(IEnumerable<ReferralNode> parents)
+    {
+        await _unitOfWork.BeginTransaction();
+        foreach (var parent in parents)
+        {
+            var trackedEntity = _context.ChangeTracker.Entries<Player>()
+                .FirstOrDefault(e => e.Entity.Id == parent.ReferrerId);
+            if (trackedEntity != null)
+                _context.Entry(trackedEntity.Entity).State = EntityState.Detached;
+        }
+        
+        _context.ReferralNodes.UpdateRange(parents);
+        await _unitOfWork.CommitTransaction();
+    }
 }

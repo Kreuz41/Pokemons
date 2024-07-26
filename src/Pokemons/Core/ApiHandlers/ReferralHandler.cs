@@ -17,25 +17,31 @@ public class ReferralHandler : IReferralHandler
     
     public async Task<CallResult<Friends>> GetReferralInfo(long playerId)
     {
+        var totalBalance = 0;
         var refs = await _referralService.GetReferrals(playerId);
-        var response = refs.Select(value => new FriendsItem
+        var response = refs.Select(value =>
             {
-                Id = value.Player.Id,
-                Name = value.Player.Name,
-                Surname = value.Player.Surname,
-                DefeatedEntities = value.Player.DefeatedEntities,
-                Level = value.Player.Level,
-                PhotoUrl = value.Player.PhotoUrl,
-                LeagueType = (int)value.Player.Rating.LeagueType,
-                Inline = value.Inline,
-                ProfitNumber = 0
+                totalBalance += value.Balance;
+                return new FriendsItem
+                {
+                    Id = value.Player.Id,
+                    Name = value.Player.Name,
+                    Surname = value.Player.Surname,
+                    DefeatedEntities = value.Player.DefeatedEntities,
+                    Level = value.Player.Level,
+                    PhotoUrl = value.Player.PhotoUrl,
+                    LeagueType = (int)value.Player.Rating.LeagueType,
+                    Inline = value.Inline,
+                    ProfitNumber = value.Balance
+                };
             })
             .ToList();
 
         return CallResult<Friends>.Success(new Friends
         {
             List = response,
-            Total = response.Count
+            Total = response.Count,
+            TotalBalance = totalBalance
         });
     }
 }
