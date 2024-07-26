@@ -71,7 +71,10 @@ public class PlayerService : IPlayerService
         var player = await _playerRepository.GetPlayerById(userId);
         if (player is null) return null;
         
-        player.CurrentEnergy += GetEnergy(player);
+        var energy = GetEnergy(player);
+        player.CurrentEnergy += energy;
+        player.CurrentEnergy = player.CurrentEnergy > player.Energy ? player.Energy : player.CurrentEnergy;
+        
         return player;
     }
 

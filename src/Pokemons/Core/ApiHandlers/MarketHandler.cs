@@ -29,7 +29,6 @@ public class MarketHandler : IMarketHandler
     {
         var market = await _marketService.GetMarketByPlayerId(playerId);
         var response = _mapper.Map<MarketResponseDto>(market);
-        response.DamagePerClickNextValue = response.DamagePerClickLevel++;
         return CallResult<MarketResponseDto>.Success(response);
     }
 
