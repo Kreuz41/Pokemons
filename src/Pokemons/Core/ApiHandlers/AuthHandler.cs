@@ -92,7 +92,10 @@ public class AuthHandler : IAuthHandler
     {
         var player = await _playerService.GetPlayer(playerId);
         if (player is null) return CallResult<ProfileResponseDto>.Failure("Player does not exist");
-        
+        var rating = await _ratingService.GetPlayerRating(playerId);
+        if (rating is null)
+            return CallResult<ProfileResponseDto>.Failure("Rating does not exist");
+
         var response = new ProfileResponseDto
         {
             DefeatedEntities = player.DefeatedEntities,
@@ -109,7 +112,9 @@ public class AuthHandler : IAuthHandler
             Firstname = player.Name,
             Lastname = player.Surname,
             UnreadNews = await _notificationRepository.GetUnreadNewsCount(playerId),
-            UnreadNotify = await _notificationRepository.GetUnreadNotifications(playerId)
+            UnreadNotify = await _notificationRepository.GetUnreadNotifications(playerId),
+            LeagueType = (int)rating.LeagueType,
+            LeaguePosition = rating.LeaguePosition
         };
 
         return CallResult<ProfileResponseDto>.Success(response);

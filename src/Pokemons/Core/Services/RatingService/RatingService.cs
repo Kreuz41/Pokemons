@@ -1,6 +1,7 @@
 ﻿using Pokemons.Core.Enums;
 using Pokemons.Core.Helpers;
 using Pokemons.DataLayer.Cache.Models;
+using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.RatingRepository;
 
 namespace Pokemons.Core.Services.RatingService;
@@ -61,4 +62,7 @@ public class RatingService : IRatingService
 
         await _ratingRepository.UpdateRange(groupedRatings.SelectMany(g => g.Ratings));
     }
+
+    public Task<Rating?> GetPlayerRating(long playerId) =>
+        _ratingRepository.GetByPlayerId(playerId);
 }

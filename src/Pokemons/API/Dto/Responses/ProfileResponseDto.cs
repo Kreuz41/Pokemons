@@ -17,4 +17,6 @@ public class ProfileResponseDto
     public string? Lastname { get; set; }
     public int UnreadNews { get; set; }
     public int UnreadNotify { get; set; }
+    public long LeaguePosition { get; set; }
+    public int LeagueType { get; set; }
 }

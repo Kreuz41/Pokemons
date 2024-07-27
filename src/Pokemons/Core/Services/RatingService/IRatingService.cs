@@ -10,4 +10,5 @@ public interface IRatingService
     Task UpdateRating(long playerId, int defeated);
     Task Save(long playerId);
     Task StartUpdateLeagueRating();
+    Task<Rating?> GetPlayerRating(long playerId);
 }
