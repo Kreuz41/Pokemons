@@ -30,16 +30,10 @@ public class AuthController : ControllerBase
         if (!result.Status) return Results.BadRequest(result);
         
         var token = _jwtHandler.GetToken(userId);
-        
-        Response.Cookies.Append("access_token", token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.Now.AddMinutes(30)
-        });
 
-        return result.Status ? Results.Ok(result) : Results.BadRequest(result);
+        var response = CallResult.CallResult<string>.Success(token);
+
+        return Results.Ok(response);
     }
 
     [Authorize]
