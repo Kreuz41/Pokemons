@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Handlers;
 
 namespace Pokemons.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/guild/")]
 public class GuildController : ControllerBase

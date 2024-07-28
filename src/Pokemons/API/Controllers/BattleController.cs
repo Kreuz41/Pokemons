@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Handlers;
 
 namespace Pokemons.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/battle/")]
 public class BattleController : ControllerBase

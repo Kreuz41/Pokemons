@@ -7,7 +7,7 @@ namespace Pokemons.API.Handlers;
 
 public interface IAuthHandler
 {
-    Task<CallResult<bool>> StartSession(long playerId, EditProfileDto dto);
+    Task<CallResult<bool>> StartSession(StartSessionDto dto, long playerId);
     Task EndSession(long playerId);
     Task<CallResult<bool>> CreateUser(CreateUserModel data, long playerId);
     Task<CallResult<TapperConfigResponseDto>> GetTapperConfig(long playerId);

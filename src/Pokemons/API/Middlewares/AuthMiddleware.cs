@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.Helpers;
 using Pokemons.Core.Services.PlayerService;
@@ -41,6 +42,28 @@ public class AuthMiddleware : IMiddleware
                 await context.Response.WriteAsJsonAsync(
                     CallResult.CallResult<bool>.Failure($"User does not exist"));
                 return;
+            }
+        }
+        
+        var token = context.Request.Cookies["access_token"];
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var handler = new JwtSecurityTokenHandler();
+            if (handler.CanReadToken(token))
+            {
+                var jwtToken = handler.ReadJwtToken(token);
+                var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+                if (userIdClaim != null)
+                {
+                    if (!long.TryParse(userIdClaim.Value, out var hashId) || hashId != id)
+                    {
+                        await context.Response.WriteAsJsonAsync(
+                            CallResult.CallResult<bool>.Failure($"Invalid access token"));
+                        return;
+                    }
+                    context.Items["UserId"] = userIdClaim.Value;
+                }
             }
         }
 

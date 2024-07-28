@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Handlers;
+using Pokemons.API.Jwt;
 using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.API.Controllers;
@@ -10,22 +12,37 @@ namespace Pokemons.API.Controllers;
 [Route("api/auth/")]
 public class AuthController : ControllerBase
 {
-    public AuthController(IAuthHandler handler)
+    public AuthController(IAuthHandler handler, JwtHandler jwtHandler)
     {
         _handler = handler;
+        _jwtHandler = jwtHandler;
     }
 
     private readonly IAuthHandler _handler;
+    private readonly JwtHandler _jwtHandler;
     
     [HttpPost("startSession")]
-    public async Task<IResult> StartSession([FromBody] EditProfileDto data)
+    public async Task<IResult> StartSession([FromBody] StartSessionDto data)
     {
         var userId = (long)HttpContext.Items["UserId"]!;
-        var result = await _handler.StartSession(userId, data);
+        var result = await _handler.StartSession(data, userId);
+
+        if (!result.Status) return Results.BadRequest(result);
+        
+        var token = _jwtHandler.GetToken(userId);
+        
+        Response.Cookies.Append("access_token", token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.Strict,
+            Expires = DateTime.Now.AddMinutes(30)
+        });
 
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
 
+    [Authorize]
     [HttpGet("tapperConfig")]
     public async Task<IResult> GetTapperConfig()
     {
@@ -35,7 +52,6 @@ public class AuthController : ControllerBase
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
     
-    
     [HttpPost("createUser")]
     public async Task<IResult> CreateProfile([FromBody] CreateUserModel dto)
     {
@@ -44,6 +60,7 @@ public class AuthController : ControllerBase
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
 
+    [Authorize]
     [HttpGet("profile")]
     public async Task<IResult> GetProfile()
     {
@@ -53,6 +70,7 @@ public class AuthController : ControllerBase
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
 
+    [Authorize]
     [HttpPost("editProfile")]
     public async Task<IResult> EditProfile([FromBody] EditProfileDto dto)
     {
@@ -62,6 +80,7 @@ public class AuthController : ControllerBase
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
     
+    [Authorize]
     [HttpPost("endSession")]
     public async Task<IResult> EndSession()
     {

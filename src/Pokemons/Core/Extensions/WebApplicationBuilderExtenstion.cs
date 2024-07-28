@@ -1,7 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Pokemons.API.Handlers;
+using Pokemons.API.Jwt;
 using Pokemons.API.Middlewares;
 using Pokemons.Core.ApiHandlers;
 using Pokemons.Core.BackgroundServices.CacheCollector;
@@ -60,6 +64,7 @@ public static class WebApplicationBuilderExtenstion
         ConfigureRabbitMqConnection(builder);
         ConfigureBackgroundServices(builder);
         ConfigureDatabaseRepositories(builder);
+        ConfigureAuthorization(builder);
     }
 
     private static void ConfigureMapper(IHostApplicationBuilder builder)
@@ -156,11 +161,46 @@ public static class WebApplicationBuilderExtenstion
 
         if (builder.Environment.EnvironmentName == Environments.Development)
             builder.Configuration.AddUserSecrets<Program>();
-        
+
+        builder.Services.AddSingleton<JwtHandler>();
         builder.Services.AddScoped<AuthMiddleware>();
         builder.Services.Configure<ConnectionFactory>(builder.Configuration.GetSection("RabbitMqConnectionFactory") 
                                                       ?? throw new NullReferenceException(
                                                           "Rabbit connection not found"));
+    }
+
+    private static void ConfigureAuthorization(IHostApplicationBuilder builder)
+    {
+        var key = Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Key"] 
+                                          ?? throw new ArgumentException("jwt key not found"));
+        
+        builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                };
+                
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["access_token"];
+                        return Task.CompletedTask;
+                    }
+                };
+            });
     }
 
     private static void ConfigureRabbitMqConnection(IHostApplicationBuilder builder)

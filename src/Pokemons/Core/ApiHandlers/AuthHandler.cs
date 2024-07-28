@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Security.Cryptography;
+using System.Text;
+using System.Web;
+using AutoMapper;
 using Pokemons.API.CallResult;
 using Pokemons.API.Dto.Requests;
 using Pokemons.API.Dto.Responses;
@@ -18,7 +21,8 @@ public class AuthHandler : IAuthHandler
 {
     public AuthHandler(IMapper mapper, IPlayerService playerService, 
         IBattleService battleService, IMarketService marketService, IRatingService ratingService, 
-        IGuildService guildService, ICommonRepository commonRepository, INotificationRepository notificationRepository)
+        IGuildService guildService, ICommonRepository commonRepository, INotificationRepository notificationRepository, 
+        IConfiguration configuration)
     {
         _mapper = mapper;
         _playerService = playerService;
@@ -28,6 +32,8 @@ public class AuthHandler : IAuthHandler
         _guildService = guildService;
         _commonRepository = commonRepository;
         _notificationRepository = notificationRepository;
+        _botToken = configuration["BotOption:Token"] 
+                    ?? throw new ArgumentException("bot token not found");
     }
     
     private readonly IPlayerService _playerService;
@@ -38,11 +44,15 @@ public class AuthHandler : IAuthHandler
     private readonly ICommonRepository _commonRepository;
     private readonly INotificationRepository _notificationRepository;
     private readonly IMapper _mapper;
+    private readonly string _botToken;
 
-    public async Task<CallResult<bool>> StartSession(long playerId, EditProfileDto dto)
+    public async Task<CallResult<bool>> StartSession(StartSessionDto dto, long playerId)
     {
         if (!await _playerService.IsPlayerExist(playerId))
             return CallResult<bool>.Failure("Player does not exist");
+
+        if (!Validate(dto.InitData))
+            return CallResult<bool>.Failure("Invalid init data");
 
         var player = await _playerService.GetPlayer(playerId);
         
@@ -128,5 +138,22 @@ public class AuthHandler : IAuthHandler
         await _playerService.UpdatePlayerData(dto, player);
 
         return await GetProfile(playerId);
+    }
+    
+    private bool Validate(string initData)
+    {
+        var data = HttpUtility.ParseQueryString(initData);
+
+        var hash = data["hash"];
+        data.Remove("hash");
+
+        var checkString = string.Join("\n", data.AllKeys.OrderBy(key => key).Select(key => $"{key}={data[key]}"));
+        var hmacKey = new HMACSHA256("WebAppData"u8.ToArray());
+        var secretKey = hmacKey.ComputeHash(Encoding.UTF8.GetBytes(_botToken));
+        var hashKey = new HMACSHA256(secretKey);
+        var hashBytes = hashKey.ComputeHash(Encoding.UTF8.GetBytes(checkString));
+        var computedHash = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+
+        return computedHash.Equals(hash);
     }
 }

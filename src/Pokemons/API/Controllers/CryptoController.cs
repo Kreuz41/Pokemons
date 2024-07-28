@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Handlers;
 
 namespace Pokemons.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/crypto/")]
 public class CryptoController : ControllerBase

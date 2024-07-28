@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Pokemons.API.Handlers;
 using Pokemons.Core.Enums;
 
 namespace Pokemons.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/market/")]
 public class MarketController : ControllerBase
