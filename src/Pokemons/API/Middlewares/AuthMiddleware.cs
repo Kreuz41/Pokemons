@@ -45,11 +45,12 @@ public class AuthMiddleware : IMiddleware
             }
         }
         
-        var token = context.Request.Cookies["access_token"];
+        var bearerToken = context.Request.Headers["Authorization"];
 
-        if (!string.IsNullOrEmpty(token))
+        if (!string.IsNullOrEmpty(bearerToken))
         {
             var handler = new JwtSecurityTokenHandler();
+            var token = authorizationHeader.ToString().Replace("Bearer ", "");
             if (handler.CanReadToken(token))
             {
                 var jwtToken = handler.ReadJwtToken(token);
