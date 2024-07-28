@@ -35,8 +35,8 @@ public class PlayerService : IPlayerService
         var damage = taps > player.CurrentEnergy 
                     ? player.CurrentEnergy * player.DamagePerClick
                     : taps * player.DamagePerClick;
-                    
-        player.CurrentEnergy -= damage;
+
+        player.CurrentEnergy -= taps;
         player.LastCommitDamageTime = _timeProvider.Now();
 
         if (player.IsFirstEntry)
