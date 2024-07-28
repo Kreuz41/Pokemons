@@ -50,7 +50,7 @@ public class AuthMiddleware : IMiddleware
         if (!string.IsNullOrEmpty(bearerToken))
         {
             var handler = new JwtSecurityTokenHandler();
-            var token = authorizationHeader.ToString().Replace("Bearer ", "");
+            var token = bearerToken.ToString().Replace("Bearer ", "");
             if (handler.CanReadToken(token))
             {
                 var jwtToken = handler.ReadJwtToken(token);
