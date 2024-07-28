@@ -42,6 +42,14 @@ public class AuthController : ControllerBase
                 return BadRequest("Invalid UserId header value.");
             }
         }
+        else
+        {
+            return BadRequest("UserId header is missing.");
+        }
+
+        
+
+
     }
 
     [Authorize]
