@@ -39,12 +39,12 @@ public class AuthController : ControllerBase
             }
             else
             {
-                return BadRequest("Invalid UserId header value.");
+                return Results.BadRequest("Invalid UserId header value.");
             }
         }
         else
         {
-            return BadRequest("UserId header is missing.");
+            return Results.BadRequest("UserId header is missing.");
         }
 
         
