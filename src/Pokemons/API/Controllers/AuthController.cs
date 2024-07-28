@@ -24,16 +24,24 @@ public class AuthController : ControllerBase
     [HttpPost("startSession")]
     public async Task<IResult> StartSession([FromBody] StartSessionDto data)
     {
-        var userId = (long)HttpContext.Request.Headers["UserId"]!;
-        var result = await _handler.StartSession(data, userId);
-        var token = _jwtHandler.GetToken(userId);
+         if (HttpContext.Request.Headers.TryGetValue("UserId", out var userIdHeader))
+        {
+            if (long.TryParse(userIdHeader, out var userId))
+            {
+                var result = await _handler.StartSession(data, userId);
 
-        if (!result.Status) return Results.BadRequest(result);
-        
+                if (!result.Status) return Results.BadRequest(result);
 
-        var response = CallResult.CallResult<string>.Success(token);
+                var token = _jwtHandler.GetToken(userId);
 
-        return Results.Ok(response);
+                var response = CallResult.CallResult<string>.Success(token);
+                return Results.Ok(response);
+            }
+            else
+            {
+                return BadRequest("Invalid UserId header value.");
+            }
+        }
     }
 
     [Authorize]
