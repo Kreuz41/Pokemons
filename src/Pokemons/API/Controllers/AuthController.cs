@@ -24,12 +24,12 @@ public class AuthController : ControllerBase
     [HttpPost("startSession")]
     public async Task<IResult> StartSession([FromBody] StartSessionDto data)
     {
-        var userId = (long)HttpContext.Items["UserId"]!;
+        var userId = (long)HttpContext.Curent.Request.Headers["UserId"]!;
         var result = await _handler.StartSession(data, userId);
+        var token = _jwtHandler.GetToken(userId);
 
         if (!result.Status) return Results.BadRequest(result);
         
-        var token = _jwtHandler.GetToken(userId);
 
         var response = CallResult.CallResult<string>.Success(token);
 
