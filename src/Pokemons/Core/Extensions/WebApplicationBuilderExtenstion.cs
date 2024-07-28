@@ -191,15 +191,6 @@ public static class WebApplicationBuilderExtenstion
                     ValidAudience = builder.Configuration["Jwt:Issuer"],
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
-                
-                options.Events = new JwtBearerEvents
-                {
-                    OnMessageReceived = context =>
-                    {
-                        context.Token = context.Request.Cookies["access_token"];
-                        return Task.CompletedTask;
-                    }
-                };
             });
     }
 
