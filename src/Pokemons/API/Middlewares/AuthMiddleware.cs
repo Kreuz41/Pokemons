@@ -62,13 +62,12 @@ public class AuthMiddleware : IMiddleware
                             CallResult.CallResult<bool>.Failure($"Invalid access token"));
                         return;
                     }
-                    context.Items["UserId"] = userIdClaim.Value;
+                    context.Items.Add("UserId", userIdClaim.Value);
                 }
             }
         }
 
         CacheCollectorService.UpdateSession(id);
-        context.Items.Add("UserId", id);
         
         await next(context);
     }
