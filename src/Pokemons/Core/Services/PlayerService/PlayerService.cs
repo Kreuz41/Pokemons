@@ -32,20 +32,20 @@ public class PlayerService : IPlayerService
         var player = await GetPlayer(playerId);
         if (player is null || battle is null) return (0, 0);
 
-        var damage = taps > player.CurrentEnergy 
-                    ? player.CurrentEnergy * player.DamagePerClick
-                    : taps * player.DamagePerClick;
+        var actualTaps = taps > player.CurrentEnergy 
+                        ? player.CurrentEnergy
+                        : taps;
 
-        player.CurrentEnergy -= taps > player.CurrentEnergy
-                                ? player.CurrentEnergy
-                                : taps;
-                                
+        var damage = actualTaps * player.DamagePerClick;
+
+        player.CurrentEnergy -= actualTaps;
+
         player.LastCommitDamageTime = _timeProvider.Now();
 
         if (player.IsFirstEntry)
             player.IsFirstEntry = false;
         
-        player.Taps += taps;
+        player.Taps += actualTaps;
         player.TotalDamage += damage;
 
         if (battle.IsGold)
