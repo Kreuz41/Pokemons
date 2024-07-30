@@ -101,7 +101,9 @@ commandHandler.RegisterCommand(async context =>
             {
                 Url = builder.Configuration["BotOption:WebAppLink"] 
                       ?? throw new ArgumentException("Link cannot be null")
-            }), 
+            }),
+            InlineKeyboardButton.WithUrl("Community", builder.Configuration["BotOption:TgChannel"]
+                                                      ?? throw new ArgumentException("Link cannot be null")), 
         ]),
         cancellationToken: context.StoppingToken);
 }).AddFilter(command => command.StartsWith("start"));
