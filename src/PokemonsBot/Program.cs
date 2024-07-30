@@ -85,7 +85,7 @@ commandHandler.RegisterCommand(async context =>
     var broker = app.Services.GetService<IBrokerSender>()!;
 
     await broker.Send(data);
-            
+    
     await context.Client.SendTextMessageAsync(context.Update.Message.Chat.Id,
         $"""
             Welcome to CIX TAP! 🎉
@@ -97,7 +97,7 @@ commandHandler.RegisterCommand(async context =>
          Log in to the game and start earning money right now! 🕹️
          """,
         replyMarkup: new InlineKeyboardMarkup([
-            InlineKeyboardButton.WithWebApp("open", new WebAppInfo
+            InlineKeyboardButton.WithWebApp("Play", new WebAppInfo
             {
                 Url = builder.Configuration["BotOption:WebAppLink"] 
                       ?? throw new ArgumentException("Link cannot be null")

@@ -36,5 +36,12 @@
             <TargetPath>appsettings.Development.PokemonsBot.json</TargetPath>
         </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Preview.MP4" />
+      <Resource Include="Resources\Preview.MP4">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Resource>
+    </ItemGroup>
     
 </Project>
