@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "humble-ganymede-1dbbce"
+  cluster:
+    server: "https://k8saas2.timeweb.com/k8s/clusters/c-jc8wl"
+
+users:
+- name: "humble-ganymede-1dbbce"
+  user:
+    token: "kubeconfig-u-gg7r2p788t:lcjp7t2xz7x8tkx9b4fxkgxz67vrqjth867wscdp44nbplhnhwc8f2"
+
+
+contexts:
+- name: "humble-ganymede-1dbbce"
+  context:
+    user: "humble-ganymede-1dbbce"
+    cluster: "humble-ganymede-1dbbce"
+
+current-context: "humble-ganymede-1dbbce"
