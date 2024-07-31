@@ -53,11 +53,13 @@ public class RabbitMqListener : BackgroundService
             using var scope = _scopeFactory.CreateScope();
             var service = scope.ServiceProvider.GetService<IAuthHandler>()!;
             await service.CreateUser(obj, obj.UserId);
+            
+            await channel!.BasicAckAsync(deliveryTag: args.DeliveryTag, multiple: false, cancellationToken: stoppingToken);
         };
 
         await channel.BasicConsumeAsync(
             queue.QueueName,
-            true,
+            false,
             consumer);
 
         await Task.Delay(Timeout.Infinite, stoppingToken);
