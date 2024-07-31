@@ -1,6 +1,6 @@
 services: 
   api:
-    image: pokemons-api
+    image: moonlization/api
     build:
       context: ..
       dockerfile: Pokemons/Dockerfile
@@ -12,7 +12,7 @@ services:
       - rabbitmq
   
   bot:
-    image: auth-bot
+    image: moonlization/bot
     build:
       context: ..
       dockerfile: PokemonsBot/Dockerfile
