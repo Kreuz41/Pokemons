@@ -38,7 +38,7 @@ public class BattleService : IBattleService
 
     public async Task<Battle> CreateNewBattle(long playerId, int defeatedEntities)
     {
-        var health = (int)(500 * Math.Pow(1.015, defeatedEntities));
+        var health = (int)(500 * 1.009);
         var battle = new Battle
         {
             PlayerId = playerId,
