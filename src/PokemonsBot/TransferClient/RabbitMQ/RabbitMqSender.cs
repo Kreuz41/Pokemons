@@ -24,7 +24,6 @@ public class RabbitMqSender : IBrokerSender
         using var channel = await _connection.CreateChannelAsync();
 
         await channel.ExchangeDeclareAsync(RabbitMqExchangeNames.PlayerEventExchange, ExchangeType.Direct);
-
         await channel.BasicPublishAsync(RabbitMqExchangeNames.PlayerEventExchange, "bot.create.player", bytes, false);
     }
 }

@@ -53,7 +53,7 @@ var app = builder.Build();
 
 var commandHandler = app.Services.GetRequiredService<ICommandHandler>();
 
-var filePath = "Resources/Preview.MP4";
+var filePath = Path.Combine(AppContext.BaseDirectory, "Resources/Preview.MP4");
 using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 
 commandHandler.RegisterCommand(async context =>

@@ -39,7 +39,9 @@
 
     <ItemGroup>
       <None Remove="Resources\Preview.MP4" />
-      <Resource Include="Resources\Preview.MP4" />
+      <AdditionalFiles Include="Resources\Preview.MP4">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AdditionalFiles>
     </ItemGroup>
     
 </Project>
