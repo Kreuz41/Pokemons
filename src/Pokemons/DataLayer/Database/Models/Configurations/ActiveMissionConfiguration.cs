@@ -18,35 +18,35 @@ public class ActiveMissionConfiguration : IEntityTypeConfiguration<ActiveMission
                 Id = 1,
                 IsEnded = false,
                 IsDifficult = false,
-                Reward = 50
+                Reward = 100
             },
             new()
             {
                 Id = 2,
                 IsEnded = false,
                 IsDifficult = true,
-                Reward = 50
+                Reward = 100
             },
             new()
             {
                 Id = 3,
                 IsEnded = false,
                 IsDifficult = true,
-                Reward = 50
+                Reward = 100
             },
             new()
             {
                 Id = 4,
                 IsEnded = false,
                 IsDifficult = true,
-                Reward = 50
+                Reward = 100
             },
             new()
             {
                 Id = 5,
                 IsEnded = false,
                 IsDifficult = true,
-                Reward = 50
+                Reward = 100
             }
         });
     }

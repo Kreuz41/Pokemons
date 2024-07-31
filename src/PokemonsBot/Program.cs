@@ -53,6 +53,9 @@ var app = builder.Build();
 
 var commandHandler = app.Services.GetRequiredService<ICommandHandler>();
 
+var filePath = "Resources/Preview.MP4";
+using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
 commandHandler.RegisterCommand(async context =>
 {
     long refId = 0;
@@ -86,8 +89,9 @@ commandHandler.RegisterCommand(async context =>
 
     await broker.Send(data);
     
-    await context.Client.SendTextMessageAsync(context.Update.Message.Chat.Id,
-        $"""
+    await context.Client.SendVideoAsync(context.Update.Message.Chat.Id,
+        new InputFileStream(stream, filePath),
+        caption: $"""
             Welcome to CIX TAP! 🎉
          
          Get ready for an exciting adventure where every click will bring you real profits. 💰 Explore the world of cryptocurrencies, catch cryptids, collect valuable assets and join clans for joint achievements. 🤝 

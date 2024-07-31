@@ -10,19 +10,19 @@ public class Market
     public int DamagePerClickLevel { get; set; } = 0;
     public int DamagePerClickNextValue { get; set; } = 2;
     
-    public long EnergyCost { get; set; } = 20000;
+    public long EnergyCost { get; set; } = 5000;
     public int EnergyLevel { get; set; } = 0;
-    public int EnergyNextValue { get; set; } = 1040;
+    public int EnergyNextValue { get; set; } = 2060;
     
-    public long EnergyChargeCost { get; set; } = 10000;
+    public long EnergyChargeCost { get; set; } = 400;
     public int EnergyChargeLevel { get; set; } = 0;
-    public decimal EnergyChargeNextValue { get; set; } = 3.46m;
+    public decimal EnergyChargeNextValue { get; set; } = 1.74m;
     
     public long SuperChargeCost { get; set; } = 5000;
     public int SuperChargeLevel { get; set; } = 0;
-    public int SuperChargeNextValue { get; set; } = 5760;
+    public int SuperChargeNextValue { get; set; } = 500;
     
-    public long SuperChargeCooldownCost { get; set; } = 5000;
+    public long SuperChargeCooldownCost { get; set; } = 400;
     public int SuperChargeCooldownLevel { get; set; } = 0;
     public decimal SuperChargeCooldownNextValue { get; set; } = 0.25m;
 
