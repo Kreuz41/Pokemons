@@ -22,8 +22,8 @@ public class RabbitMqSender : IBrokerSender
     public async Task Send(byte[] bytes)
     {
         using var channel = await _connection.CreateChannelAsync();
-
-        await channel.ExchangeDeclareAsync(RabbitMqExchangeNames.PlayerEventExchange, ExchangeType.Direct);
-        await channel.BasicPublishAsync(RabbitMqExchangeNames.PlayerEventExchange, "bot.create.player", bytes, false);
+        
+        await channel.BasicPublishAsync("", "bot.create.player", 
+            bytes, false);
     }
 }

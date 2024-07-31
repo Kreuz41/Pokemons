@@ -30,16 +30,14 @@ public class RabbitMqListener : BackgroundService
         await channel.ExchangeDeclareAsync(RabbitMqExchangeNames.PlayerEventExchange, ExchangeType.Direct);
 
         var routing = "bot.create.player";
-        var queue = await channel.QueueDeclareAsync();
-        
-        _logger.LogInformation($"Start to listen rabbitmq by {routing} . . .");
-        
-        await channel.QueueBindAsync(
-            queue: queue, 
-            exchange: RabbitMqExchangeNames.PlayerEventExchange, 
-            routingKey: routing,
+        var queue = await channel.QueueDeclareAsync(routing,
+            durable: false,
+            exclusive: false,
+            autoDelete: false,
             arguments: null,
             cancellationToken: stoppingToken);
+        
+        _logger.LogInformation($"Start to listen rabbitmq by {routing} . . .");
         
         var consumer = new EventingBasicConsumer(channel);
         consumer.Received += async (sender, args) =>
