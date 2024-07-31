@@ -53,9 +53,6 @@ var app = builder.Build();
 
 var commandHandler = app.Services.GetRequiredService<ICommandHandler>();
 
-var filePath = Path.Combine(AppContext.BaseDirectory, "Resources/Preview.MP4");
-using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
 commandHandler.RegisterCommand(async context =>
 {
     long refId = 0;
@@ -88,6 +85,9 @@ commandHandler.RegisterCommand(async context =>
     var broker = app.Services.GetService<IBrokerSender>()!;
 
     await broker.Send(data);
+    
+    var filePath = Path.Combine(AppContext.BaseDirectory, "Resources/Preview.MP4");
+    await using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
     
     await context.Client.SendVideoAsync(context.Update.Message.Chat.Id,
         new InputFileStream(stream, filePath),
