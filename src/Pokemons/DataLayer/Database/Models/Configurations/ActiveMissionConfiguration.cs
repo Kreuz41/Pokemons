@@ -40,13 +40,6 @@ public class ActiveMissionConfiguration : IEntityTypeConfiguration<ActiveMission
                 IsEnded = false,
                 IsDifficult = true,
                 Reward = 100
-            },
-            new()
-            {
-                Id = 5,
-                IsEnded = false,
-                IsDifficult = true,
-                Reward = 100
             }
         });
     }
