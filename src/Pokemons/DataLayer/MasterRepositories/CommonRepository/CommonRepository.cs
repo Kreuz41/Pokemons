@@ -115,7 +115,7 @@ public class CommonRepository : ICommonRepository
                 if (await _context.Notifications.FirstOrDefaultAsync(n => 
                         n.PlayerId == notification.PlayerId
                         && n.ReferralName == notification.ReferralName
-                        && n.NotificationType == notification.NotificationType) is not null)
+                        && n.NotificationType == notification.NotificationType) is null)
                     NotificationCreator.AddNotification(notification);
             }
         }
