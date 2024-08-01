@@ -36,9 +36,9 @@ public class BattleService : IBattleService
         return battle;
     }
 
-    public async Task<Battle> CreateNewBattle(long playerId, int defeatedEntities)
+    public async Task<Battle> CreateNewBattle(long playerId, long lastPokemonsHealth)
     {
-        var health = (int)(500 * 1.009);
+        var health = (int)(lastPokemonsHealth * 1.009);
         var battle = new Battle
         {
             PlayerId = playerId,
@@ -46,7 +46,7 @@ public class BattleService : IBattleService
             RemainingHealth = health,
             BattleState = BattleState.Battle,
             BattleStartTime = _timeProvider.Now(),
-            IsGold = (defeatedEntities + 1) % 6 == 0,
+            IsGold = (lastPokemonsHealth + 1) % 6 == 0,
         };
 
         battle.EntityTypeId = Random.Shared.Next(battle.IsGold ? GoldEntitiesCount : EntitiesCount);

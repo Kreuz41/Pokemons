@@ -46,7 +46,7 @@ public class BattleHandler : IBattleHandler
         if (battle.Id == 0) return CallResult<TapperConfigResponseDto>.Failure("Invalid battle");
         if (battle.BattleState == BattleState.Defeated)
         {
-            battle = await _battleService.CreateNewBattle(playerId, defeatedEntities);
+            battle = await _battleService.CreateNewBattle(playerId, battle.Health);
             var defeated = await _playerService.EntityDefeated(playerId);
             await _ratingService.UpdateRating(playerId, defeated);
         }
