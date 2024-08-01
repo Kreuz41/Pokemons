@@ -104,13 +104,19 @@ public class CommonRepository : ICommonRepository
                 };
 
                 await _context.AddAsync(secondNode);
-                
-                NotificationCreator.AddNotification(new Notification
+
+                var notification = new Notification
                 {
                     PlayerId = secondNode.ReferrerId,
                     ReferralName = playerId.ToString(),
                     NotificationType = NotificationType.Referral
-                });
+                };
+                
+                if (await _context.Notifications.FirstOrDefaultAsync(n => 
+                        n.PlayerId == notification.PlayerId
+                        && n.ReferralName == notification.ReferralName
+                        && n.NotificationType == notification.NotificationType) is not null)
+                    NotificationCreator.AddNotification(notification);
             }
         }
 
