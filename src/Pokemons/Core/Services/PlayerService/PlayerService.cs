@@ -136,7 +136,7 @@ public class PlayerService : IPlayerService
         var player = await _playerRepository.GetPlayerById(playerId);
         if (player is null) return;
         
-        player.GoldBalance += activeMissionReward;
+        player.Balance += activeMissionReward;
         await _playerRepository.Update(player);
     }
 
@@ -161,12 +161,12 @@ public class PlayerService : IPlayerService
     public async Task<DateTime> GetSuperChargeSecondsRemaining(long playerId)
     {
         var player = await GetPlayer(playerId);
-        if (player is null) return DateTime.MaxValue;
+        if (player is null) return DateTime.Now;
 
         var cooldown =
             (int)(_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalSeconds;
         
-        return DateTime.Now + TimeSpan.FromHours((double)(8 - player.SuperChargeCooldown))
+        return DateTime.Now + TimeSpan.FromHours((double)player.SuperChargeCooldown)
             .Subtract(TimeSpan.FromSeconds(cooldown));
     }
 
@@ -192,7 +192,7 @@ public class PlayerService : IPlayerService
 
     private bool CanUseSuperCharge(Player player)
     {
-        var cooldown = (_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
-        return cooldown >= 8 - (double)player.SuperChargeCooldown;
+        var waitTimeInHours = (_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
+        return waitTimeInHours >= (double)player.SuperChargeCooldown;
     }
 }

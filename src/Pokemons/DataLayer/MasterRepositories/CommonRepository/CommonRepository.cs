@@ -55,8 +55,8 @@ public class CommonRepository : ICommonRepository
         var battle = new Battle
         {
             PlayerId = playerId,
-            Health = 500,
-            RemainingHealth = 500,
+            Health = 1000,
+            RemainingHealth = 1000,
             BattleState = BattleState.Battle,
             BattleStartTime = DateTime.UtcNow,
             IsGold = false
