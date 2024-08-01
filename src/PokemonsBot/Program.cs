@@ -92,12 +92,10 @@ commandHandler.RegisterCommand(async context =>
     await context.Client.SendVideoAsync(context.Update.Message.Chat.Id,
         new InputFileStream(stream, filePath),
         caption: $"""
-            Welcome to CIX TAP! 🎉
-         
-         Get ready for an exciting adventure where every click will bring you real profits. 💰 Explore the world of cryptocurrencies, catch cryptids, collect valuable assets and join clans for joint achievements. 🤝 
-         
-         Start your exciting journey in CIX TAP - a world where gaming and earning become one! 🌟
-         
+            Welcome to CIX TAP 🎉 
+
+         Explore the world of cryptocurrencies, catch cryptids, collect valuable assets and join clans for joint achievements. 🤝 
+
          Log in to the game and start earning money right now! 🕹️
          """,
         replyMarkup: new InlineKeyboardMarkup([
