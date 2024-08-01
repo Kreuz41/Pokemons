@@ -29,7 +29,7 @@ public class BattleDatabaseRepository : IBattleDatabaseRepository
      public async Task<Battle?> GetEndedBattleByPlayerId(long playerId) =>
         await _context.Battles
             .AsNoTracking()
-            .FirstOrDefaultAsync(b => b.PlayerId == playerId 
+            .LastOrDefaultAsync(b => b.PlayerId == playerId 
                                       && b.BattleState == BattleState.Defeated);
 
 
