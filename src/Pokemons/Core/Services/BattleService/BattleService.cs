@@ -19,7 +19,6 @@ public class BattleService : IBattleService
     private const int EntitiesCount = 20;
     private const int GoldEntitiesCount = 5;
 
-    private const double HealthIncrease = 1.009;
     public async Task<Battle> TakeDamage(long playerId, int damage)
     {
         var battle = await _battleRepository.GetPlayerBattle(playerId);
@@ -39,12 +38,7 @@ public class BattleService : IBattleService
 
     public async Task<Battle> CreateNewBattle(long playerId, int defeatedEntities)
     {
-        var activeBattle = await _battleRepository.GetLastEndedBattle(playerId);
-
-        var previousPokemonHealth = activeBattle?.Health ?? 500;
-
-        var health = (int)(previousPokemonHealth * HealthIncrease);
-
+        var health = (int)(500 * 1.009);
         var battle = new Battle
         {
             PlayerId = playerId,

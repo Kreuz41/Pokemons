@@ -47,13 +47,6 @@ public class BattleRepository : IBattleRepository
         return battle;
     }
 
-    public async Task<Battle?> GetLastEndedBattle(long playerId)
-    {
-       var battle = await _databaseRepository.GetEndedBattleByPlayerId(playerId);
-
-        return battle;
-    }
-
     public async Task<Battle> CreateBattle(Battle battle)
     {
         await _cacheRepository.DeleteMember<Battle>(battle.PlayerId.ToString());

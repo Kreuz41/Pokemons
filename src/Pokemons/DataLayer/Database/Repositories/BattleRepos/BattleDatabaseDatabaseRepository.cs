@@ -25,13 +25,6 @@ public class BattleDatabaseRepository : IBattleDatabaseRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(b => b.PlayerId == playerId 
                                       && b.BattleState == BattleState.Battle);
-    
-     public async Task<Battle?> GetEndedBattleByPlayerId(long playerId) =>
-        await _context.Battles
-            .AsNoTracking()
-            .FirstOrDefaultAsync(b => b.PlayerId == playerId 
-                                      && b.BattleState == BattleState.Defeated);
-
 
     public async Task<Battle> CreateBattleForPlayer(Battle battle)
     {
