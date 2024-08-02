@@ -6,7 +6,7 @@ namespace Pokemons.DataLayer.Database.Models.Entities;
 public class Battle
 {
     public long Id { get; set; }
-    public long Health { get; set; }
+    public long Health { get; set; } = 1000;
     public long RemainingHealth { get; set; }
     public BattleState BattleState { get; set; }
     public int EntityTypeId { get; set; }

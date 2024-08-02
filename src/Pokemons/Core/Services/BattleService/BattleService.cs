@@ -38,7 +38,7 @@ public class BattleService : IBattleService
 
     public async Task<Battle> CreateNewBattle(long playerId, long lastPokemonsHealth)
     {
-        var health = (int)(lastPokemonsHealth * 1.009);
+        var health = (int)(lastPokemonsHealth * 1.047);
         var battle = new Battle
         {
             PlayerId = playerId,
