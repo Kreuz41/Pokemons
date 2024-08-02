@@ -1,4 +1,5 @@
-﻿using Pokemons.Core.Enums;
+﻿using Microsoft.VisualBasic;
+using Pokemons.Core.Enums;
 using Pokemons.Core.Providers.TimeProvider;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.MarketRepository;
@@ -16,6 +17,7 @@ public class MarketService : IMarketService
     private readonly IMarketRepository _marketRepository;
     private readonly ITimeProvider _timeProvider;
 
+    private readonly int InitialSuperchargeCoolDownInHours = 8;
     public async Task CreateMarket(long playerId) =>
         await _marketRepository.CreateMarket(playerId);
 
@@ -48,7 +50,7 @@ public class MarketService : IMarketService
 
         player.GoldBalance -= market.SuperChargeCooldownCost;
         player.SuperChargeCooldown = market.SuperChargeCooldownNextValue;
-        market.SuperChargeCooldownNextValue = (decimal)(8 - 0.2 * market.SuperChargeCooldownLevel);
+        market.SuperChargeCooldownNextValue = (decimal)(7.8 - 0.2 * market.SuperChargeCooldownLevel);
         market.SuperChargeCooldownCost = (long)Math.Ceiling(400 * Math.Pow(1.75, market.SuperChargeCooldownLevel));
         market.SuperChargeCooldownLevel++;
         
@@ -59,8 +61,9 @@ public class MarketService : IMarketService
     {
         if (player.Balance < market.SuperChargeCost || market.SuperChargeLevel >= 20) return false;
         
-        if (market.SuperChargeLevel == 0){
+        if (market.SuperChargeLevel == 1){
             player.LastSuperChargeActivatedTime = _timeProvider.Now().AddDays(-1);
+            player.SuperChargeCooldown = InitialSuperchargeCoolDownInHours;
         }
 
         player.Balance -= market.SuperChargeCost;

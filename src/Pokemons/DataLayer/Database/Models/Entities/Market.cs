@@ -24,7 +24,7 @@ public class Market
     
     public long SuperChargeCooldownCost { get; set; } = 400;
     public int SuperChargeCooldownLevel { get; set; } = 1;
-    public decimal SuperChargeCooldownNextValue { get; set; } = 0.25m;
+    public decimal SuperChargeCooldownNextValue { get; set; } = 7.8m;
 
     [JsonIgnore] public Player Player { get; set; } = null!;
     public long PlayerId { get; set; }

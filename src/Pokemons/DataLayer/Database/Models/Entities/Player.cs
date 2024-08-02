@@ -24,8 +24,8 @@ public class Player
     public decimal EnergyCharge { get; set; } = 1.8m;
 
     public int SuperCharge { get; set; }
-    public decimal SuperChargeCooldown { get; set; }
-    public DateTime LastSuperChargeActivatedTime { get; set; } = DateTime.Now;
+    public decimal SuperChargeCooldown { get; set; } = 7.8m;
+    public DateTime LastSuperChargeActivatedTime { get; set; }
     
     public int Taps { get; set; }
     public int TotalDamage { get; set; }
