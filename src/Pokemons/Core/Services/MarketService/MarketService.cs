@@ -48,12 +48,8 @@ public class MarketService : IMarketService
 
         player.GoldBalance -= market.SuperChargeCooldownCost;
         player.SuperChargeCooldown = market.SuperChargeCooldownNextValue;
-        market.SuperChargeCooldownNextValue = (decimal)(1/(8 - 0.2 * market.SuperChargeCooldownLevel));
+        market.SuperChargeCooldownNextValue = (decimal)(8 - 0.2 * market.SuperChargeCooldownLevel);
         market.SuperChargeCooldownCost = (long)Math.Ceiling(400 * Math.Pow(1.75, market.SuperChargeCooldownLevel));
-        if (market.SuperChargeCooldownLevel == 0){
-            player.LastSuperChargeActivatedTime = _timeProvider.Now();
-        }
-        
         market.SuperChargeCooldownLevel++;
         
         
@@ -62,6 +58,10 @@ public class MarketService : IMarketService
     private bool UpgradeSuperChargeDamage(Player player, Market market)
     {
         if (player.Balance < market.SuperChargeCost || market.SuperChargeLevel >= 20) return false;
+        
+        if (market.SuperChargeLevel == 0){
+            player.LastSuperChargeActivatedTime = _timeProvider.Now().AddDays(-1);
+        }
 
         player.Balance -= market.SuperChargeCost;
         player.SuperCharge = market.SuperChargeNextValue;

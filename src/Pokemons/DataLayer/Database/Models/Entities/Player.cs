@@ -20,12 +20,12 @@ public class Player
     
     public int Energy { get; set; } = 2000;
     public int CurrentEnergy { get; set; }
-    public DateTime LastCommitDamageTime { get; set; }
+    public DateTime LastCommitDamageTime { get; set; } 
     public decimal EnergyCharge { get; set; } = 1.8m;
 
     public int SuperCharge { get; set; }
     public decimal SuperChargeCooldown { get; set; }
-    public DateTime LastSuperChargeActivatedTime { get; set; }
+    public DateTime LastSuperChargeActivatedTime { get; set; } = DateTime.Now;
     
     public int Taps { get; set; }
     public int TotalDamage { get; set; }

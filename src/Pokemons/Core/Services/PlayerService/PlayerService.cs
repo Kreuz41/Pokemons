@@ -192,7 +192,7 @@ public class PlayerService : IPlayerService
 
     private bool CanUseSuperCharge(Player player)
     {
-        var cooldown = (_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
-        return cooldown >= 8 - (double)player.SuperChargeCooldown;
+        var waitTimeInHours = (_timeProvider.Now() - player.LastSuperChargeActivatedTime).TotalHours;
+        return waitTimeInHours >= (double)player.SuperChargeCooldown;
     }
 }
