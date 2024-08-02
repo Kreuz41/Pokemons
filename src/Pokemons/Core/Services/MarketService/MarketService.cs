@@ -48,10 +48,11 @@ public class MarketService : IMarketService
 
         player.GoldBalance -= market.SuperChargeCooldownCost;
         player.SuperChargeCooldown = market.SuperChargeCooldownNextValue;
-        market.SuperChargeCooldownNextValue = (decimal)(8 - 0.2 * market.SuperChargeCooldownLevel);
+        market.SuperChargeCooldownNextValue = (decimal)(1/(8 - 0.2 * market.SuperChargeCooldownLevel));
         market.SuperChargeCooldownCost = (long)Math.Ceiling(400 * Math.Pow(1.75, market.SuperChargeCooldownLevel));
-        if (market.SuperChargeCooldownLevel == 0)
+        if (market.SuperChargeCooldownLevel == 0){
             player.LastSuperChargeActivatedTime = _timeProvider.Now();
+        }
         
         market.SuperChargeCooldownLevel++;
         
@@ -101,8 +102,8 @@ public class MarketService : IMarketService
         player.Balance -= market.DamagePerClickCost;
         player.DamagePerClick = market.DamagePerClickNextValue;
         market.DamagePerClickCost = 
-            (long)Math.Ceiling(player.DamagePerClick * 500 * Math.Pow(1.01, market.DamagePerClickLevel));
-        market.DamagePerClickNextValue = (int)(market.DamagePerClickNextValue * 1.05);
+            (long)Math.Ceiling(player.DamagePerClick * 500 * Math.Pow(1.1, market.DamagePerClickLevel));
+        market.DamagePerClickNextValue = (int)Math.Ceiling(market.DamagePerClickNextValue * 1.05);
         market.DamagePerClickLevel++;
         
         return true;
