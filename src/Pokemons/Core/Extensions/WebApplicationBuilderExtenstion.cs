@@ -8,6 +8,7 @@ using Pokemons.API.Handlers;
 using Pokemons.API.Jwt;
 using Pokemons.API.Middlewares;
 using Pokemons.Core.ApiHandlers;
+using Pokemons.Core.BackgroundServices.BotRequestsListener;
 using Pokemons.Core.BackgroundServices.CacheCollector;
 using Pokemons.Core.BackgroundServices.LeagueUpdater;
 using Pokemons.Core.BackgroundServices.NotificationCreator;
@@ -224,7 +225,7 @@ public static class WebApplicationBuilderExtenstion
     
     private static void ConfigureDbContext(IHostApplicationBuilder builder)
     {
-        builder.Services.AddDbContextPool<AppDbContext>(optionsAction =>
+        builder.Services.AddDbContextFactory<AppDbContext>(optionsAction =>
         {
             optionsAction.UseNpgsql(builder.Configuration.GetConnectionString("Database") 
                                     ?? throw new ArgumentNullException());
@@ -239,5 +240,6 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddHostedService<RabbitMqListener>();
         builder.Services.AddHostedService<RabbitMqNotificationSender>();
         builder.Services.AddHostedService<NotificationCreator>();
+        builder.Services.AddHostedService<BotRequestsListener>();
     }
 }

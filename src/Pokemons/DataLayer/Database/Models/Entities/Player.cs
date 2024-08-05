@@ -10,6 +10,7 @@ public class Player
     public string? Surname { get; set; }
     public string? Username { get; set; }
     public string? PhotoUrl { get; set; }
+    public string? LangCode { get; set; }
     public long Balance { get; set; }
     public long GoldBalance { get; set; }
     public int DamagePerClick { get; set; } = 1;

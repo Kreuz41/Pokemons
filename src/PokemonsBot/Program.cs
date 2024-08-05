@@ -1,9 +1,11 @@
+using System.Text.Json;
 using Pokemons.Core.BackgroundServices.RabbitMqListener;
 using PokemonsBot.Core.Bot;
 using PokemonsBot.Core.Bot.Commands.CommandHandler;
 using PokemonsBot.Core.Settings;
 using PokemonsBot.TransferClient.RabbitMQ;
 using PokemonsDomain.MessageBroker.Models;
+using PokemonsDomain.MessageBroker.Properties.RabbitMq;
 using PokemonsDomain.MessageBroker.Sender;
 using RabbitMQ.Client;
 using Telegram.Bot;
@@ -68,19 +70,9 @@ commandHandler.RegisterCommand(async context =>
         Surname = context.Update.Message.Chat.LastName,
         RefId = refId,
         Username = context.Update.Message.Chat.Username,
-        UserId = context.ChatId
+        UserId = context.ChatId,
+        LangCode = context.Update.Message.From?.LanguageCode
     };
-    
-    /*
-    var photos = await context.Client.GetUserProfilePhotosAsync(context.ChatId, 
-        cancellationToken: context.StoppingToken);
-    if (photos.TotalCount > 0)
-    {
-        var currentPhoto = photos.Photos[0][0];
-        var file = await context.Client.GetFileAsync(currentPhoto.FileId);
-        await using var fileSavingStream = 
-    }
-    */
 
     var broker = app.Services.GetService<IBrokerSender>()!;
 
@@ -114,6 +106,17 @@ commandHandler.RegisterCommand(async context =>
 {
     
 }).AddFilter(command => command.StartsWith("referrals"));
+
+commandHandler.RegisterCommand(async context =>
+{
+    var broker = app.Services.GetService<IBrokerSender>()!;
+    var response = 
+        await broker.RpsCaller(JsonSerializer.SerializeToUtf8Bytes(CallRequestNames.GlobalUsers));
+
+    var value = JsonSerializer.Deserialize<long>(response);
+    
+    await context.Client.SendTextMessageAsync(context.ChatId, $"Users in game now: {value}");
+}).AddFilter(command => command.StartsWith("tu"));
 
 _ = app.Services.GetService<BotClient>();
 

@@ -36,7 +36,8 @@ public class PlayerRepository : IPlayerRepository
             Surname = dto.Surname,
             PhotoUrl = dto.PhotoUrl,
             Username = dto.Username,
-            Id = userId
+            Id = userId,
+            LangCode = dto.LangCode
         };
         player.CurrentEnergy = player.Energy;
 
