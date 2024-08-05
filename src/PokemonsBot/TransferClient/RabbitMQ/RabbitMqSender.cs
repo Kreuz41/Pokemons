@@ -47,7 +47,7 @@ public class RabbitMqSender : IBrokerSender
             if (ea.BasicProperties.CorrelationId != correlation) return;
             taskSource.SetResult(ea.Body.ToArray());
         };
-        await _channel.BasicConsumeAsync(consumer, responseQueue);
+        await _channel.BasicConsumeAsync(consumer, responseQueue, true);
         await _channel.BasicPublishAsync("", requestQueue, props, content);
 
         return await taskSource.Task;
