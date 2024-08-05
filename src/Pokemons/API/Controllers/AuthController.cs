@@ -66,6 +66,11 @@ public class AuthController : ControllerBase
     public async Task<IResult> CreateProfile([FromBody] CreateUserModel dto)
     {
         var playerId = (long)HttpContext.Items["UserId"]!;
+
+        if (dto.Name?.Length >= 40 || dto.Surname?.Length >= 40 || dto.Username?.Length >= 40){
+
+            return Results.BadRequest("Username, name or surname is too long");
+        }
         var result = await _handler.CreateUser(dto, playerId);
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
@@ -85,8 +90,14 @@ public class AuthController : ControllerBase
     public async Task<IResult> EditProfile([FromBody] EditProfileDto dto)
     {
         var playerId = (long)HttpContext.Items["UserId"]!;
-        var result = await _handler.UpdateProfile(playerId, dto);
 
+        if (dto.Name?.Length >= 40 || dto.Surname?.Length >= 40 || dto.Username?.Length >= 40){
+
+            return Results.BadRequest("Username or Surname is too long");
+        }
+
+        var result = await _handler.UpdateProfile(playerId, dto);
+        
         return result.Status ? Results.Ok(result) : Results.BadRequest(result);
     }
     

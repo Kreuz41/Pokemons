@@ -82,10 +82,24 @@ public class PlayerService : IPlayerService
         if (player is null) return (0, 0);
 
         if (!CanUseSuperCharge(player)) return (0, 0);
-        
+        var superChargeDamage = player.SuperCharge * player.DamagePerClick;
+
+        var battle = await _battleRepository.GetPlayerBattle(playerId);
+
+        if (battle is null) return (0, 0);
+
+        var actualDamage = (int)(battle.RemainingHealth - superChargeDamage > 0 
+        ? superChargeDamage
+        : battle.RemainingHealth);
+
+        if (battle.IsGold)
+            player.GoldBalance += actualDamage;
+        else
+            await TopUpPlayerBalance(player, actualDamage);
+
         player.LastSuperChargeActivatedTime = _timeProvider.Now();
         await _playerRepository.FastUpdate(player);
-        return (player.SuperCharge * player.DamagePerClick, player.DefeatedEntities);
+        return (superChargeDamage, player.DefeatedEntities);
     }
 
     public async Task<Player?> GetPlayer(long userId)

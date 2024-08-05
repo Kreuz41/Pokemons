@@ -18,5 +18,6 @@ public class ProfileResponseDto
     public int UnreadNews { get; set; }
     public int UnreadNotify { get; set; }
     public long LeaguePosition { get; set; }
+    public long GlobalPosition { get; set; }
     public int LeagueType { get; set; }
 }

@@ -13,7 +13,7 @@ public class PlayerRepository : IPlayerRepository
         _cacheRepository = cacheRepository;
         _playerDatabaseRepository = playerDatabaseRepository;
     }
-    
+
     private readonly ICacheRepository _cacheRepository;
     private readonly IPlayerDatabaseRepository _playerDatabaseRepository;
 

@@ -124,7 +124,8 @@ public class AuthHandler : IAuthHandler
             UnreadNews = await _notificationRepository.GetUnreadNewsCount(playerId),
             UnreadNotify = await _notificationRepository.GetUnreadNotifications(playerId),
             LeagueType = (int)rating.LeagueType,
-            LeaguePosition = rating.LeaguePosition
+            LeaguePosition = rating.LeaguePosition,
+            GlobalPosition = rating.GlobalRatingPosition
         };
 
         return CallResult<ProfileResponseDto>.Success(response);
