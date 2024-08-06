@@ -16,19 +16,19 @@ namespace Pokemons.DataLayer.MasterRepositories.CommonRepository;
 public class CommonRepository : ICommonRepository
 {
     public CommonRepository(AppDbContext context, IUnitOfWork unitOfWork, 
-        IRatingDatabaseRepository ratingDatabaseRepository, IPlayerRepository playerRepository)
+        IRatingDatabaseRepository ratingDatabaseRepository, ICacheRepository cacheRepository)
     {
         _context = context;
         _unitOfWork = unitOfWork;
         _ratingDatabaseRepository = ratingDatabaseRepository;
-        _playerRepository = playerRepository;
+        _cacheRepository = cacheRepository;
     }
     
     
     private readonly AppDbContext _context;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRatingDatabaseRepository _ratingDatabaseRepository;
-    private readonly IPlayerRepository _playerRepository;
+    private readonly ICacheRepository _cacheRepository;
 
     public async Task CreateUser(CreateUserModel userModel, long playerId)
     {
@@ -80,7 +80,11 @@ public class CommonRepository : ICommonRepository
             PlayerId = playerId
         };
 
-        var parent1 = await _playerRepository.GetPlayerById(userModel.RefId ?? -1);
+        var parent1 = await _cacheRepository.GetMember<Player>(userModel.RefId.ToString() ?? "-1")
+            ?? await _context.Players
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == userModel.RefId);
+        
         if (userModel.RefId is not null && parent1 is not null)
         {
             var node = new ReferralNode
@@ -94,7 +98,8 @@ public class CommonRepository : ICommonRepository
             if (parent1.RefsCount == 4)
                 parent1.Balance += 50_000;
 
-            await _playerRepository.Update(player);
+            await _cacheRepository.SetMember(parent1.Id.ToString(), parent1, 5);
+            _context.Update(parent1);
             
             await _context.ReferralNodes.AddAsync(node);
             
@@ -106,16 +111,17 @@ public class CommonRepository : ICommonRepository
             });
             
             var secondRefNode = await _context.ReferralNodes
-                .Include(n => n.Referral)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(n => n.ReferralId == node.ReferrerId && n.Inline == 1);
+
+            var parent = await _cacheRepository.GetMember<Player>(secondRefNode?.ReferrerId.ToString() ?? "-1")
+                ?? await _context.Players.FirstOrDefaultAsync(p => secondRefNode != null && p.Id == secondRefNode.ReferrerId);
             
-            if (secondRefNode is not null)
+            if (parent is not null)
             {
                 var secondNode = new ReferralNode
                 {
                     ReferralId = playerId,
-                    ReferrerId = secondRefNode.ReferrerId,
+                    ReferrerId = parent.Id,
                     Inline = 2
                 };
 
@@ -128,11 +134,12 @@ public class CommonRepository : ICommonRepository
                     NotificationType = NotificationType.Referral
                 };
 
-                secondRefNode.Referral.RefsCount++;
-                if (secondRefNode.Referral.RefsCount == 4)
-                    secondRefNode.Referral.Balance += 50_000;
+                parent.RefsCount++;
+                if (parent.RefsCount == 4)
+                    parent.Balance += 50_000;
 
-                await _playerRepository.Update(secondRefNode.Referral);
+                await _cacheRepository.SetMember(parent.Id.ToString(), parent, 5);
+                _context.Players.Update(parent);
                 
                 if (await _context.Notifications.FirstOrDefaultAsync(n => 
                         n.PlayerId == notification.PlayerId
