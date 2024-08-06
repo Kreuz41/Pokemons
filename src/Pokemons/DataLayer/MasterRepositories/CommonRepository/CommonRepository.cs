@@ -143,6 +143,7 @@ public class CommonRepository : ICommonRepository
         }
 
         await _context.Players.AddAsync(player);
+        await _context.SaveChangesAsync();
         await _context.Battles.AddAsync(battle);
         await _context.Markets.AddAsync(market);
         await _context.Rating.AddAsync(rating);
