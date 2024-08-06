@@ -21,6 +21,9 @@ public class ReferralHandler : IReferralHandler
         var refs = await _referralService.GetReferrals(playerId);
         var response = refs.Select(value =>
             {
+                if (value is null)
+                    return value;
+                
                 totalBalance += value.Balance;
                 return new FriendsItem
                 {
