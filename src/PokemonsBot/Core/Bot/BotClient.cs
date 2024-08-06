@@ -67,8 +67,12 @@ public class BotClient
         {
             case NotificationType.Referral:
                 message = $"""
-                          You have new referral!
-                          Referral Id: {notify.ReferralName}
+                          + NEW REFERRAL |
+                          
+                          🆔{notify.ReferralName}
+                          🤝For contact | [referral](tg://user?id={notify.ReferralName})
+                          
+                          💰Congratulations💰
                           """;
                 break;
             case NotificationType.EnergyCharged:
@@ -101,7 +105,7 @@ public class BotClient
 
         try
         {
-            await _client.SendTextMessageAsync(notify.PlayerId, message);
+            await _client.SendTextMessageAsync(notify.PlayerId, message, parseMode: ParseMode.Markdown);
         }
         catch (Exception e)
         {
