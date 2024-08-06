@@ -14,20 +14,19 @@ public class BotRequestsListener : BackgroundService
     {
         _connection = connection;
         _contextFactory = contextFactory;
-        _channel = connection.CreateChannelAsync().Result;
     }
 
     private readonly IConnection _connection;
-    private readonly IChannel _channel;
     private readonly IDbContextFactory<AppDbContext> _contextFactory;
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var queue = "api.response";
         var queueRequest = "bot.request";
-        await _channel.QueueDeclareAsync(queueRequest, false, false, false, cancellationToken: stoppingToken);
-        await _channel.QueueDeclareAsync(queue, false, false, false, cancellationToken: stoppingToken);
-        var consumer = new EventingBasicConsumer(_channel);
+        using var channel = await _connection.CreateChannelAsync(stoppingToken);
+        await channel.QueueDeclareAsync(queueRequest, false, false, false, cancellationToken: stoppingToken);
+        await channel.QueueDeclareAsync(queue, false, false, false, cancellationToken: stoppingToken);
+        var consumer = new EventingBasicConsumer(channel);
         consumer.Received += async (message, ea) =>
         {
             await using var context = await _contextFactory.CreateDbContextAsync(stoppingToken);
@@ -40,19 +39,21 @@ public class BotRequestsListener : BackgroundService
             {
                 case $"{CallRequestNames.GlobalUsers}":
                     var count = context.Players.Count();
-                    await _channel.BasicPublishAsync(
+                    await channel.BasicPublishAsync(
                         exchange: "", 
-                        routingKey: queue, 
+                        routingKey: ea.BasicProperties.ReplyTo!, 
                         basicProperties: props, 
                         body: JsonSerializer.SerializeToUtf8Bytes(count),
                         cancellationToken: stoppingToken);
                     break;
             }
+            
+            await channel.BasicAckAsync(ea.DeliveryTag, true, stoppingToken);
         };
 
-        await _channel.BasicConsumeAsync(
+        await channel.BasicConsumeAsync(
             consumer: consumer,
-            autoAck: true,
+            autoAck: false,
             queue: queueRequest);
 
         await Task.Delay(Timeout.Infinite, stoppingToken);
