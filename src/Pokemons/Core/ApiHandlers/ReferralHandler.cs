@@ -22,7 +22,7 @@ public class ReferralHandler : IReferralHandler
         var response = refs.Select(value =>
             {
                 if (value is null)
-                    return value;
+                    return new FriendsItem();
                 
                 totalBalance += value.Balance;
                 return new FriendsItem
