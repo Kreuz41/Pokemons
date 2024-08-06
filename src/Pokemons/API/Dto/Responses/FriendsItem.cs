@@ -11,4 +11,5 @@ public class FriendsItem
     public int Level { get; set; }
     public int DefeatedEntities { get; set; }
     public int ProfitNumber { get; set; }
+    public int RefCount { get; set; }
 }

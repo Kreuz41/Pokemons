@@ -2,10 +2,12 @@
 using Pokemons.Core.BackgroundServices.NotificationCreator;
 using Pokemons.Core.Enums;
 using Pokemons.Core.Enums.Battles;
+using Pokemons.DataLayer.Cache.Repository;
 using Pokemons.DataLayer.Database;
 using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.Database.Repositories.RatingRepos;
 using Pokemons.DataLayer.Database.Repositories.UnitOfWork;
+using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 using PokemonsDomain.MessageBroker.Models;
 using PokemonsDomain.Notification;
 
@@ -13,22 +15,26 @@ namespace Pokemons.DataLayer.MasterRepositories.CommonRepository;
 
 public class CommonRepository : ICommonRepository
 {
-    public CommonRepository(AppDbContext context, IUnitOfWork unitOfWork, IRatingDatabaseRepository ratingDatabaseRepository)
+    public CommonRepository(AppDbContext context, IUnitOfWork unitOfWork, 
+        IRatingDatabaseRepository ratingDatabaseRepository, IPlayerRepository playerRepository)
     {
         _context = context;
         _unitOfWork = unitOfWork;
         _ratingDatabaseRepository = ratingDatabaseRepository;
+        _playerRepository = playerRepository;
     }
     
     
     private readonly AppDbContext _context;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IRatingDatabaseRepository _ratingDatabaseRepository;
+    private readonly IPlayerRepository _playerRepository;
 
     public async Task CreateUser(CreateUserModel userModel, long playerId)
     {
         await _unitOfWork.BeginTransaction();
-        
+
+        #region EntitiesCreated
         var player = new Player
         {
             Name = userModel.Name,
@@ -61,6 +67,7 @@ public class CommonRepository : ICommonRepository
             BattleStartTime = DateTime.UtcNow,
             IsGold = false
         };
+        #endregion
 
         var missions = await _context.ActiveMissions.Select(a => new Mission
         {
@@ -73,7 +80,8 @@ public class CommonRepository : ICommonRepository
             PlayerId = playerId
         };
 
-        if (userModel.RefId is not null && await _context.Players.AnyAsync(p => p.Id == userModel.RefId))
+        var parent1 = await _playerRepository.GetPlayerById(userModel.RefId ?? -1);
+        if (userModel.RefId is not null && parent1 is not null)
         {
             var node = new ReferralNode
             {
@@ -81,8 +89,14 @@ public class CommonRepository : ICommonRepository
                 ReferrerId = userModel.RefId.Value,
                 Inline = 1
             };
+
+            parent1.RefsCount++;
+            if (parent1.RefsCount == 4)
+                parent1.Balance += 50_000;
+
+            await _playerRepository.Update(player);
             
-            await _context.AddAsync(node);
+            await _context.ReferralNodes.AddAsync(node);
             
             NotificationCreator.AddNotification(new Notification
             {
@@ -91,19 +105,21 @@ public class CommonRepository : ICommonRepository
                 NotificationType = NotificationType.Referral
             });
             
-            var parent = await _context.ReferralNodes
+            var secondRefNode = await _context.ReferralNodes
+                .Include(n => n.Referral)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(n => n.ReferralId == node.ReferrerId && n.Inline == 1);
             
-            if (parent is not null)
+            if (secondRefNode is not null)
             {
                 var secondNode = new ReferralNode
                 {
                     ReferralId = playerId,
-                    ReferrerId = parent.ReferrerId,
+                    ReferrerId = secondRefNode.ReferrerId,
                     Inline = 2
                 };
 
-                await _context.AddAsync(secondNode);
+                await _context.ReferralNodes.AddAsync(secondNode);
 
                 var notification = new Notification
                 {
@@ -111,6 +127,12 @@ public class CommonRepository : ICommonRepository
                     ReferralName = playerId.ToString(),
                     NotificationType = NotificationType.Referral
                 };
+
+                secondRefNode.Referral.RefsCount++;
+                if (secondRefNode.Referral.RefsCount == 4)
+                    secondRefNode.Referral.Balance += 50_000;
+
+                await _playerRepository.Update(secondRefNode.Referral);
                 
                 if (await _context.Notifications.FirstOrDefaultAsync(n => 
                         n.PlayerId == notification.PlayerId

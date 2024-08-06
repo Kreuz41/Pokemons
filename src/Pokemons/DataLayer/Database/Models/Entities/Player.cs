@@ -35,8 +35,10 @@ public class Player
     public bool IsPremium { get; set; } = false;
     public decimal CryptoBalance { get; set; }
     
-    public MemberGuildStatus GuildStatus { get; set; } = null!;
-    public Rating Rating { get; set; } = null!;
+    public int RefsCount { get; set; }
+    
+    [JsonIgnore] public MemberGuildStatus GuildStatus { get; set; } = null!;
+    [JsonIgnore] public Rating Rating { get; set; } = null!;
     [JsonIgnore] public Market Market { get; set; } = null!;
     [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = [];
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = [];
