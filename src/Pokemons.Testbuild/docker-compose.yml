@@ -1,6 +1,6 @@
 services:
   api:
-    image: moonlization/testapi:1.0.9
+    image: moonlization/testapi:1.0.22
     build:
       context: ..
       dockerfile: Pokemons/Dockerfile
@@ -12,7 +12,7 @@ services:
       - rabbitmq
 
   bot:
-    image: moonlization/testbot:1.0.0
+    image: moonlization/testbot:1.0.4
     build:
       context: ..
       dockerfile: PokemonsBot/Dockerfile
