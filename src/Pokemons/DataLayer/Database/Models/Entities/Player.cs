@@ -37,9 +37,9 @@ public class Player
     
     public int RefsCount { get; set; }
     
-    [JsonIgnore] public MemberGuildStatus GuildStatus { get; set; } = null!;
-    [JsonIgnore] public Rating Rating { get; set; } = null!;
-    [JsonIgnore] public Market Market { get; set; } = null!;
+    public MemberGuildStatus GuildStatus { get; set; } = null!;
+    public Rating Rating { get; set; } = null!;
+    public Market Market { get; set; } = null!;
     [JsonIgnore] public ICollection<ReferralNode> ReferrerInfo { get; set; } = [];
     [JsonIgnore] public ICollection<Battle> Battles { get; set; } = [];
     [JsonIgnore] public ICollection<ReferralNode> Referrals { get; set; } = [];

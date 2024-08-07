@@ -34,6 +34,9 @@ public class CommonRepository : ICommonRepository
     {
         await _unitOfWork.BeginTransaction();
 
+        if (await _context.Players.FirstOrDefaultAsync(p => p.Id == userModel.UserId) is not null)
+            return;
+        
         #region EntitiesCreated
         var player = new Player
         {
