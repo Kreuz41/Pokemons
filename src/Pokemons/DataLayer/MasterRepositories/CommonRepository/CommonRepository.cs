@@ -137,8 +137,6 @@ public class CommonRepository : ICommonRepository
                     NotificationType = NotificationType.Referral
                 };
 
-                parent.RefsCount++;
-
                 await _cacheRepository.SetMember(parent.Id.ToString(), parent, 5);
                 _context.Players.Update(parent);
                 
