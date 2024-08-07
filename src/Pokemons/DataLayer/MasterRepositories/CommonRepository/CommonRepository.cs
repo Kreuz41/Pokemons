@@ -136,9 +136,6 @@ public class CommonRepository : ICommonRepository
                     ReferralName = playerId.ToString(),
                     NotificationType = NotificationType.Referral
                 };
-
-                await _cacheRepository.SetMember(parent.Id.ToString(), parent, 5);
-                _context.Players.Update(parent);
                 
                 if (await _context.Notifications.FirstOrDefaultAsync(n => 
                         n.PlayerId == notification.PlayerId
