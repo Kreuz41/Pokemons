@@ -138,8 +138,6 @@ public class CommonRepository : ICommonRepository
                 };
 
                 parent.RefsCount++;
-                if (parent.RefsCount == 4)
-                    parent.Balance += 50_000;
 
                 await _cacheRepository.SetMember(parent.Id.ToString(), parent, 5);
                 _context.Players.Update(parent);
