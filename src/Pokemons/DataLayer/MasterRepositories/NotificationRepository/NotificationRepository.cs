@@ -166,6 +166,7 @@ public class NotificationRepository : INotificationRepository
             .Where(n => n.Id == notificationId && n.PlayerId == playerId)
             .ExecuteDeleteAsync();
         await _unitOfWork.CommitTransaction();
+        await _cacheRepository.SetMember(playerId.ToString(), notifications);
     }
 
     public async Task<int> GetUnreadNewsCount(long playerId)
