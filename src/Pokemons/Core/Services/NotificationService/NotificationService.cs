@@ -18,7 +18,7 @@ public class NotificationService : INotificationService
         await _notificationRepository.GetNotificationsWithOffset(playerId, offset);
 
     public async Task<bool> IsNotificationExist(long playerId, long notificationId) =>
-        await _notificationRepository.GetNotification(playerId, notificationId) != null;
+        await _notificationRepository.GetNotification(playerId, notificationId) is not null;
 
     public async Task ReadNotification(long playerId, long notificationId)
     {

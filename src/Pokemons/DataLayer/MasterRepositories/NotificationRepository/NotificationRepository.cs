@@ -160,7 +160,12 @@ public class NotificationRepository : INotificationRepository
         var notifications = (await GetAllNotifications(playerId)).ToList();
         var index = notifications.FindIndex(n => n.Id == notificationId && n.PlayerId == playerId);
         notifications.RemoveAt(index);
-        await UpdateRangeNotifications(notifications);
+
+        await _unitOfWork.BeginTransaction();
+        await _context.Notifications
+            .Where(n => n.Id == notificationId && n.PlayerId == playerId)
+            .ExecuteDeleteAsync();
+        await _unitOfWork.CommitTransaction();
     }
 
     public async Task<int> GetUnreadNewsCount(long playerId)
