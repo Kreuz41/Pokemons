@@ -36,7 +36,8 @@ public class ReferralHandler : IReferralHandler
                     LeagueType = (int)value.Player.Rating.LeagueType,
                     Inline = value.Inline,
                     ProfitNumber = value.Balance,
-                    RefCount = value.Player.RefsCount
+                    RefCount = value.Player.RefsCount,
+                    Username = value.Player.Username
                 };
             })
             .ToList();

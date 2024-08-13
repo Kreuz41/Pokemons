@@ -1,6 +1,6 @@
 services:
   api:
-    image: moonlization/testapi:1.0.22
+    image: moonlization/testapi:1.0.23
     build:
       context: ..
       dockerfile: Pokemons/Dockerfile
