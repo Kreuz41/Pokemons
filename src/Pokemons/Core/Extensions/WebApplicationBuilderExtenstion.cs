@@ -27,6 +27,8 @@ using Pokemons.Core.Services.RatingService;
 using Pokemons.Core.Services.ReferralService;
 using Pokemons.DataLayer.Cache.Repository;
 using Pokemons.DataLayer.Database;
+using Pokemons.DataLayer.Database.Repositories;
+using Pokemons.DataLayer.Database.Repositories.ArActivityRepos;
 using Pokemons.DataLayer.Database.Repositories.BattleRepos;
 using Pokemons.DataLayer.Database.Repositories.GuildRepos;
 using Pokemons.DataLayer.Database.Repositories.MarketRepos;
@@ -44,6 +46,7 @@ using Pokemons.DataLayer.MasterRepositories.NotificationRepository;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 using Pokemons.DataLayer.MasterRepositories.RatingRepository;
 using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
+using Pokemons.Services;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 using TimeProvider = Pokemons.Core.Providers.TimeProvider.TimeProvider;
@@ -105,6 +108,8 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IRatingDatabaseRepository, RatingDatabaseRepository>();
         builder.Services.AddScoped<IMissionDatabaseRepository, MissionDatabaseRepository>();
         builder.Services.AddScoped<IReferralNodeDatabaseRepository, ReferralNodeDatabaseRepository>();
+        builder.Services.AddScoped<IArActivityRepository, ArActivityRepository>();
+        builder.Services.AddScoped<IWalletRepository, WalletRepository>();
     }
 
     private static void ConfigureRepositories(IHostApplicationBuilder builder)
@@ -130,6 +135,9 @@ public static class WebApplicationBuilderExtenstion
         builder.Services.AddScoped<IMissionService, MissionService>();
         builder.Services.AddScoped<IReferralService, ReferralService>();
         builder.Services.AddScoped<INotificationService, NotificationService>();
+        builder.Services.AddScoped<IArActivityService, ArActivityService>();
+        builder.Services.AddScoped<IWalletService, WalletService>();
+        builder.Services.AddHttpClient<IWalletService, WalletService>();
     }
     
     private static void ConfigureTimeProvider(IHostApplicationBuilder builder)

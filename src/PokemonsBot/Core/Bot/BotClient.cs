@@ -83,13 +83,13 @@ public class BotClient
                 break;
             case NotificationType.TopUp:
                 message = $"""
-                           Your wallet top up successfully!
-                           Amount: {notify.TopUpValue}
+                           Wallet top up successfull!
+                           Amount: {notify.TopUpValue} USDT
                            """;
                 break;
             case NotificationType.Withdraw:
                 message = $"""
-                           Withdraw successfully!
+                           Withdraw successfull!
                            Amount: {notify.TopUpValue}
                            """;
                 break;

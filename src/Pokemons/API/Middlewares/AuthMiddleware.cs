@@ -18,6 +18,15 @@ public class AuthMiddleware : IMiddleware
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     { 
         var header = context.Request.Headers["userId"];
+        var apiKey = context.Request.Headers["x-Auth"];
+
+        if (!string.IsNullOrEmpty(apiKey)){
+            if (apiKey == "wjiuda-diowhdawb-fwafwajufu-f2afawi"){
+                
+            }
+        }
+
+
         if (header.Count == 0)
         {
             context.Response.StatusCode = 404;

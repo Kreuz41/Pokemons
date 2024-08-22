@@ -23,6 +23,8 @@ public sealed class AppDbContext : DbContext
     public DbSet<ActiveNews> ActiveNews { get; init; } = null!;
     public DbSet<News> News { get; set; } = null!;
     public DbSet<Notification> Notifications { get; set; } = null!;
+    public DbSet<ArActivity> ArActivities { get; set; } = null!;
+    public DbSet<Wallet> Wallets { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,5 +40,8 @@ public sealed class AppDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ReferralNodeConfiguration());
         modelBuilder.ApplyConfiguration(new ActiveMissionConfiguration());
         modelBuilder.ApplyConfiguration(new MemberGuildStatusConfiguration());
+        modelBuilder.ApplyConfiguration(new ArActivityConfiguration());
+        modelBuilder.ApplyConfiguration(new WalletConfiguration());
+
     }
 }

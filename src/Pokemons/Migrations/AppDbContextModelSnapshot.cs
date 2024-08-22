@@ -640,6 +640,70 @@ namespace Pokemons.Migrations
 
                     b.Navigation("ReferrerInfo");
                 });
+                modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ArActivity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("PlayerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("LastCoinCollectedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("Energy")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalCoinsCollected")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("ArActivities");
+                });
+
+            modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.ArActivity", b =>
+                {
+                    b.HasOne("Pokemons.DataLayer.Database.Models.Entities.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+                 modelBuilder.Entity("Pokemons.DataLayer.Database.Models.Entities.Wallet", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PlayerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<decimal>("TRXBalance") // Переименованное поле
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("USDTBalance") // Новое поле для USDT
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("Wallets");
+                });
 #pragma warning restore 612, 618
         }
     }
