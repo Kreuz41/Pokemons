@@ -4,6 +4,7 @@ using Pokemons.DataLayer.Database.Models.Entities;
 using Pokemons.DataLayer.MasterRepositories.BattleRepository;
 using Pokemons.DataLayer.MasterRepositories.PlayerRepository;
 using Pokemons.DataLayer.MasterRepositories.ReferralNodeRepository;
+using Pokemons.Services;
 using PokemonsDomain.MessageBroker.Models;
 
 namespace Pokemons.Core.Services.PlayerService;
@@ -11,18 +12,20 @@ namespace Pokemons.Core.Services.PlayerService;
 public class PlayerService : IPlayerService
 {
     public PlayerService(IPlayerRepository playerRepository, ITimeProvider timeProvider, 
-        IBattleRepository battleRepository, IReferralNodeRepository referralRepository)
+        IBattleRepository battleRepository, IReferralNodeRepository referralRepository, IWalletService walletService)
     {
         _playerRepository = playerRepository;
         _timeProvider = timeProvider;
         _battleRepository = battleRepository;
         _referralRepository = referralRepository;
+        _walletService = walletService;
     }
 
     private readonly IPlayerRepository _playerRepository;
     private readonly IBattleRepository _battleRepository;
     private readonly IReferralNodeRepository _referralRepository;
     private readonly ITimeProvider _timeProvider;
+    private readonly IWalletService _walletService;
     
     private const int PremCost = 10;
 
@@ -156,17 +159,20 @@ public class PlayerService : IPlayerService
 
     public async Task<bool> IsEnoughCrypto(long playerId)
     {
-        var player = await GetPlayer(playerId);
-        return player?.CryptoBalance >= PremCost;
+        var wallet = await _walletService.GetWalletByPlayerIdAsync(playerId);
+
+        return wallet?.Usdt >= PremCost;
     }
 
     public async Task BuyPrem(long playerId)
     {
+        var wallet = await _walletService.GetWalletByPlayerIdAsync(playerId);
         var player = await GetPlayer(playerId);
-        if (player is null || player?.CryptoBalance < PremCost || player!.IsPremium)
+        if (wallet is null || wallet?.Usdt < PremCost || player!.IsPremium)
             return;
-
-        player!.CryptoBalance -= PremCost;
+        
+        await _walletService.DepositUsdtToWalletAsync(playerId, -PremCost);
+        
         player.IsPremium = true;
         
         await _playerRepository.FastUpdate(player);

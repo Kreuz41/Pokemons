@@ -114,7 +114,7 @@ namespace Pokemons.Services
             payload = new {
                 playerId
             },
-            webhook = "https://cixtaptest.online/api/wallet/depositUsdt",
+            webhook = "https://cixtaptest.ru/api/wallet/depositUsdt",
             type = "TRC-20 USDT",
         };
 
