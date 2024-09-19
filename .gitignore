@@ -45,3 +45,4 @@ msbuild.wrn
 .cert
 .dbbackup
 .test-kube
+docker-compose.yml
