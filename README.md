@@ -10,6 +10,10 @@ The Pokemons project provides an API to handle game interactions within a Telegr
 You will need the following to run the project:
 
     Docker and Docker Compose
+    
+# Environment Variables 🔑
+
+You can find all required environment variables in the .env.sample file located in the Build folder.
 
 # Getting Started 🚀
 
@@ -45,10 +49,6 @@ The project is divided into several layers:
 
     Data Storage Layer:
         Uses PostgreSQL for storing persistent data and Redis for caching.
-
-# Environment Variables 🔑
-
-You can find all required environment variables in the .env.sample file located in the Build folder.
 
 # Bot 🤖
 
