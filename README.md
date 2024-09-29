@@ -1,16 +1,6 @@
 # Pokemons 🐉
 
 Pokemons is a project designed for a Telegram Web App, including an API and a bot. The project is built on .NET 8 and follows a layered architecture, handling business logic, database interaction, caching, and API for managing game events.
-Table of Contents
-
-    About the Project
-    Requirements
-    Getting Started
-    Project Structure
-    Environment Variables
-    API Endpoints
-    Bot
-    Technologies
 
 # About the Project 🎮
 
