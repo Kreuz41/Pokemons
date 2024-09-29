@@ -16,7 +16,7 @@ You will need the following to run the project:
 Navigate to the Build folder:
 
 ``` bash
-cd Build
+cd src/Build
 ```
 Create a .env file based on .env.sample and configure the necessary environment variables.
 
